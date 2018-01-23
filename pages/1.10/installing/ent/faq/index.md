@@ -11,42 +11,42 @@ enterprise: false
 <!-- This source repo for this topic is https://github.com/dcos/dcos-docs -->
 
 
-## Q. Can I install DC/OS on an already running Mesos cluster?
-We recommend starting with a fresh cluster to ensure all defaults are set to expected values. This prevents unexpected conditions related to mismatched versions and configurations.
+## 问：我可以在已经运行的Mesos集群上安装DC/OS吗？?
+我们建议从全新的集群开始，确保将所有缺省值设置为预期值。这可以防止与不匹配的版本和配置有关的意外情况。
 
-## Q. What are the OS requirements of DC/OS?
-See the [system requirements](/1.10/installing/ent/custom/system-requirements/).
+## 问：DC/OS的操作系统要求是什么？?
+请参阅[系统要求](/1.10/installing/ent/custom/system-requirements/)。
 
-## Q. Does DC/OS install ZooKeeper, or can I use my own ZooKeeper quorum?
-DC/OS runs its own ZooKeeper supervised by Exhibitor and systemd, but users are able to create their own ZooKeeper quorums as well. The ZooKeeper quorum installed by default will be available at `master.mesos:[2181|2888|3888]`.
+## 问：DC/OS安装ZooKeeper，还是可以使用我自己的ZooKeeper法定人数？
+DC/OS运行由Exhibitor和systemd监督的自己的ZooKeeper，但用户也可以创建自己的ZooKeeper定额。默认情况下安装的ZooKeeper法定人数将在`master.mesos:[2181|2888|3888]`。
 
-## Q. Is it necessary to maintain a bootstrap node after the cluster is created?
-If you specify an Exhibitor storage backend type other than `exhibitor_storage_backend: static` in your cluster configuration [file](/1.10/installing/ent/custom/configuration/configuration-parameters/), you must maintain the external storage for the lifetime of your cluster to facilitate leader elections. If your cluster is mission critical, you should harden your external storage by using S3 or running the bootstrap ZooKeeper as a quorum. Interruptions of service from the external storage can be tolerated, but permanent loss of state can lead to unexpected conditions.
+## 问：群集创建后是否需要维护引导节点?
+如果您在集群[配置文件](/1.10/installing/ent/custom/configuration/configuration-parameters/)中指定参展商存储后端类型（不包括`exhibitor_storage_backend：static`)，则必须在集群的整个生命周期中维护外部存储，以方便领导选举。如果你的集群是关键任务的，那么你应该通过使用S3或运行引导ZooKeeper作为法定数据来加强你的外部存储。来自外部存储器的服务中断是可以容忍的，但永久的状态丢失可能会导致意外情况。
 
-## Q. How to add Mesos attributes to nodes to use Marathon constraints?
+## 问：如何将Mesos属性添加到节点以使用Marathon约束?
 
-In DC/OS, add the line `MESOS_ATTRIBUTES=<key>:<value>` to the file `/var/lib/dcos/mesos-slave-common` (it may need to be created) for each attribute you'd like to add. More information can be found [via the Mesos doc](http://mesos.apache.org/documentation/latest/attributes-resources/).
+在DC / OS中，将`MESOS_ATTRIBUTES=<key>:<value>`行添加到您要添加的每个属性的文件`/var/lib/dcos/mesos-slave-common`(可能需要创建）。 更多信息可以通过[Mesos文档](http://mesos.apache.org/documentation/latest/attributes-resources/)找到。
 
-## Q. How do I gracefully shut down an agent?
+## 问：我如何优雅地关闭代理？
 
-- _To gracefully kill an agent node's Mesos process and allow systemd to restart it, use the following command. _Note: If Auto Scaling Groups are in use, the node will be replaced automatically_:
+- _要正常地杀死代理节点的Mesos进程并允许systemd重新启动它，请使用以下命令。 注意：如果正在使用Auto Scaling组，节点将被自动替换_：
 
     ```bash
     sudo systemctl kill -s SIGUSR1 dcos-mesos-slave
     ```
-- _For a public agent:_
+- _对于public agent：_
 
     ```bash
     sudo systemctl kill -s SIGUSR1 dcos-mesos-slave-public
     ```
 
-- To gracefully kill the process and prevent systemd from restarting it, add a `stop` command:
+- T要优雅地终止进程并防止systemd重新启动，请添加一个`停止`命令
 
     ```bash
     sudo systemctl kill -s SIGUSR1 dcos-mesos-slave && sudo systemctl stop dcos-mesos-slave
     ```
 
-- _For a public agent:_
+- _对于public agent:_
 
     ```bash
     sudo systemctl kill -s SIGUSR1 dcos-mesos-slave-public && sudo systemctl stop dcos-mesos-slave-public
