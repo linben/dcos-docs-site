@@ -1,77 +1,90 @@
 ---
 layout: layout.pug
-navigationTitle: 添加代理节点
-title: 添加代理节点
-menuWeight: 800
+navigationTitle: Filtering Logs with ELK
+title: Filtering Logs with ELK
+menuWeight: 2
 excerpt: ""
 enterprise: false
 ---
 <!-- This source repo for this topic is https://github.com/dcos/dcos-docs -->
 
-您可以将代理节点添加到现有的 DC/OS 群集。
+The file system paths of DC/OS task logs contain information such as the agent ID, framework ID, and executor ID. You can use this information to filter the log output for specific tasks, applications, or agents.
 
-Agent nodes are designated as [public](/1.10/overview/concepts/#public-agent-node) or [private](/1.10/overview/concepts/#private-agent-node) during installation. 默认情况下, 它们在 [ gui ](/1.10/installing/oss/custom/gui/) 或 [ cli ](/1.10/installing/oss/custom/cli/) 安装期间被指定为专用。
+**Prerequisite**
 
-### 基础要求
+* [An Elasticsearch installation that aggregates DC/OS logs](../elk/)
 
-* 使用 [ 自定义 ](/1.10/installing/oss/custom/) 安装方法安装 DC/OS。
-* The archived DC/OS installer file (`dcos-install.tar`) from your [installation](/1.10/installing/oss/custom/gui/#backup).
-* 满足 [ 系统要求 ](/1.10/installing/oss/custom/system-requirements/) 的可用代理节点。
-* CLI JSON 处理器 [ jq ](https://github.com/stedolan/jq/wiki/Installation)。
-* 已安装和配置 SSH。这是访问 DC/OS 群集中的节点所必需的。
+# <a name="configuration"></a>Install, configure, and start Logstash
 
-### 安装 DC/OS 代理节点
+1. Install [Logstash](https://www.elastic.co/guide/en/logstash/current/installing-logstash.html).
 
-将已存档的 DC/OS 安装程序文件 (` dcos-install.tar `) 复制到代理节点。 This archive is created during the GUI or CLI [installation](/1.10/installing/oss/custom/gui/#backup) method.
-
-1. 将文件复制到代理节点。例如, 可以使用安全副本 (scp) 将 `dcos-install.tar` 复制到您的主目录中:
+2. Create the following `dcos` pattern file in your custom patterns directory, located at `$PATTERNS_DIR`:
     
-    ```bash
-scp ~/dcos-install.tar $username@$node-ip:~/dcos-install.tar
-```
+        PATHELEM [^/]+
+        TASKPATH ^/var/lib/mesos/slave/slaves/%{PATHELEM:agent}/frameworks/%{PATHELEM:framework}/executors/%{PATHELEM:executor}/runs/%{PATHELEM:run}
+        
 
-2. SSH 到机器:
+3. Update the configuration file for your Logstash instance to include the following `grok` filter, where `$PATTERNS_DIR` is replaced with your custom patterns directory:
     
-    ```bash
-ssh $USER@$AGENT
-```
+        filter {
+            grok {
+                patterns_dir => "$PATTERNS_DIR"
+                match => { "file" => "%{TASKPATH}" }
+            }
+        }
+        
 
-3. 为安装程序文件创建一个目录:
+4. Start Logstash.
     
-    ```bash
-sudo mkdir -p /opt/dcos_install_tmp
-```
+    Logstash will extract the `agent`, `framework`, `executor`, and `run` fields. These fields are shown in the metadata of all Mesos task log events. Elasticsearch queries will also show results from those fields.
 
-4. 解 `dcos-install.tar` 文件:
+# <a name="usage"></a>Usage example
+
+In the screenshots below, we are using Kibana hosted by [logz.io](http://logz.io), but your Kibana interface will look similar.
+
+1. Type `framework:*` into the Search field. This will show all of the events where the `framework` field is defined:
     
-    ```bash
-sudo tar xf dcos-install.tar -C /opt/dcos_install_tmp
-```
+    ![Logstash Example](/1.10/img/logstash-framework-exists.png)
 
-5. 运行此命令可在代理节点上安装 DC/OS。您必须将代理节点指定为公共或专用。
+2. Click the disclosure triangle next to one of these events to view the details. This will show all of the fields extracted from the task log file path:
     
-    Private agent nodes:
+    ![Logstash Example2](/1.10/img/logstash-fields.png)
+
+3. Search for all of the events that reference the framework ID of the event shown in the screenshot above, but that do not contain the chosen `framework` field. This will show only non-task results:
     
-    ```bash
-sudo bash /opt/dcos_install_tmp/dcos_install.sh slave
-```
+    ![Logstash Framework Search](/1.10/img/logstash-framework-search.png)
 
-公共代理节点:
+# <a name="templates"></a>Template examples
 
-```bash
-sudo bash /opt/dcos_install_tmp/dcos_install.sh slave_public
-```
+Here are some example query templates. Replace the template parameters `$executor1`, `$framework2`, and any others with the actual values from your cluster.
 
-** 提示: **可以通过从 DC/OS CLI 运行此命令来验证节点类型。
+**Important:** Do not change the quotation marks in these examples or the queries will not work. If you create custom queries, be careful with the placement of quotation marks.
 
-* 运行此命令可对私有代理进行计数。
+* Logs related to a specific executor `$executor1`, including logs for tasks run from that executor:
     
-    ```bash
-dcos node --json | jq --raw-output '.[] | select(.reserved_resources.slave_public == null) | .id' | wc -l
-```
+        "$executor1"
+        
 
-* 运行此命令可对私有代理进行计数。
+* Non-task logs related to a specific executor `$executor1`:
     
-    ```bash
-dcos node --json | jq --raw-output '.[] | select(.reserved_resources.slave_public != null) | .id' | wc -l
-```
+        "$executor1" AND NOT executor:$executor1
+        
+
+* Logs (including task logs) for a framework `$framework1`, if `$executor1` and `$executor2` are that framework's executors:
+    
+        "$framework1" OR "$executor1" OR "$executor2"
+        
+
+* Non-task logs for a framework `$framework1`, if `$executor1` and `$executor2` are that framework's executors:
+    
+        ("$framework1" OR "$executor1" OR "$executor2") AND NOT (framework:$framework1 OR executor:$executor1 OR executor:$executor2)
+        
+
+* Logs for a framework `$framework1` on a specific agent host `$agent_host1`:
+    
+        host:$agent_host1 AND ("$framework1" OR "$executor1" OR "$executor2")
+        
+
+* Non-task logs for a framework `$framework1` on a specific agent `$agent1` with host `$agent_host1`:
+    
+        host:$agent_host1 AND ("$framework1" OR "$executor1" OR "$executor2") AND NOT agent:$agent
