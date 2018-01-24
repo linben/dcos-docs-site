@@ -1,3 +1,16 @@
 files:
-  - source: /pages/1.10/*.md
+  - source: '*.md'
+    ignore:
+      - /1.11/
+      - /js
+      - /scss
+      - /pages/1.7/
+      - /pages/1.8/
+      - /pages/1.9/
+      - /pages/404/
+      - /pages/search/
+      - /pages/services/
+      - /pages/test/
+      - README.md
+      - /pages/index.md
     translation: /pages/CN/1.10/%two_letters_code%/%original_file_name%
