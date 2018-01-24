@@ -56,4 +56,4 @@ If you already have other services running, go to **Services -> Services**, then
 
 After you launch your pod, you’ll see your new pod on the **Services** tab of the DC/OS web interface. Click the pod to see information about the status of the containers in your pod.
 
-![Pods UI](/1.10/img/pods-service-dashboard.png)
+![Pods UI](https://docs.mesosphere.com/1.10/img/pods-service-dashboard.png)
