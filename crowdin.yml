@@ -13,6 +13,8 @@ files:
       - /pages/test/
       - README.md
       - /pages/index.md
+      - /cn/
+      - /pages/CN/
     translation: /pages/CN/1.10/%two_letters_code%/%original_file_name%
   - source: '*.md'
     ignore:
