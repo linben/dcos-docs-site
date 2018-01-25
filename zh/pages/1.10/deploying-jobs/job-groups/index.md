@@ -21,7 +21,7 @@ enterprise: true
 
 2. Select **Organization** and choose **Users** or **Groups**.
 
-3. Select the name of the user or group to grant the permission to.
+3. 选择要授予权限的用户或组的名称。
     
     ![Add permission cory](/1.10/img/services-tab-user.png)
 
@@ -31,11 +31,11 @@ enterprise: true
     
     ![Add permission](/1.10/img/services-tab-user3.png)
 
-6. Copy and paste the permission in the **Permissions Strings** field. Choose the permission strings based on your [security mode](/1.10/security/ent/#security-modes).
+6. 将权限复制并粘贴到**权限字符串**字段中。 根据您的[安全模式](/1.10/security/ent/#security-modes)选择权限字符串。
     
     ### 禁用
     
-    - **DC/OS jobs access:**
+    - **DC / OS作业访问：**
         
         Specify your job group (`<job-group>`), job name (`<job-name>`), and action (`<action>`). Actions can be either `create`, `read`, `update`, `delete`, or `full`. To permit more than one operation, use a comma to separate them, for example: `dcos:service:metronome:metronome:jobs:<job-group>/<job-name> read,update`.
         
@@ -44,7 +44,7 @@ dcos:adminrouter:service:metronome full
 dcos:service:metronome:metronome:jobs:<job-group>/<job-name> <action>
 ```
 
-- **DC/OS service tasks and logs:**
+- **DC / OS服务任务和日志：**
     
     ```bash
 dcos:adminrouter:ops:mesos full
@@ -53,7 +53,7 @@ dcos:adminrouter:ops:slave full
 
 ### 许可
 
-- **DC/OS jobs access:**
+- **DC / OS作业访问：**
     
     Specify your job group (`<job-group>`), job name (`<job-name>`), and action (`<action>`). Actions can be either `create`, `read`, `update`, `delete`, or `full`. To permit more than one operation, use a comma to separate them, for example: `dcos:service:metronome:metronome:jobs:<job-group>/<job-name> read,update`.
     
@@ -62,7 +62,7 @@ dcos:adminrouter:service:metronome full
 dcos:service:metronome:metronome:jobs:<job-group>/<job-name> <action>
 ```
 
-- **DC/OS service tasks and logs:**
+- **DC / OS服务任务和日志：**
     
     ```bash
 dcos:adminrouter:ops:mesos full
@@ -71,7 +71,7 @@ dcos:adminrouter:ops:slave full
 
 ### 严格
 
-- **DC/OS jobs access:**
+- **DC / OS作业访问：**
     
     Specify your job group (`<job-group>`), job name (`<job-name>`), and action (`<action>`). Actions can be either `create`, `read`, `update`, `delete`, or `full`. To permit more than one operation, use a comma to separate them, for example: `dcos:service:metronome:metronome:jobs:<job-group>/<job-name> read,update`.
     
@@ -80,7 +80,7 @@ dcos:adminrouter:service:metronome full
 dcos:service:metronome:metronome:jobs:<job-group>/<job-name> <action>
 ```
 
-- **DC/OS service tasks and logs:**
+- **DC / OS服务任务和日志：**
     
     ```bash
 dcos:adminrouter:ops:mesos full
@@ -112,7 +112,7 @@ This mode does not offer fine-grained control.
 
 ### 许可
 
-- **DC/OS jobs access:**
+- **DC / OS作业访问：**
     
     1. Grant the permission to job group (`<job-group>`) and job name (`<job-name>`).
         
@@ -121,7 +121,7 @@ dcos security org users grant <user-name> adminrouter:service:metronome full --d
 dcos security org users grant <user-name> service:metronome:metronome:jobs:<job-group>/<job-name> full --description "Controls access to <job-group>/<job-name>"
 ```
 
-- **DC/OS service tasks and logs:**
+- **DC / OS服务任务和日志：**
     
     1. Grant the permission to a user (`<user-name>`).
         
@@ -143,7 +143,7 @@ dcos security org users grant <user-name> service:metronome:metronome:jobs:<job-
 
 - **DC / OS服务任务和日志：**
     
-    1. Grant the permission to the user (`<user-name>`) and group (`<job-group>`).
+    1. 向用户 (`<user-name>`)和组(`<job-group>`)授予权限。
         
         ```bash
 dcos security org users grant <user-name> adminrouter:ops:mesos full --description "Grants access to the Mesos master API/UI and task details"
