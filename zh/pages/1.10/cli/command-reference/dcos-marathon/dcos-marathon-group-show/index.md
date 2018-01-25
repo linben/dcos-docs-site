@@ -8,32 +8,32 @@ enterprise: false
 ---
 <!-- This source repo for this topic is https://github.com/dcos/dcos-docs -->
 
-# Description
+# 描述
 
 Print a detailed list of groups.
 
-# Usage
+# 统计
 
 ```bash
 dcos marathon group show <group-id> [OPTION]
 ```
 
-# Options
+# 选项
 
-| Name, shorthand                         | Default | Description                                                                                                                                                                                                                                                                          |
-| --------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `--group-version=<group-version>` |         | The group version to use for the command. It can be specified as an absolute or relative value. Absolute values must be in ISO8601 date format. Relative values must be specified as a negative integer and they represent the version from the currently deployed group definition. |
+| 名字，简写                                   | 默认 | 描述                                                                          |
+| --------------------------------------- | -- | --------------------------------------------------------------------------- |
+| `--group-version=<group-version>` |    | 用于该命令的组版本。 它可以被指定为绝对值或相对值。 绝对值必须是ISO8601日期格式。 相对值必须指定为负整数，它们表示当前部署的组定义中的版本。 |
 
-# Positional arguments
+# 位置实参
 
-| Name, shorthand    | Default | Description   |
-| ------------------ | ------- | ------------- |
-| `<group-id>` |         | The group ID. |
+| 名字，简写              | 默认 | 描述   |
+| ------------------ | -- | ---- |
+| `<group-id>` |    | 组ID。 |
 
-# Parent command
+# 父命令
 
-| Command                                                     | Description                              |
-| ----------------------------------------------------------- | ---------------------------------------- |
-| [dcos marathon](/1.10/cli/command-reference/dcos-marathon/) | Deploy and manage applications to DC/OS. |
+| 命令                                                          | 描述                  |
+| ----------------------------------------------------------- | ------------------- |
+| [dcos marathon](/1.10/cli/command-reference/dcos-marathon/) | 将应用程序部署和管理到DC / OS。 |
 
 <!-- # Examples -->

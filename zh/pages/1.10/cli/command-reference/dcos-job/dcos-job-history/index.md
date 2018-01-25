@@ -43,13 +43,13 @@ dcos job history <job-id> [OPTION]
 
 在此示例中, 将显示作业历史记录。
 
-1. List the jobs and find the ID:
+1. 列出工作并找到ID：
     
     ```bash
 dcos job list
 ```
 
-Here is the output:
+以下是输出:
 
 ```bash
 ID                DESCRIPTION                      STATUS       LAST SUCCESFUL RUN  
@@ -57,7 +57,7 @@ my-job            A job that sleeps                Unscheduled         N/A
 my-scheduled-job  A job that sleeps on a schedule  Unscheduled         N/A 
 ```
 
-2. View the job history for `my-scheduled-job`:
+2. 查看 ` my-scheduled-job` 的作业历史记录:
     
     ```bash
 dcos job history my-scheduled-job
@@ -71,4 +71,4 @@ ID                             STARTED                       FINISHED
 20170217231831HkXNK  2017-02-17T23:18:31.651+0000  2017-02-17T23:18:33.843+0000 
 ```
 
-**Tip:** Specify the `--json` option to view the JSON app definition (e.g. `dcos job history my-scheduled-job`).
+**提示：**指定` --json `选项来查看JSON应用程序定义(例如` dcos job history my-scheduled-job `)。

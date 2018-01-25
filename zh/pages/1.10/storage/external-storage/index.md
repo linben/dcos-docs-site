@@ -1,7 +1,7 @@
 ---
 layout: layout.pug
-navigationTitle: External Persistent Volumes
-title: External Persistent Volumes
+navigationTitle: 外部持久化卷
+title: 外部持久化卷
 menuWeight: 20
 excerpt: ""
 experimental: true
@@ -11,9 +11,9 @@ enterprise: false
 
 **Warning:** Volume size is specified in GiB.
 
-Use external volumes when fault tolerance is crucial for your app. If a host fails, the native Marathon instance reschedules your app on another host, along with its associated data, without user intervention. External volumes also typically offer a larger amount of storage.
+当容错对您的应用程序至关重要时, 请使用外部卷。如果主机出现故障, 本机马拉松实例将您的应用程序重新在另一台主机上, 以及与其相关的数据, 而无需用户干预。 外部卷通常还提供更大的存储空间。
 
-Marathon applications normally lose their state when they terminate and are relaunched. In some contexts, for instance, if your application uses MySQL, you’ll want your application to preserve its state. You can use an external storage service, such as Amazon's Elastic Block Store (EBS), to create a persistent volume that follows your application instance.
+马拉松应用程序在终止和重新运行时通常会失去状态。 在某些情况下, 例如, 如果您的应用程序使用 MySQL, 您将希望应用程序保留其状态。 You can use an external storage service, such as Amazon's Elastic Block Store (EBS), to create a persistent volume that follows your application instance.
 
 # Create an application with an external persistent volume
 

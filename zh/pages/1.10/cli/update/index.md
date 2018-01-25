@@ -79,7 +79,7 @@ Get detailed command description with 'dcos <command> --help'.
 rm path/to/binary/dcos
 ```
 
-2. From the directory you want to install the new DC/OS CLI binary, enter this command to update the DC/OS CLI with the downgrade version (`<version>`) specified:
+2. 从要安装新的 dc/os cli 二进制文件的目录中, 输入此命令以使用指定的降级版本 (` <version> `) 更新 dc/os cli:
     
     ```bash
 curl https://downloads.dcos.io/binaries/cli/darwin/x86-64/<version>/dcos

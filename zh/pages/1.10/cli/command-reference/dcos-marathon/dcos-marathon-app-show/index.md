@@ -8,32 +8,32 @@ enterprise: false
 ---
 <!-- This source repo for this topic is https://github.com/dcos/dcos-docs -->
 
-# Description
+# 描述
 
-Deploy and manage applications to DC/OS.
+将应用程序部署和管理到DC / OS。
 
-# Usage
+# 统计
 
 ```bash
 dcos marathon app show <app-id> [OPTION]
 ```
 
-# Options
+# 选项
 
-| Name, shorthand                     | Default | Description                                                                                                                                                                                                                                                                             |
-| ----------------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--app-version=<app-version>` |         | The version of the application to use. It can be specified as an absolute or relative value. Absolute values must be in ISO8601 date format. Relative values must be specified as a negative integer and they represent the version from the currently deployed application definition. |
+| 名字，简写                               | 默认 | 描述                                                                               |
+| ----------------------------------- | -- | -------------------------------------------------------------------------------- |
+| `--app-version=<app-version>` |    | 要使用的应用程序的版本。 它可以被指定为绝对值或相对值。 绝对值必须是ISO8601日期格式。 相对值必须指定为负整数，它们表示当前部署的应用程序定义中的版本。 |
 
-# Positional arguments
+# 位置实参
 
-| Name, shorthand  | Default | Description         |
-| ---------------- | ------- | ------------------- |
-| `<app-id>` |         | The application ID. |
+| 名字，简写            | 默认 | 描述      |
+| ---------------- | -- | ------- |
+| `<app-id>` |    | 应用程序ID。 |
 
-# Parent command
+# 父命令
 
-| Command                                                     | Description                              |
-| ----------------------------------------------------------- | ---------------------------------------- |
-| [dcos marathon](/1.10/cli/command-reference/dcos-marathon/) | Deploy and manage applications to DC/OS. |
+| 命令                                                          | 描述                  |
+| ----------------------------------------------------------- | ------------------- |
+| [dcos marathon](/1.10/cli/command-reference/dcos-marathon/) | 将应用程序部署和管理到DC / OS。 |
 
 <!-- # Examples -->

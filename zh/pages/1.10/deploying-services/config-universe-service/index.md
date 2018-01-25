@@ -1,24 +1,24 @@
 ---
 layout: layout.pug
-navigationTitle: Configuring Universe Services
-title: Configuring Universe Services
+navigationTitle: 配置宇宙服务
+title: 配置宇宙服务
 menuWeight: 2
 excerpt: ""
 enterprise: false
 ---
 <!-- This source repo for this topic is https://github.com/dcos/dcos-docs -->
 
-Each Universe service installs with a set of default parameters. You can discover the default parameters and change them as desired.
+每个宇宙服务都安装一组默认参数。您可以发现默认参数并按需要更改它们。
 
-This topic describes how to use the DC/OS CLI to configure services. You can also customize services by using the [**Services**](/1.10/gui/services/) tab in the DC/OS UI.
+本主题介绍如何使用 DC/OS CLI 来配置服务。还可以使用 DC/OS UI 中的 [ ** 服务 "** ](/1.10/gui/services/) 选项卡自定义服务。
 
-1. View the available configuration options for the service with the `dcos package describe --config <package-name>` command.
+1. 使用 ` dcos 包描述-配置 < 包-名称 > ` 命令查看服务的可用配置选项。
     
     ```bash
 dcos package describe --config marathon
 ```
 
-The output should be something like:
+输出应该是这样的：
 
 ```json
 {
@@ -52,13 +52,13 @@ The output should be something like:
 }
 ```
 
-2. Create a JSON configuration file. You can choose an arbitrary name, but you might want to choose a pattern like `<package-name>-config.json`. For example, `marathon-config.json`.
+2. 创建一个JSON配置文件。 您可以选择一个任意名称，但是您可能想要选择一个模式，如`< package-name> -config.json `。 例如，` marathon-config.json `。
     
     ```bash
 nano marathon-config.json
 ```
 
-3. Use the `properties` objects to build your JSON options file. For example, to change the number of Marathon CPU shares to 3 and memory allocation to 2048:
+3. 使用` properties `对象来构建您的JSON选项文件。 例如，要将马拉松CPU份额的数量更改为3，并将内存分配更改为2048：
     
     ```json
 {
@@ -68,10 +68,10 @@ nano marathon-config.json
 }
 ```
 
-4. From the DC/OS CLI, install the DC/OS service with the custom options file specified:
+4. 在DC / OS CLI中，使用指定的自定义选项文件安装DC / OS服务：
     
     ```bash
 dcos package install --options=marathon-config.json marathon
 ```
 
-For more information, see the [dcos package](/1.10/cli/command-reference/dcos-package) documentation.
+有关更多信息，请参阅[ dcos包](/1.10/cli/command-reference/dcos-package)文档。
