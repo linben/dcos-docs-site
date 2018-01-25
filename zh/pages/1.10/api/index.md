@@ -35,13 +35,13 @@ Admin Router以两种配置之一在每个DC / OS节点上运行：
 
 # 路线类型
 
-Admin Router exposes several types of routes:
+管理路由器公开几种类型的路由:
 
-- **Proxy Routes** retrieve resources from another URL.
-- **File Routes** retrieve static files.
-- **Lua Routes** execute Lua code to generate responses.
-- **Redirect Routes** redirect to another URL.
-- **Rewrite Routes** translate routes into other routes.
+- ** 代理路由 ** 从另一个 URL 检索资源。
+- ** 文件路由 ** 检索静态文件。
+- ** lua 路由 ** 执行 lua 代码以生成响应。
+- ** 重定向路由 ** 重定向到另一个 URL。
+- ** 重写路由 ** 将路由转换为其他路由。
 
 # 族类排料
 
@@ -57,42 +57,42 @@ DC / OS API的部分由组件，路由或资源进行版本控制。
 
 某些路由未经身份验证，但大多数都需要身份验证令牌。
 
-For details on how to obtain and use an authentication token, see [Authentication HTTP API Endpoint](/1.10/security/ent/iam-api/).
+有关如何获取和使用身份验证令牌的详细信息, 请参阅 [ 身份验证 HTTP api 终结点 ](/1.10/security/ent/iam-api/)。
 
 # 身份验证
 
 大多数认证的路由也需要通过权限进行授权。 DC / OS Enterprise中的权限由分层资源标识符和操作(create, read, update, full) 组成。
 
-Permission enforcement can be performed at two levels.
+许可执行可以在两个级别执行。
 
-- **Course-grained permissions** are [enforced by Admin Router](/1.10/security/ent/perms-reference/#admin-router) at the route level.
-- **Fine-grained permissions** are enforced by individual backend component services.
+- **粗粒度权限**在路由级别由管理路由器[执行](/1.10/security/ent/perms-reference/#admin-router)。
+- ** 细粒度权限 ** 由各个后端组件服务强制执行。
 
-[Permissions Management](/1.10/security/ent/perms-management/) can be performed by users with the [Superuser permission](/1.10/security/ent/perms-reference/#superuser) using the [Identity and Access Management API](/1.10/security/ent/iam-api/). Users with the Superuser permission also have implicit permission to access all routes.
+[权限管理](/1.10/security/ent/perms-management/)可由用户使用<a href =“/1.10/security/ent/perms-reference/#superuser”>超级用户权限</a>，使用[身份和访问管理API ](/1.10/security/ent/iam-api/)。 具有超级用户权限的使用者也具有访问所有路由的隐式权限。
 
-# Route Usage
+# 路线使用
 
-- To determine the full URL of a API resource through a **proxy route**, join the cluster URL, route, and backend component resource path.
+- 若要通过 ** 代理路由 ** 确定 API 资源的完整 url, 请加入群集 url、路由和后端组件资源路径。
     
         <cluster-url>/<route>/<resource-path>
         
     
-    For example, get the Mesos version from: `https://dcos.example.com/mesos/version`
+    例如, 获取 Mesos 版本来自: ` https://dcos.example.com/mesos/version `
 
-- **File routes** have no backend component, but may serve a directory of files or a single file. So for file routes, specify the file path instead of the backend component resource path.
+- ** 文件路由 ** 没有后端组件, 但可以提供文件目录或单个文件。因此, 对于文件路由, 请指定文件路径而不是后端组件资源路径。
     
         <cluster-url>/<route>/<file-path>
         
     
-    For example, get the DC/OS version of the cluster from: `https://dcos.example.com/dcos-metadata/dcos-version.json`
+    例如, 从以下内容获取群集的 DC/OS 版本: ` https://dcos.example.com/dcos-metadata/dcos-version.json `
 
-- **Lua routes** immediately execute code in Admin Router without proxying to an external backend component. So for Lua routes, no path is required after the route.
+- ** Lua 路由 ** 立即在管理路由器中执行代码, 而不代理到外部后端组件。因此, 对于 Lua 路由, 路由后不需要任何路径。
     
         <cluster-url>/<route>
         
     
-    For example, get the public IP of the master node and cluster ID from: `https://dcos.example.com/metadata`
+    例如，从` https://dcos.example.com/metadata `获取主节点和群集ID的公共IP
 
-- **Rewrite and redirect routes** may pass through one or more other URLs or routes before returning a resource. So for those routes, follow the chain of URLs and routes to find the endpoint. The resource path will depend on the final endpoint.
+- ** 重写和重定向路由 ** 可能会在返回资源之前通过一个或多个其他 url 或路由。 因此, 对于这些路由, 请按照 url 和路由链来查找端点。 资源路径将取决于最终端点。
     
-    Most rewrites and redirects terminate in another DC/OS API route, with the notable exception of `/login`, which uses OpenID Connect to authorize with an external identity provider and then redirects back to the DC/OS API.
+    大多数重写和重定向都在另一个DC / OS API路由中终止，其中明显的例外是`/login`，它使用OpenID Connect与外部身份提供者进行授权，然后重定向回DC / OS API。
