@@ -10,7 +10,7 @@ DC/OS主节点是与其他主节点一起工作，负责管理集群其余部分
 
 ### 保护区域
 
-根据分布，部署方法和基础架构配置，主节点可以在公开访问区域，也可以在受限制访问网络区域中以提高安全性。常见策略包括限制主节点访问办公室的IP段，并要求[VPN]（https://en.wikipedia.org/wiki/Virtual_private_network）访问。
+根据分布，部署方法和基础架构配置，主节点可以在公开访问区域，也可以在受限制访问网络区域中以提高安全性。常见策略包括限制主节点访问办公室的IP段，并要求[VPN](https://en.wikipedia.org/wiki/Virtual_private_network) 访问。
 
 ### 高可用性
 
@@ -20,7 +20,7 @@ DC/OS主节点是与其他主节点一起工作，负责管理集群其余部分
 
 ### 领袖选举
 
-Mesos执行[领袖选举]（https://en.wikipedia.org/wiki/Leader_election）并将传入的流量路由到当前领导者以确保一致性。
+Mesos执行[领袖选举](https://en.wikipedia.org/wiki/Leader_election) 并将传入的流量路由到当前领导者以确保一致性。
 
 像Mesos一样，其他很多DC/OS主节点组件也执行相互独立的领导者选举。这意味着像Marathon和ZooKeeper这些不同组件的领导者可能在不同的主节点上。
 
@@ -52,19 +52,19 @@ DC/OS计算节点是运行用户任务的节点。
 
 ### 私有代理节点
 
-私有代理节点是位于无法从外部访问的网络上的代理节点，该节点无法通过集群[基础结构网络]（/1.10/overview/concepts/＃infrastructure-network）从外部访问。
+私有代理节点是位于无法从外部访问的网络上的代理节点，该节点无法通过集群[基础结构网络](/1.10/overview/concepts/＃infrastructure-network) 从外部访问。
 
-私有代理节点上的资源默认情况下配置为允许无差异化分配。更确切地说，这些资源可以被赋予`*`(任意) 角色，允许它们被分配给任何没有指定角色的任务。有关更多信息，请参阅[Mesos资源角色]（http://mesos.apache.org/documentation/latest/roles/）。
+私有代理节点上的资源默认情况下配置为允许无差异化分配。更确切地说，这些资源可以被赋予`*`(任意) 角色，允许它们被分配给任何没有指定角色的任务。有关更多信息，请参阅[Mesos资源角色](http://mesos.apache.org/documentation/latest/roles/)。
 
-由于这些资源没有差别，因此大多数任务都在私有代理节点上进行调度，并且从集群外部无法访问，从而减少了恶意攻击者可攻击区域。由于这个原因，集群通常由大部分私有代理节点组成。同样，默认情况下，大多数[Mesosphere Universe]（/1.10/overview/concepts/#mesosphere-universe）软件包都安装在私有代理节点上。
+由于这些资源没有差别，因此大多数任务都在私有代理节点上进行调度，并且从集群外部无法访问，从而减少了恶意攻击者可攻击区域。由于这个原因，集群通常由大部分私有代理节点组成。同样，默认情况下，大多数[Mesosphere Universe](/1.10/overview/concepts/#mesosphere-universe)软件包都安装在私有代理节点上。
 
 ## 更多信息
 
-有关主节点和代理节点组件的更多信息，请参见[组件]（/1.10/overview/architecture/components/）。
+有关主节点和代理节点组件的更多信息，请参见[组件](/1.10/overview/architecture/components/)。
 
-有关安全性的更多信息，请参见[集群保护]（/1.10/管理群集/）。
+有关安全性的更多信息，请参见[集群保护](/1.10/administering-clusters/).
 
-有关扩展群集的更多信息，请参阅[添加代理节点]（/1.10/管理群集/添加节点/）。
+有关扩展群集的更多信息，请参阅[添加代理节点](/1.10/administering-clusters/add-a-node/).
 
-有关配置公共节点的详细信息，请参阅[转换代理节点类型]（/1.10/管理群集/convert-agent-type/）。
+有关配置公共节点的详细信息，请参阅[转换代理节点类型](/1.10/administering-clusters/convert-agent-type/).
 
