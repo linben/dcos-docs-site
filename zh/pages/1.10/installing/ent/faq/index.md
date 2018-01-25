@@ -16,7 +16,7 @@ enterprise: false
 
 请参见 [ 系统要求 ](/1.10/installing/ent/custom/system-requirements/)。
 
-## Q: DC/OS 安装管理员, 或者我可以使用我自己的动物园管理员的法定人数？
+## Q. DC/OS 安装管理员, 或者我可以使用我自己的动物园管理员的法定人数？
 
 DC/OS 运行自己的动物园管理员, 由参展商和 systemd, 但用户可以创建自己的动物园管理员仲裁, 以及。 默认情况下安装的管理员程序仲裁将在 ` master mesos: [2181 | 2888 | 3888] `。
 
@@ -24,31 +24,31 @@ DC/OS 运行自己的动物园管理员, 由参展商和 systemd, 但用户可�
 
 如果您在群集配置 [ 文件 ](/1.10/installing/ent/custom/configuration/configuration-parameters/) 中指定了非 ` exhibitor_storage_backend: 静态 ` 的展商存储后端类型, 则必须维护群集的生存期的外部存储区, 以方便领导选举。 如果你的集群是关键任务的，那么你应该通过使用S3或运行引导ZooKeeper作为法定数据来加强你的外部存储。 来自外部存储器的服务中断是可以容忍的，但永久的状态丢失可能会导致意外情况。
 
-## Q：如何将Mesos属性添加到节点以使用Marathon约束？
+## Q. 如何将Mesos属性添加到节点以使用Marathon约束？
 
-In DC/OS, add the line `MESOS_ATTRIBUTES=<key>:<value>` to the file `/var/lib/dcos/mesos-slave-common` (it may need to be created) for each attribute you'd like to add. More information can be found [via the Mesos doc](http://mesos.apache.org/documentation/latest/attributes-resources/).
+在DC / OS中，向文件`/var/lib/dcos/mesos-slave-common`中添加`MESOS_ATTRIBUTES=<key>:<value>`为每个你想添加的属性。 有关更多信息，请参阅[通过Mesos文档](http://mesos.apache.org/documentation/latest/attributes-resources/)。
 
-## Q. How do I gracefully shut down an agent?
+## Q. 我如何优雅地关闭代理？
 
-- *To gracefully kill an agent node's Mesos process and allow systemd to restart it, use the following command. _Note: If Auto Scaling Groups are in use, the node will be replaced automatically*:
+- *要优雅地终止代理节点的Mesos进程并允许systemd重新启动它，请使用以下命令。 _注意：如果Auto Scaling组正在使用中，节点将被自动替换*：
     
     ```bash
 sudo systemctl kill -s SIGUSR1 dcos-mesos-slave
 ```
 
-- *For a public agent:*
+- *对于public agent:*
     
     ```bash
 sudo systemctl kill -s SIGUSR1 dcos-mesos-slave-public
 ```
 
-- To gracefully kill the process and prevent systemd from restarting it, add a `stop` command:
+- 要正常地终止进程并防止systemd重新启动，请添加一个` stop `命令：
     
     ```bash
 sudo systemctl kill -s SIGUSR1 dcos-mesos-slave && sudo systemctl stop dcos-mesos-slave
 ```
 
-- *For a public agent:*
+- *对于public agent:*
     
     ```bash
 sudo systemctl kill -s SIGUSR1 dcos-mesos-slave-public && sudo systemctl stop dcos-mesos-slave-public
