@@ -8,6 +8,8 @@ DC/OS主节点是与其他主节点一起工作，负责管理集群其余部分
 
 主节点包含大量DC/OS组件，包括Mesos主进程。
 
+![DC/OS Node Types](/1.10/img/dcos-node-types.png)
+
 ### 保护区域
 
 根据分布，部署方法和基础架构配置，主节点可以在公开访问区域，也可以在受限制访问网络区域中以提高安全性。常见策略包括限制主节点访问办公室的IP段，并要求[VPN](https://en.wikipedia.org/wiki/Virtual_private_network) 访问。
