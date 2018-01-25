@@ -19,15 +19,15 @@ enterprise: true
     
     ![Login](/1.10/img/gui-installer-login-ee.gif)
 
-2. Select **Organization** and choose **Users** or **Groups**.
+2. 选择 ** Organization ** 并选择 ** Users ** 或 ** Groups **。
 
 3. 选择要授予权限的用户或组的名称。
     
     ![Add permission cory](/1.10/img/services-tab-user.png)
 
-4. From the **Permissions** tab, click **ADD PERMISSION**.
+4. 在 ** Permissions ** 选项卡中, 单击 **ADD PERMISSION**。
 
-5. Click **INSERT PERMISSION STRING** to toggle the dialog.
+5. 单击 **INSERT PERMISSION STRING** 以切换对话框。
     
     ![Add permission](/1.10/img/services-tab-user3.png)
 
@@ -37,7 +37,7 @@ enterprise: true
     
     - **DC / OS作业访问：**
         
-        Specify your job group (`<job-group>`), job name (`<job-name>`), and action (`<action>`). Actions can be either `create`, `read`, `update`, `delete`, or `full`. To permit more than one operation, use a comma to separate them, for example: `dcos:service:metronome:metronome:jobs:<job-group>/<job-name> read,update`.
+        指定您的作业组 (`<job-group>`)，作业名称(`<job-name>`)和动作(`<action>`)。 操作可以是 ` create `、` read `、` update `、` delete ` 或 ` full `。 To permit more than one operation, use a comma to separate them, for example: `dcos:service:metronome:metronome:jobs:<job-group>/<job-name> read,update`.
         
         ```bash
 dcos:adminrouter:service:metronome full
