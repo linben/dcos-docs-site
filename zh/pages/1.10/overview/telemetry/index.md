@@ -4,9 +4,11 @@ navigationTitle: Telemetry
 title: Telemetry
 menuWeight: 7
 excerpt: ""
+
 enterprise: false
 ---
-为了不断提升DC/OS的体验，遥测部件被包括在内，向Mesosphere反馈匿名使用数据。这些数据用于监视核心DC/OS组件，安装，用户界面的可靠性，并找出哪些功能最受欢迎。
+
+为了不断提升DC/OS的体验，遥测组件被包括在内，向Mesosphere反馈匿名使用数据。这些数据用于监视核心DC/OS组件，安装，用户界面的可靠性，并找出哪些功能最受欢迎。
 
 - [Core telemetry](#core)
 - [User interface telemetry](#user-interface)
@@ -20,106 +22,89 @@ DC/OS信息服务的信息来自于很多组件：DC/OS诊断服务，Apache Mes
 对于每个类别收集这些数据：
 
 <table class="table">
-  <tr>
-    
+<tr>
 <th>类型</th>
 <th>描述</th>
-  </tr>
-  
-  <tr>
-    <td>
-      anonymousId
-    </td>
-    
-    <td>
-      每个群集启动时会创建此匿名ID。此ID在您的群集中持续存在。例如：
+</tr>
+<tr>
+<td>
+  anonymousId
+</td>
+<td>
+  每个群集启动时会创建此匿名ID。此ID在您的群集中持续存在。例如：
 <pre>
 "anonymousId": "70b28f00-e38f-41b2-a723-aab344f535b9
 </pre>    </td>
-  </tr>
-  
-  <tr>
-    <td>
-      clusterId
-    </td>
-    
-    <td>
-      每个群集启动时会创建此<code>匿名ID</code>。此ID在您的群集中持续存在。例如：
+</tr>
+<tr>
+<td>
+  clusterId
+</td>
+<td>
+  每个群集启动时会创建此<code>匿名ID</code>。此ID在您的群集中持续存在。例如：
 <pre>
 "clusterId": "70b28f00-e38f-41b2-a723-aab344f535b9"
 </pre>
-    </td>
-  </tr>
-  
-  <tr>
-    <td>
-      customerKey (DC/OS Enterprise)
-    </td>
-    
-    <td>
-      DC/OS企业版客户码。此客户码通过邮件发送给授权用户。例如：
+</td>
+</tr>
+<tr>
+<td>
+  customerKey (DC/OS Enterprise)
+</td>
+<td>
+  DC/OS企业版客户码。此客户码通过邮件发送给授权用户。例如：
 <pre>
 "customerKey": "ab1c23de-45f6-7g8h-9012-i345j6k7lm8n",
 </pre>
-    </td>
-  </tr>
-  
-  <tr>
-    <td>
-      event
-    </td>
-    
-    <td>
-      此类别的值出现在段落中。可能的值包括<code>package_list</code> (包管理器), <code>health</code> (诊断), and <code>mesos_track</code> (Mesos). 例如:
+</td>
+</tr>
+<tr>
+<td>
+  event
+</td>
+<td>
+  此类别的值出现在段落中。可能的值包括<code>package_list</code> (包管理器), <code>health</code> (诊断), and <code>mesos_track</code> (Mesos). 例如:
 <pre>
 "event": "package_list"
 </pre>
-    </td>
-  </tr>
-  
-  <tr>
-    <td>
-      environmentVersion
-    </td>
-    
-    <td>
-      这是DC/OS版本。例如，如果使用的是DC/OS 1.8 8:
+</td>
+</tr>
+<tr>
+<td>
+  environmentVersion
+</td>
+<td>
+  这是DC/OS版本。例如，如果使用的是DC/OS 1.8 8:
 <pre>
 "environmentVersion": "1.8",
 </pre>    </td>
-  </tr>
-  
-  <tr>
-    <td>
-      provider
-    </td>
-    
-    <td>
-      DC/OS运行的平台。可能的值包括<code>aws</code>, <code>on-prem</code>, 和<code>azure</code>. 例如，在AWS上运行:
+</tr>
+<tr>
+<td>
+  provider
+</td>
+<td>
+  DC/OS运行的平台。可能的值包括<code>aws</code>, <code>on-prem</code>, 和<code>azure</code>. 例如，在AWS上运行:
 <pre>
 "provider": "aws",
 </pre>    </td>
-  </tr>
-  
-  <tr>
-    <td>
-      source
-    </td>
-    
-    <td>
-      这是表示一个集群的硬编码设置。例如:
+</tr>
+<tr>
+<td>
+  source
+</td>
+<td>
+  这是表示一个集群的硬编码设置。例如:
 <pre>
 "source": "cluster",
 </pre>    </td>
-  </tr>
-  
-  <tr>
-    <td>
-      variant
-    </td>
-    
-    <td>
-      是否是DC/OS开源版或是DC/OS企业版。例如，如果运行的是DC/OS开源版:
+</tr>
+<tr>
+<td>
+  variant
+</td>
+<td>
+  是否是DC/OS开源版或是DC/OS企业版。例如，如果运行的是DC/OS开源版:
 <pre>
 "variant": "open"
 </pre>
