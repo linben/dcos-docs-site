@@ -38,6 +38,6 @@ DC / OS有两个内置调度程序：
 
 - Kafka调度程序提供**Kafka brokers**，作为管理Kafka节点生命周期的节点运行。
 - Cassandra调度程序提供**Cassandra节点**，作为管理Cassandra节点生命周期的节点运行。
-- Spark调度程序(分配程序)提供** Spark作业**，它们本身是Spark任务的调度程序。
+- Spark调度程序(分配程序)提供**Spark作业**，它们本身是Spark任务的调度程序。
 
 有关可安装调度程序(和其他程序包)的完整列表，请参阅[Mesosphere Universe程序包列表](https://universe.dcos.io/#/)。
