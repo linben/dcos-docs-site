@@ -8,32 +8,32 @@ enterprise: false
 ---
 <!-- This source repo for this topic is https://github.com/dcos/dcos-docs -->
 
-# Description
+# 描述
 
-List all tasks.
+列出所有任务。
 
-# Usage
+# 统计
 
 ```bash
 dcos marathon task list <app-id> [OPTION]
 ```
 
-# Options
+# 选项
 
-| Name, shorthand | Default | Description                |
-| --------------- | ------- | -------------------------- |
-| `--json`        |         | Print JSON-formatted data. |
+| 姓名、速记    | 默认 | 描述           |
+| -------- | -- | ------------ |
+| `--json` |    | 打印JSON格式的数据。 |
 
-# Positional arguments
+# 位置实参
 
-| Name, shorthand  | Default | Description         |
-| ---------------- | ------- | ------------------- |
-| `<app-id>` |         | The application ID. |
+| 名字，简写            | 默认 | 描述      |
+| ---------------- | -- | ------- |
+| `<app-id>` |    | 应用程序ID。 |
 
-# Parent command
+# 父命令
 
-| Command                                                     | Description                              |
-| ----------------------------------------------------------- | ---------------------------------------- |
-| [dcos marathon](/1.10/cli/command-reference/dcos-marathon/) | Deploy and manage applications to DC/OS. |
+| 命令                                                          | 描述                  |
+| ----------------------------------------------------------- | ------------------- |
+| [dcos marathon](/1.10/cli/command-reference/dcos-marathon/) | 将应用程序部署和管理到DC / OS。 |
 
 <!-- # Examples -->
