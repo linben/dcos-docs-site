@@ -171,9 +171,9 @@ DC/OS信息服务的信息来自于很多组件：DC/OS诊断服务，Apache Mes
 <tr>
 <td>package_list</td>
 <td>
-      那些包已安装. 例如, 已安装Kafka和Spark: 
-      
-      <pre>"package_list": [
+那些包已安装. 例如, 已安装Kafka和Spark: 
+
+<pre>"package_list": [
 {
 "name": "kafka"
 },
