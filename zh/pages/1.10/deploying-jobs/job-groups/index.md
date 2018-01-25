@@ -1,21 +1,21 @@
 ---
 layout: layout.pug
-navigationTitle: Granting Access to Jobs
-title: Granting Access to Jobs
+navigationTitle: 授予对作业的访问权限
+title: 授予对作业的访问权限
 menuWeight: 200
 excerpt: ""
 enterprise: true
 ---
-You can implement fine-grained user access to jobs by using either the DC/OS GUI, the CLI or [the API](/1.10/security/ent/iam-api/). The [Metronome permissions](/1.10/security/ent/perms-reference/#marathon-metronome) allow you to restrict a user's access to jobs on either a per job or a per job group basis. This section walks you through the steps to accomplish this.
+通过使用 DC/OS GUI、CLI 或 [ api ](/1.10/security/ent/iam-api/), 可以实现对作业的细粒度用户访问。 [节拍器权限](/1.10/security/ent/perms-reference/#marathon-metronome)允许您限制用户在每个作业或每个作业组的基础上访问作业。 本节将引导您完成此操作。
 
-**Prerequisites:**
+**基础要求**
 
-- You must have the [DC/OS CLI installed](/1.10/cli/install/) and be logged in as a superuser.
-- A [user account](/1.10/security/ent/users-groups/) to assign permissions to.
+- 必须安装 [ DC/OS cli ](/1.10/cli/install/), 并以超级用户身份登录。
+- 要为其分配权限的 [ 用户帐户 ](/1.10/security/ent/users-groups/)。
 
-# <a name="job-group-access-via-ui"></a>Via the DC/OS GUI
+# <a name="job-group-access-via-ui"></a>通过 DC/OS GUI
 
-1. Log into the DC/OS GUI as a user with the `superuser` permission.
+1. 以具有` superuser `权限的用户身份登录到DC / OS GUI。
     
     ![Login](/1.10/img/gui-installer-login-ee.gif)
 
@@ -33,7 +33,7 @@ You can implement fine-grained user access to jobs by using either the DC/OS GUI
 
 6. Copy and paste the permission in the **Permissions Strings** field. Choose the permission strings based on your [security mode](/1.10/security/ent/#security-modes).
     
-    ### Disabled
+    ### 禁用
     
     - **DC/OS jobs access:**
         
@@ -51,7 +51,7 @@ dcos:adminrouter:ops:mesos full
 dcos:adminrouter:ops:slave full
 ```
 
-### Permissive
+### 许可
 
 - **DC/OS jobs access:**
     
@@ -69,7 +69,7 @@ dcos:adminrouter:ops:mesos full
 dcos:adminrouter:ops:slave full
 ```
 
-### Strict
+### 严格
 
 - **DC/OS jobs access:**
     
@@ -96,21 +96,21 @@ dcos:mesos:agent:sandbox:app_id:/<job-group>/<job-name> read
 
 7. Click **ADD PERMISSIONS** and then **Close**.
 
-# <a name="job-group-access-via-cli"></a>Via the CLI
+# <a name="job-group-access-via-cli"></a>通过CLI
 
-**Prerequisites:**
+**基础要求**
 
-- You must have the [DC/OS CLI installed](/1.10/cli/install/) and be logged in as a superuser.
+- 必须安装 [ DC/OS cli ](/1.10/cli/install/), 并以超级用户身份登录。
 
-**Tips:**
+**提示:**
 
 - To grant permissions to a group instead of a user, replace `users grant <user-name>` with `groups grant <group-name>`. 
 
-### Disabled
+### 禁用
 
 This mode does not offer fine-grained control.
 
-### Permissive
+### 许可
 
 - **DC/OS jobs access:**
     
@@ -130,9 +130,9 @@ dcos security org users grant <user-name> adminrouter:ops:mesos full --descripti
 dcos security org users grant <user-name> adminrouter:ops:slave full --description "Grants access to the Mesos agent API/UI and task details such as logs"
 ```
 
-### Strict
+### 严格
 
-- **DC/OS jobs access:**
+- **DC / OS作业访问：**
     
     1. Grant the permission to job group (`<job-group>`) and job name (`<job-name>`).
         
@@ -141,7 +141,7 @@ dcos security org users grant <user-name> adminrouter:service:metronome full --d
 dcos security org users grant <user-name> service:metronome:metronome:jobs:<job-group>/<job-name> full --description "Controls access to <job-group>/<job-name>"
 ```
 
-- **DC/OS service tasks and logs:**
+- **DC / OS服务任务和日志：**
     
     1. Grant the permission to the user (`<user-name>`) and group (`<job-group>`).
         
