@@ -97,19 +97,19 @@ DC/OS 配置文件的路径。如果将 DC/OS 配置文件放在 `/home/jdoe/con
 export DCOS_DIR=/home/jdoe/config
 ```
 
-1. Optionally set `DCOS_DIR` and run `dcos cluster setup` command.
+1. （可选）设置` DCOS_DIR `并运行` dcos cluster setup `命令。
     
         export DCOS_DIR=<path/to/config_dir> (optional, default when not set is ~/.dcos)
         dcos cluster setup <url>
         
     
-    This setting generates and updates per cluster configuration under `$DCOS_DIR/clusters/<cluster_id>`. Sets newly set up cluster as the attached one.
+    此设置会在`$DCOS_DIR/clusters/<cluster_id>`下生成并更新每个群集配置。 将新建立的集群设置为附加集群。
 
 <a name="dcos-ssl-verify"></a>
 
 #### `DCOS_SSL_VERIFY`
 
-Indicates whether to verify SSL certificates or set the path to the SSL certificates. You must set this variable manually. Setting this environment variable is equivalent to setting the `dcos config set core.ssl_verify` option in the DC/OS configuration [file](#configuration-files). For example, to indicate that you want to set the path to SSL certificates:
+指示是验证 ssl 证书还是设置 ssl 证书的路径。 您必须手动设置此变量。 设置这个环境变量相当于在DC / OS配置[文件](#configuration-files)中设置` dcos config set core.ssl_verify `选项。 例如，要表明您要设置SSL证书的路径：
 
 ```bash
 export DCOS_SSL_VERIFY=false
@@ -119,15 +119,15 @@ export DCOS_SSL_VERIFY=false
 
 #### `DCOS_LOG_LEVEL`
 
-Prints log messages to stderr at or above the level indicated. This is equivalent to the `--log-level` command-line option. The severity levels are:
+将日志消息打印到指定级别或以上的标准错误。 这相当于` - log-level `命令行选项。 严重等级是：
 
-* **debug** Prints all messages to stderr, including informational, warning, error, and critical.
-* **info** Prints informational, warning, error, and critical messages to stderr.
-* **warning** Prints warning, error, and critical messages to stderr.
-* **error** Prints error and critical messages to stderr.
-* **critical** Prints only critical messages to stderr.
+* **调试**打印所有消息到STDERR，包括信息，警告，错误和关键。
+* **信息**向STDERR打印信息，警告，错误和重要信息。
+* **警告**向STDERR打印警告，错误和重要消息。
+* **错误**向STDERR打印错误和关键消息。
+* **严格**仅向STDERR打印关键消息。
 
-For example, to set the log level to warning:
+例如，要将日志级别设置为警告：
 
 ```bash
 export DCOS_LOG_LEVEL=warning
@@ -137,7 +137,7 @@ export DCOS_LOG_LEVEL=warning
 
 #### `DCOS_DEBUG`
 
-Indicates whether to print additional debug messages to `stdout`. By default this is set to `false`. For example:
+指示是否将其他调试消息打印到` stdout `。 默认情况下，它被设置为` false `。 例如：
 
 ```bash
 export DCOS_DEBUG=true
