@@ -1,23 +1,23 @@
 ---
 layout: layout.pug
-navigationTitle: CLI Specification
-title: CLI Specification
+navigationTitle: CLI规范
+title: CLI规范
 menuWeight: 3
 excerpt: ""
 enterprise: false
 ---
 <!-- This source repo for this topic is https://github.com/dcos/dcos-docs -->
 
-The [DC/OS command-line interface (CLI)](/1.10/cli) is a utility to manage cluster nodes, install and manage packages, inspect the cluster state, and manage services and tasks.
+[ DC / OS命令行界面(CLI)](/1.10/cli)是用于管理群集节点，安装和管理软件包，检查群集状态以及管理服务和任务的实用程序。
 
-The DC/OS CLI is open and extensible: anyone can create a new subcommand and make it available for installation by end users. For example, the [Spark DC/OS service](https://github.com/mesosphere/spark-build) provides CLI extensions for working with Spark. When installed, you can type the following command to submit Spark jobs and query their status:
+DC / OS CLI是开放和可扩展的：任何人都可以创建一个新的子命令，并使其可供最终用户安装。 For example, the [Spark DC/OS service](https://github.com/mesosphere/spark-build) provides CLI extensions for working with Spark. When installed, you can type the following command to submit Spark jobs and query their status:
 
     dcos spark [<flags>] <command>
     
 
 This document is intended for a developer creating new DC/OS CLI subcommands. See also [Universe Getting Started](https://github.com/mesosphere/universe/blob/version-3.x/docs/tutorial/GetStarted.md).
 
-# How the DC/OS CLI discovers subcommands
+# DC / OS CLI如何发现子命令
 
 When you run the `dcos` command, it searches the current shell's PATH for executables with names that are prefixed with `dcos-` in the `~/.dcos/clusters/<cluster_id>/subcommands/<package_name>/env/bin` directory.
 
@@ -28,7 +28,7 @@ To install a CLI subcommand, run:
     dcos package install <package>
     
 
-or
+或
 
     dcos package install <package> --cli
     
@@ -39,7 +39,7 @@ The same [packaging format and repository](https://github.com/mesosphere/univers
 
 ## Creating a DC/OS CLI subcommand
 
-### Requirements
+### 要求
 
 * Executables for Mac, Linux, and Windows
 
@@ -112,7 +112,7 @@ When you run `dcos package install <package> --cli`:
 2. The `resource.json` file is parsed to find the CLI resources.
 3. The executable for the user's platform is downloaded.
 
-### The DC/OS CLI module
+### DC/OS CLI 模块
 
 The [DC/OS CLI module](https://github.com/dcos/dcos-cli) has a set of tools useful to subcommand developers.
 
