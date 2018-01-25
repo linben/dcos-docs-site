@@ -77,27 +77,27 @@ DC / OS有两种类型的网络：基础设施网络和虚拟网络。
 
 DC / OS虚拟网络是群集内部的虚拟网络，用于连接DC / OS上运行的DC / OS组件和容器化任务。
 
-- The virtual network provided by DC/OS is VXLAN managed by the Virtual Network Service (Navstar).
-- Virtual networks must be configured by an administrator before being used by tasks.
-- Tasks on DC/OS may opt-in to being placed on a specific virtual network and given a container-specific IP.
-- Virtual networks allow logical subdivision of the tasks running on DC/OS.
-- Each task on a virtual network may be configured with optional address groups that virtually isolate communication to tasks on the same network and address group.
+- 由DC / OS提供的虚拟网络是由虚拟网络服务(Navstar) 管理的VXLAN。
+- 虚拟网络必须由管理员配置才能被任务使用。
+- DC / OS上的任务可能会选择放置在特定的虚拟网络上，并给定容器特定的IP。
+- 虚拟网络允许对在DC / OS上运行的任务进行逻辑细分。
+- 虚拟网络上的每个任务都可以配置可选的地址组，将通信虚拟隔离到同一网络和地址组上的任务。
 
 ### <a name="dcos-node"></a>节点
 
-A DC/OS node is a virtual or physical machine on which a Mesos agent and/or Mesos master process runs. DC/OS nodes are networked together to form a DC/OS cluster.
+DC / OS节点是运行Mesos代理和/或Mesos主进程的虚拟或物理机器。 DC / OS节点联网在一起形成一个DC / OS群集。
 
 #### <a name="dcos-master-node"></a>Master节点
 
-A DC/OS master node is a virtual or physical machine that runs a collection of DC/OS components that work together to manage the rest of the cluster.
+DC / OS master 点是运行一组DC / OS组件的虚拟或物理机器，它们一起工作来管理集群的其余部分。
 
-- Each master node contains multiple DC/OS components, including most notably a [Mesos master](#mesos-master) process.
-- Master nodes work in a [quorum](https://en.wikipedia.org/wiki/Quorum_%28distributed_computing%29) to provide consistency of cluster coordination. To avoid [split brain](https://en.wikipedia.org/wiki/Split-brain_%28computing%29) cluster partitioning, clusters should always have an odd number of master nodes. For example, having three master nodes allows one to be down; having five master nodes allows two to be down, allowing for failure during a rolling update. Additional master nodes can be added for additional risk tolerance.
-- A cluster with only one master node is usable for development, but is not highly available and may not be able to recover from failure.
+- 每个主节点都包含多个DC / OS组件，其中最着名的是一个[ Mesos master ](#mesos-master)进程。
+- 主节点在[法定人数](https://en.wikipedia.org/wiki/Quorum_%28distributed_computing%29)中工作，以提供集群协调的一致性。 为了避免[裂脑](https://en.wikipedia.org/wiki/Split-brain_%28computing%29)集群分区，集群应该总是有奇数个主节点。 例如，有三个主节点允许一个人下来; 有五个主节点允许两个关闭，允许在滚动更新期间失败。 额外的主节点可以添加额外的风险容忍度。
+- 只有一个主节点的集群可用于开发，但不具备高可用性，可能无法从故障中恢复。
 
 #### <a name="dcos-agent-node"></a>Agent节点
 
-A DC/OS agent node is a virtual or physical machine on which Mesos tasks are run.
+DC / OS agent 节点是运行Mesos任务的虚拟或物理机器。
 
 - Each agent node contains multiple DC/OS components, including most notably a [Mesos agent](#mesos-agent) process.
 - Agent nodes can be [private](#private-agent-node) or [public](#public-agent-node), depending on agent and network configuration.
