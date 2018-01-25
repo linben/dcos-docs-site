@@ -125,7 +125,6 @@ DC/OS信息服务的信息来自于很多组件：DC/OS诊断服务，Apache Mes
 
 <table class="table">
   <tr>
-    
 <th>类型</th>
 <th>描述</th>
   </tr>
@@ -136,14 +135,12 @@ DC/OS信息服务的信息来自于很多组件：DC/OS诊断服务，Apache Mes
 <tr><td>disk_total</td><td>可用的磁盘空间，单位MB。例如：<pre>"disk_total": 71154,</pre></td></tr>
 <tr><td>disk_used</td><td>分配的磁盘空间，单位MB。例如： <pre>"disk_used": 0,</pre></td></tr>
 <tr><td>framework_count</td><td>安装的DC/OS服务数。例如： <pre>"framework_count": 2,</pre></td></tr>
-  
-  <tr>
-    <td>
-      frameworks
-    </td>
-    
-    <td>
-      那些DC/OS服务已安装。例如:
+<tr>
+<td>
+  frameworks
+</td>
+<td>
+  那些DC/OS服务已安装。例如:
 <pre>
 "frameworks": [
                 {
@@ -154,7 +151,7 @@ DC/OS信息服务的信息来自于很多组件：DC/OS诊断服务，Apache Mes
                 }
             ],
 </pre>    </td>
-  </tr>
+</tr>
 <tr><td>mem_total</td><td>可用内存，单位MB. 例如: <pre>"mem_total": 28036,</pre></td></tr>
 <tr><td>mem_used</td><td>分配的内存，单位MB. 例如: <pre>"mem_used": 0,</pre></td></tr>
 <tr><td>task_count</td><td>磁盘数. 例如: <pre>"task_count": 0,</pre></td></tr>
@@ -170,13 +167,10 @@ DC/OS信息服务的信息来自于很多组件：DC/OS诊断服务，Apache Mes
     
 <th>类型</th>
 <th>描述</th>
-  </tr>
-  
-  <tr>
-    
+</tr>
+<tr>
 <td>package_list</td>
-    
-    <td>
+<td>
       那些包已安装. 例如, 已安装Kafka和Spark: 
       
       <pre>"package_list": [
@@ -188,8 +182,8 @@ DC/OS信息服务的信息来自于很多组件：DC/OS诊断服务，Apache Mes
 }
 ],
 </pre>
-    </td>
-  </tr>
+</td>
+</tr>
 </table>
 
 以下是一个遥测收集到的JSON反馈范例: 
