@@ -56,17 +56,17 @@ DC/OS CLI 0.4.x 有一个配置文件, 默认情况下存储在 ` dcos/dcos. tom
 
 DC/OS CLI 0.5.x has a configuration file for each connected cluster, which by default are stored in `~/.dcos/clusters/<cluster_id>/dcos.toml`. In DC/OS CLI 0.5.x you can optionally change the base portion (`~/.dcos`) of the configuration directory using the [`DCOS_DIR`](#dcos-dir) environment variable.
 
-**Note:** - Updating to the DC/OS CLI 0.5.x and running any CLI command triggers conversion from the old to the new configuration structure. - After you call `dcos cluster setup`, (or after conversion has occurred), if you attempt to update the cluster configuration using a `dcos config set` command, the command prints a warning message saying the command is deprecated and cluster configuration state may now be corrupted.
+** 注意: **-更新到 DC/OS cli 0.5.x 并运行任何 cli 命令触发器从旧的转换到新的配置结构。 -在调用 ` dcos cluster setup ` 后 (或发生转换后), 如果尝试使用 ` dcos config set ` 命令更新群集配置, 该命令将打印一条警告消息, 指出该命令已弃用, 并且群集配置状态现在可能已损坏。
 
-# Environment variables
+# 环境变量
 
-The DC/OS CLI supports the following environment variables, which can be set dynamically.
+DC / OS CLI支持以下环境变量，可以动态设置。
 
 <a name="dcos-cluster"></a>
 
-#### `DCOS_CLUSTER` (DC/OS CLI O.5.x and higher only)
+#### ` DCOS_CLUSTER `(DC/OS CLI O. 5. x 和更高)
 
-The [attached](/1.10/cli/command-reference/dcos-cluster/dcos-cluster-attach/) cluster. To set the attached cluster, set the variable with the command:
+[ 附加 ](/1.10/cli/command-reference/dcos-cluster/dcos-cluster-attach/) 群集。要设置附加的群集, 请使用以下命令设置变量:
 
 ```bash
 export DCOS_CLUSTER=<cluster_name>
@@ -76,22 +76,22 @@ export DCOS_CLUSTER=<cluster_name>
 
 #### `DCOS_CONFIG` (DC/OS CLI O.4.x only)
 
-The path to a DC/OS configuration file. If you put the DC/OS configuration file in `/home/jdoe/config/dcos.toml`, set the variable with the command:
+DC/OS 配置文件的路径。如果将 DC/OS 配置文件放在 `/home/jdoe/config/dcos. toml ` 中, 请使用以下命令设置该变量:
 
 ```bash
 export DCOS_CONFIG=/home/jdoe/config/dcos.toml
 ```
 
-If you have the `DCOS_CONFIG` environment variable configured:
+如果配置了 ` DCOS_CONFIG ` 环境变量:
 
-* After conversion to the [new configuration structure](#configuration-files), `DCOS_CONFIG` is no longer honored.
-* Before you call `dcos cluster setup`, you can change the configuration pointed to by `DCOS_CONFIG` using `dcos config set`. This command prints a warning message saying the command is deprecated and recommends using `dcos cluster setup`.
+* 在转换到[新的配置结构](#configuration-files)之后，` DCOS_CONFIG `不再符合要求。
+* 在调用 ` dcos cluster setup` 之前, 您可以使用 ` dcos config set ` 更改 ` DCOS_CONFIG ` 所指向的配置。 此命令将打印一条警告消息, 指出该命令已弃用, 并建议使用 ` dcos cluster setup `。
 
 <a name="dcos-dir"></a>
 
 #### `DCOS_DIR` (DC/OS CLI O.5.x and higher only)
 
-The path to a DC/OS configuration directory. If you want the DC/OS configuration directory to be `/home/jdoe/config`, set the variable with the command:
+DC/OS 配置文件的路径。如果将 DC/OS 配置文件放在 `/home/jdoe/config/dcos. toml ` 中, 请使用以下命令设置该变量:
 
 ```bash
 export DCOS_DIR=/home/jdoe/config
