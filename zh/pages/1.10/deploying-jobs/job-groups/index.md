@@ -37,7 +37,7 @@ enterprise: true
     
     - **DC / OS作业访问：**
         
-        指定您的作业组 (`<job-group>`)，作业名称(`<job-name>`)和动作(`<action>`)。 操作可以是 ` create `、` read `、` update `、` delete ` 或 ` full `。 To permit more than one operation, use a comma to separate them, for example: `dcos:service:metronome:metronome:jobs:<job-group>/<job-name> read,update`.
+        指定您的作业组 (`<job-group>`)，作业名称(`<job-name>`)和动作(`<action>`)。 操作可以是 ` create `、` read `、` update `、` delete ` 或 ` full `。 要允许多个操作, 请使用逗号分隔它们, 例如: `dcos:service:metronome:metronome:jobs:<job-group>/<job-name> read,update`。
         
         ```bash
 dcos:adminrouter:service:metronome full
@@ -55,7 +55,7 @@ dcos:adminrouter:ops:slave full
 
 - **DC / OS作业访问：**
     
-    Specify your job group (`<job-group>`), job name (`<job-name>`), and action (`<action>`). Actions can be either `create`, `read`, `update`, `delete`, or `full`. To permit more than one operation, use a comma to separate them, for example: `dcos:service:metronome:metronome:jobs:<job-group>/<job-name> read,update`.
+    指定您的作业组 (`<job-group>`)，作业名称(`<job-name>`)和动作(`<action>`)。 操作可以是 ` create `、` read `、` update `、` delete ` 或 ` full `。 要允许多个操作, 请使用逗号分隔它们, 例如: `dcos:service:metronome:metronome:jobs:<job-group>/<job-name> read,update`。
     
     ```bash
 dcos:adminrouter:service:metronome full
@@ -73,7 +73,7 @@ dcos:adminrouter:ops:slave full
 
 - **DC / OS作业访问：**
     
-    Specify your job group (`<job-group>`), job name (`<job-name>`), and action (`<action>`). Actions can be either `create`, `read`, `update`, `delete`, or `full`. To permit more than one operation, use a comma to separate them, for example: `dcos:service:metronome:metronome:jobs:<job-group>/<job-name> read,update`.
+    指定您的作业组 (`<job-group>`)，作业名称(`<job-name>`)和动作(`<action>`)。 操作可以是 ` create `、` read `、` update `、` delete ` 或 ` full `。 要允许多个操作, 请使用逗号分隔它们, 例如: `dcos:service:metronome:metronome:jobs:<job-group>/<job-name> read,update`。
     
     ```bash
 dcos:adminrouter:service:metronome full
@@ -94,36 +94,36 @@ dcos:mesos:agent:task:app_id:/<job-group>/<job-name> read
 dcos:mesos:agent:sandbox:app_id:/<job-group>/<job-name> read
 ```
 
-7. Click **ADD PERMISSIONS** and then **Close**.
-
-# <a name="job-group-access-via-cli"></a>通过CLI
-
-**基础要求**
-
-- 必须安装 [ DC/OS cli ](/1.10/cli/install/), 并以超级用户身份登录。
-
-**提示:**
-
-- To grant permissions to a group instead of a user, replace `users grant <user-name>` with `groups grant <group-name>`. 
-
-### 禁用
-
-This mode does not offer fine-grained control.
-
-### 许可
-
-- **DC / OS作业访问：**
+7. 点击**ADD PERMISSIONS</ strong>，然后点击**Close</ strong>。</p></li> </ol> 
     
-    1. Grant the permission to job group (`<job-group>`) and job name (`<job-name>`).
+    # <a name="job-group-access-via-cli"></a>通过CLI
+    
+    **基础要求**
+    
+    - 必须安装 [ DC/OS cli ](/1.10/cli/install/), 并以超级用户身份登录。
+    
+    **提示:**
+    
+    - 要将权限授予组而不是用户，请将`用户授予 <user-name> `替换为` groups grant <group-name>`。 
+    
+    ### 禁用
+    
+    这种模式不提供细粒度的控制。
+    
+    ### 许可
+    
+    - **DC / OS作业访问：**
         
-        ```bash
+        1. 将权限授予作业组 (` < 作业组 > `) 和作业名称 (` < 作业名称 > `)。
+            
+            ```bash
 dcos security org users grant <user-name> adminrouter:service:metronome full --description "Controls access to Metronome services"
 dcos security org users grant <user-name> service:metronome:metronome:jobs:<job-group>/<job-name> full --description "Controls access to <job-group>/<job-name>"
 ```
 
 - **DC / OS服务任务和日志：**
     
-    1. Grant the permission to a user (`<user-name>`).
+    1. 授予用户权限(`<user-name>`)。
         
         ```bash
 dcos security org users grant <user-name> adminrouter:ops:mesos full --description "Grants access to the Mesos master API/UI and task details"
@@ -134,7 +134,7 @@ dcos security org users grant <user-name> adminrouter:ops:slave full --descripti
 
 - **DC / OS作业访问：**
     
-    1. Grant the permission to job group (`<job-group>`) and job name (`<job-name>`).
+    1. 将权限授予作业组 (`<job-group>`) 和作业名称 (`<job-name>`)。
         
         ```bash
 dcos security org users grant <user-name> adminrouter:service:metronome full --description "Controls access to Metronome services"
