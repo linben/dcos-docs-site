@@ -6,24 +6,24 @@ menuWeight: 7
 excerpt: ""
 enterprise: false
 ---
-To continuously improve the DC/OS experience, a telemetry component is included that reports anonymous usage data to Mesosphere. This data is used to monitor the reliability of core DC/OS components, installations, user interface, and to find out which features are most popular.
+为了不断提升DC/OS的体验，遥测部件被包括在内，向Mesosphere反馈匿名使用数据。这些数据用于监视核心DC/OS组件，安装，用户界面的可靠性，并找出哪些功能最受欢迎。
 
 - [Core telemetry](#core)
 - [User interface telemetry](#user-interface)
 
-# <a name="core"></a>Core telemetry
+# <a name="core"></a>核心遥测
 
-The [DC/OS Signal](/1.10/overview/architecture/components/#dcos-signal) component queries the diagnostics service `/system/health/v1/report` endpoint on the leading master and sends this data to [Segment](https://segment.com/docs/) which Mesosphere then uses to track usage metrics and customer support.
+[DC/OS Signal](/1.10/overview/architecture/components/#dcos-signal) D组件查询主节点上的诊断服务端点`/system/health/v1/report`, 并将这些数据发给[Segment](https://segment.com/docs/) ，Mesosphere使用这些数据跟踪使用状况并提供客户支持.
 
-The information reported by DC/OS Signal comes from several components: DC/OS Diagnostics, Apache Mesos, and DC/OS Package Manager (Cosmos).
+DC/OS信息服务的信息来自于很多组件：DC/OS诊断服务，Apache Mesos，和DC/OS包管理器(Cosmos).
 
-For each category this data is collected:
+对于每个类别收集这些数据：
 
 <table class="table">
   <tr>
     
-<th>Type</th>
-<th>Description</th>
+<th>类型</th>
+<th>描述</th>
   </tr>
   
   <tr>
@@ -32,7 +32,7 @@ For each category this data is collected:
     </td>
     
     <td>
-      This is an anonymous ID that is created for every cluster at startup. This ID persists across your cluster. For example:
+      每个群集启动时会创建此匿名ID。此ID在您的群集中持续存在。例如：
 <pre>
 "anonymousId": "70b28f00-e38f-41b2-a723-aab344f535b9
 </pre>    </td>
@@ -44,7 +44,7 @@ For each category this data is collected:
     </td>
     
     <td>
-      This is the <code>anonymousID</code> value that is created for every cluster at startup. This ID persists across your cluster. For example:
+      每个群集启动时会创建此<code>匿名ID</code>。此ID在您的群集中持续存在。例如：
 <pre>
 "clusterId": "70b28f00-e38f-41b2-a723-aab344f535b9"
 </pre>
@@ -57,7 +57,7 @@ For each category this data is collected:
     </td>
     
     <td>
-      This is the DC/OS Enterprise customer key. Customer keys are delivered via email to the Authorized Support Contact. For example:
+      DC/OS企业版客户码。此客户码通过邮件发送给授权用户。例如：
 <pre>
 "customerKey": "ab1c23de-45f6-7g8h-9012-i345j6k7lm8n",
 </pre>
@@ -70,7 +70,7 @@ For each category this data is collected:
     </td>
     
     <td>
-      This is the category that appears in Segment. Possible values are <code>package_list</code> (Package Manager), <code>health</code> (Diagnostics), and <code>mesos_track</code> (Mesos). For example:
+      此类别的值出现在段落中。可能的值包括<code>package_list</code> (包管理器), <code>health</code> (诊断), and <code>mesos_track</code> (Mesos). 例如:
 <pre>
 "event": "package_list"
 </pre>
@@ -83,7 +83,7 @@ For each category this data is collected:
     </td>
     
     <td>
-      This is the version of DC/OS. For example, if you are using DC/OS 1.8:
+      这是DC/OS版本。例如，如果使用的是DC/OS 1.8 8:
 <pre>
 "environmentVersion": "1.8",
 </pre>    </td>
@@ -95,7 +95,7 @@ For each category this data is collected:
     </td>
     
     <td>
-      This is the platform that DC/OS is running on. Possible values are <code>aws</code>, <code>on-prem</code>, and <code>azure</code>. For example, if you are running on AWS:
+      DC/OS运行的平台。可能的值包括<code>aws</code>, <code>on-prem</code>, 和<code>azure</code>. 例如，在AWS上运行:
 <pre>
 "provider": "aws",
 </pre>    </td>
@@ -107,7 +107,7 @@ For each category this data is collected:
     </td>
     
     <td>
-      This is a hard-coded setting that indicates a cluster. For example:
+      这是表示一个集群的硬编码设置。例如:
 <pre>
 "source": "cluster",
 </pre>    </td>
@@ -119,7 +119,7 @@ For each category this data is collected:
     </td>
     
     <td>
-      This indicates whether the cluster is DC/OS or DC/OS Enterprise. For example, if you are using DC/OS:
+      是否是DC/OS开源版或是DC/OS企业版。例如，如果运行的是DC/OS开源版:
 <pre>
 "variant": "open"
 </pre>
@@ -127,30 +127,30 @@ For each category this data is collected:
   </tr>
 </table>
 
-## Diagnostics
+## 诊断
 
-This information is collected from the [DC/OS Diagnostics](/1.10/overview/architecture/components/#dcos-diagnostics) component. For every systemd unit, the following information is collected, where `<UNIT_NAME>` is component name:
+这些信息从[DC/OS Diagnostics](/1.10/overview/architecture/components/#dcos-diagnostics) 组件收集。对于每个systemd单元，以下信息会被收集，`<UNIT_NAME>` 是组件名称:
 
     "health-unit-dcos-<UNIT_NAME>-total": 3, "health-unit-dcos-<UNIT_NAME>-unhealthy": 0,
     
 
 ## Mesos
 
-This information is collected from the [Apache Mesos](/1.10/overview/architecture/components/#apache-mesos) component.
+这些信息从[Apache Mesos](/1.10/overview/architecture/components/#apache-mesos) 组件收集.
 
 <table class="table">
   <tr>
     
-<th>Type</th>
-<th>Description</th>
+<th>类型</th>
+<th>描述</th>
   </tr>
-<tr><td>agents_active</td><td>Number of active agents. For example: <pre>"agents_active": 2,</pre></td></tr>
-<tr><td>agents_connected</td><td>Number of connected agents. For example: <pre>"agents_connected": 2,</pre></td></tr>
-<tr><td>cpu_total</td><td>Number of CPUs available. For example: <pre>"cpu_total": 8,</pre></td></tr>
-<tr><td>cpu_used</td><td>Number of allocated CPUs. For example: <pre>"cpu_used": 0,</pre></td></tr>
-<tr><td>disk_total</td><td>Disk space available in MB. For example: <pre>"disk_total": 71154,</pre></td></tr>
-<tr><td>disk_used</td><td>Allocated disk space in MB. For example: <pre>"disk_used": 0,</pre></td></tr>
-<tr><td>framework_count</td><td>Number of installed DC/OS services. For example: <pre>"framework_count": 2,</pre></td></tr>
+<tr><td>agents_active</td><td>在线的代理节点数。例如： <pre>"agents_active": 2,</pre></td></tr>
+<tr><td>agents_connected</td><td>连接的节点数。例如：<pre>"agents_connected": 2,</pre></td></tr>
+<tr><td>cpu_total</td><td>可用的CPU数。例如： <pre>"cpu_total": 8,</pre></td></tr>
+<tr><td>cpu_used</td><td>分配的CPU数。例如： <pre>"cpu_used": 0,</pre></td></tr>
+<tr><td>disk_total</td><td>可用的磁盘空间，单位MB。例如：<pre>"disk_total": 71154,</pre></td></tr>
+<tr><td>disk_used</td><td>分配的磁盘空间，单位MB。例如： <pre>"disk_used": 0,</pre></td></tr>
+<tr><td>framework_count</td><td>安装的DC/OS服务数。例如： <pre>"framework_count": 2,</pre></td></tr>
   
   <tr>
     <td>
@@ -158,7 +158,7 @@ This information is collected from the [Apache Mesos](/1.10/overview/architectur
     </td>
     
     <td>
-      Which DC/OS services are installed. For example:
+      那些DC/OS服务已安装。例如:
 <pre>
 "frameworks": [
                 {
@@ -170,21 +170,21 @@ This information is collected from the [Apache Mesos](/1.10/overview/architectur
             ],
 </pre>    </td>
   </tr>
-<tr><td>mem_total</td><td>Memory available in MB. For example: <pre>"mem_total": 28036,</pre></td></tr>
-<tr><td>mem_used</td><td>Memory allocated in MB. For example: <pre>"mem_used": 0,</pre></td></tr>
-<tr><td>task_count</td><td>Number of tasks. For example: <pre>"task_count": 0,</pre></td></tr>
+<tr><td>mem_total</td><td>可用内存，单位MB. 例如: <pre>"mem_total": 28036,</pre></td></tr>
+<tr><td>mem_used</td><td>分配的内存，单位MB. 例如: <pre>"mem_used": 0,</pre></td></tr>
+<tr><td>task_count</td><td>磁盘数. 例如: <pre>"task_count": 0,</pre></td></tr>
 </tr>
 </table>
 
-## Package Manager
+## 包管理器
 
-This information is collected from the [DC/OS Package Manager (Cosmos)](/1.10/overview/architecture/components/#dcos-package-manager) component.
+以下信息会从[DC/OS Package Manager (Cosmos)](/1.10/overview/architecture/components/#dcos-package-manager) 组件收集.
 
 <table class="table">
   <tr>
     
-<th>Type</th>
-<th>Description</th>
+<th>类型</th>
+<th>描述</th>
   </tr>
   
   <tr>
@@ -192,7 +192,7 @@ This information is collected from the [DC/OS Package Manager (Cosmos)](/1.10/ov
 <td>package_list</td>
     
     <td>
-      Which packages are installed. For example, if you had Kafka and Spark: 
+      那些包已安装. 例如, 已安装Kafka和Spark: 
       
       <pre>"package_list": [
 {
@@ -207,7 +207,7 @@ This information is collected from the [DC/OS Package Manager (Cosmos)](/1.10/ov
   </tr>
 </table>
 
-Here is an example of the JSON telemetry report that is collected:
+以下是一个遥测收集到的JSON反馈范例: 
 
 ```json
 {
@@ -344,13 +344,13 @@ Here is an example of the JSON telemetry report that is collected:
 }
 ```
 
-# <a name="user-interface"></a>User interface telemetry
+# <a name="user-interface"></a>用户界面遥测
 
-The DC/OS UI sends two types of notifications to [Segment](https://segment.com/docs/) which Mesosphere then uses to track usage metrics and customer support:
+DC/OS用户界面发送以下2类信息到[Segment](https://segment.com/docs/)， Mesosphere会使用这些数据统计使用状况并提供用户支持:
 
-- Login information
-- The pages you’ve viewed while navigating the UI
+- 登录信息
+- 通过用户界面浏览过的页面
 
-## Opt-Out
+## 选择关闭
 
-You can also choose to opt-out of the telemetry features. For more information, see the [documentation](/1.10/installing/oss/opt-out/).
+您可以选择关闭遥测功能。更多信息，请参阅[documentation](/1.10/installing/oss/opt-out/).
