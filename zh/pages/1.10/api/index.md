@@ -1,12 +1,12 @@
 ---
 layout: layout.pug
 navigationTitle: API 引用
-title: API Reference
+title: API 引用
 menuWeight: 150
 excerpt: ""
 enterprise: false
 ---
-The DC/OS API is a collection of routes backed by [DC/OS components](/1.10/overview/architecture/components/) that are made available through an API gateway called [Admin Router](/1.10/overview/architecture/components/#admin-router).
+DC / OS API是由[ DC / OS组件](/1.10/overview/architecture/components/)支持的路由的集合，可通过称为[管理路由器](/1.10/overview/architecture/components/#admin-router)的API网关提供。
 
 <!-- Use html img for horizontal centering -->
 
@@ -14,26 +14,26 @@ The DC/OS API is a collection of routes backed by [DC/OS components](/1.10/overv
 
 # API网关
 
-Admin Router is an API gateway built on top of NGINX with the following goals:
+Admin Router是建立在NGINX之上的API网关，具有以下目标：
 
-- Present a unified control plane for the DC/OS API
-- Proxy API requests to component services on master and agent nodes
+- 为DC / OS API提供统一的控制平面
+- 代理API请求到主节点和代理节点上的组件服务
 - 获取用户身份验证
-- Serve up the DC/OS GUI
+- 提供DC / OS GUI
 
-Admin Router runs on each DC/OS node in one of two configurations:
+Admin Router以两种配置之一在每个DC / OS节点上运行：
 
-- **Admin Router Master** exposes the [Master Routes](/1.10/api/master-routes/).
+- **Admin Router Master**暴露[主路线](/1.10/api/master-routes/)。
     
-    This configuration runs on each master node and serves as the primary API gateway for interaction with DC/OS components.
+    此配置在每个主节点上运行，并充当用于与DC / OS组件进行交互的主API网关。
 
-- **Admin Router Agent** exposes the [Agent Routes](/1.10/api/agent-routes/).
+- **Admin Router Agent**公开了[agent 路线](/1.10/api/agent-routes/)。
     
-    This configuration runs on each agent node and provides routes for monitoring, debugging, and administration.
+    此配置在每个代理节点上运行，并提供用于监视，调试和管理的路由。
     
-    Some agent routes, like logs and metrics, are proxied through the master Admin Router to allow external access. Other routes, like component management, are for internal use only.
+    一些代理路由（如日志和指标）通过主管理路由器进行代理，以允许外部访问。 其他路线，如组件管理，仅供内部使用。
 
-# 代理类型：
+# 路线类型
 
 Admin Router exposes several types of routes:
 
@@ -49,19 +49,19 @@ Admin Router exposes several types of routes:
 
 # 版本
 
-Sections of the DC/OS API are versioned by component, route, or resource.
+DC / OS API的部分由组件，路由或资源进行版本控制。
 
-For details on the versioning mechanisms, see [Versioning](/1.10/api/versioning/).
+有关版本控制机制的详细信息，请参阅[版本控制](/1.10/api/versioning/)。
 
-# Authentication
+# 验证
 
-Some routes are unauthenticated, but most require an authentication token.
+某些路由未经身份验证，但大多数都需要身份验证令牌。
 
 For details on how to obtain and use an authentication token, see [Authentication HTTP API Endpoint](/1.10/security/ent/iam-api/).
 
-# Authorization
+# 身份验证
 
-Most authenticated routes also require authorization via permissions. Permissions in DC/OS Enterprise consist of a hierarchical resource identifier and an action (create, read, update, delete, full).
+大多数认证的路由也需要通过权限进行授权。 DC / OS Enterprise中的权限由分层资源标识符和操作(create, read, update, full) 组成。
 
 Permission enforcement can be performed at two levels.
 
