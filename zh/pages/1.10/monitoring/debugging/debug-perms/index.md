@@ -9,16 +9,16 @@ enterprise: true
 ---
 You can grant users access to containers for debugging sessions.
 
-**Prerequisites:**
+**基础要求**
 
-- You must have the [DC/OS CLI installed](/1.10/cli/install/) and be logged in as a superuser.
-- A [user account](/1.10/security/ent/users-groups/) to assign permissions to.
+- 必须安装 [ DC/OS cli ](/1.10/cli/install/), 并以超级用户身份登录。
+- 要为其分配权限的 [ 用户帐户 ](/1.10/security/ent/users-groups/)。
 
 All CLI commands can also be executed via the [IAM API](/1.10/security/ent/iam-api/).
 
-## Disabled
+## 禁用
 
-Grant the permission to a user (`<user-name>`).
+授予用户权限(`<user-name>`)。
 
 ```bash
  dcos security org users grant <user-name> dcos:adminrouter:ops:mesos full --description "Controls access to task details"
@@ -34,13 +34,13 @@ dcos security org users grant <user-name> dcos:adminrouter:ops:mesos full --desc
 dcos security org users grant <user-name> dcos:adminrouter:ops:slave full --description "Controls access to task details such as logs"
 ```
 
-## Strict
+## 严格
 
 With `strict` security mode, you can control whether a user can launch an interactive debugging session or not. You can also restrict which containers a user can access for debugging. This ensures that users cannot execute arbitrary commands in containers that do not pertain to them.
 
 ### <a name="debug-without-tty"></a>Granting Non-Pseudo Terminal Debug Access
 
-Grant the permission to a user (`<user-name>`).
+授予用户权限(`<user-name>`)。
 
 ```bash
 dcos security org users grant <user-name> dcos:adminrouter:ops:mesos full --description "Controls access to task details"
@@ -54,7 +54,7 @@ dcos security org users grant <user-name> dcos:mesos:master:task:app_id:/test-gr
 
 ### <a name="debug-with-tty"></a>Granting Pseudo Terminal Debug Access
 
-Grant the permission to a user (`<user-name>`).
+授予用户权限(`<user-name>`)。
 
 ```bash
 dcos security org users grant <user-name> dcos:adminrouter:ops:mesos full --description "Controls access to task details"
