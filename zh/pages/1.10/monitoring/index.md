@@ -15,15 +15,15 @@ DC/OS 组件是构成 DC/OS 核心的 [ systemd 单元 ](https://www.freedesktop
 
 启动 [ DC/OS UI ](/1.10/gui/) 并导航到 ** 系统->> 组件 ** 页面。可以按运行状况对组件进行排序。
 
-![system health](/1.10/img/component-system-view.png)
+![system health](https://docs.mesosphere.com/1.10/img/component-system-view.png)
 
 您可以单击 DC/OS 组件来查看详细信息, 包括角色、节点和健康。
 
-![node detail](/1.10/img/component-node-detail.png)
+![node detail](https://docs.mesosphere.com/1.10/img/component-node-detail.png)
 
 通过单击节点查看组件 journald (日志) 输出, 可以进一步调试。
 
-![log](/1.10/img/component-node-output.png)
+![log](https://docs.mesosphere.com/1.10/img/component-node-output.png)
 
 ## 健康状态
 
