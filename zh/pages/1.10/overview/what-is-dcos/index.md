@@ -2,38 +2,31 @@
 layout: layout.pug
 title: What is DC/OS?
 menuWeight: 1
-excerpt:
-
+excerpt: ""
 enterprise: false
 ---
-
 <!-- This source repo for this topic is https://github.com/dcos/dcos-docs -->
 
+As a datacenter operating system, DC/OS is itself a distributed system, a cluster manager, a container platform, and an operating system.
 
-作为数据中心操作系统，DC/OS本身就是一个分布式系统，集群管理器，容器平台和操作系统。
+## Distributed System
 
-## 分布式系统
+As a distributed system, DC/OS includes a group of agent nodes that are coordinated by a group of master nodes. Like other distributed systems, several of the components running on the master nodes perform [leader election](https://en.wikipedia.org/wiki/Distributed_computing#Coordinator-election) with their peers.
 
-作为分布式系统，DC/OS包括由一组主节点以及其调度的一组计算节点。像其他分布式系统一样，很多组件运行在主
-节点上共同进行[leader election](https://en.wikipedia.org/wiki/Distributed_computing#Coordinator-election)。
+## Cluster Manager
 
-## 集群管理器
+As a cluster manager, DC/OS manages both resources and tasks running on the agent nodes. The agent nodes provide resources to the cluster. Those resources are then bundled into resource offers and made available to registered schedulers. The schedulers then accept these offers and allocate their resources to specific tasks, indirectly placing tasks on specific agent nodes. The agent nodes then spawn executors to manage each task type and the executors run and manage the tasks assigned to them. Unlike external cluster provisioners, DC/OS runs in the cluster and manages the lifecycle of the tasks it launches. This cluster management functionality is provided primarily by [Apache Mesos](/1.10/overview/concepts/#apache-mesos).
 
-作为集群管理器，DC/OS管理计算节点上运行的资源和任务。计算节点向集群提供资源。这些资源随后被捆绑到资源
-邀约中，并提供给已注册的调度程序。然后，调度程序接受这些邀约并将资源分配给特定的任务，间接地将任务分>配给特定的计算节点。计算节点然后生成执行程序来管理每个任务类型，执行程序运行和管理分配给他们的任务。>与外部集群供应商不同，DC/O 在集群中运行，并管理其启动任务的生命周期。这个集群管理功能主要由[Apache Mesos](/1.10/overview/concepts/#apache-mesos)提供。
+## Container Platform
 
-## 容器平台
+As a container platform, DC/OS includes two built-in task schedulers (Marathon and DC/OS Jobs (Metronome)) and two container runtimes (Docker and Mesos). Combined, this functionality is commonly referred to as container orchestration. In addition to the built-in schedulers for services and jobs, DC/OS also supports custom schedulers for handling more complex application-specific operational logic. Stateful services like databases and message queues often take advantage of these custom schedulers to handle advanced scenarios (e.g. setup, tear down, backup, restore, migration, synchronization, rebalancing, etc).
 
-作为一个容器平台，DC/OS包括两个内置的任务调度器(Marathon和DC/OS任务(Metronome))和两个容器运行时
-(Docker和Mesos)。结合起来，这个功能通常被称为容器编排。除了用于内置的服务和任务调度外，DC/O 还支持>自定义调度程序，用于处理更复杂的应用程序的自定义处理逻辑。数据库和消息队列等有状态服务通常利用这些定>制调度器来处理高级场景(例如设置，分解，备份，还原，迁移，同步，重新平衡等)。
+All tasks on DC/OS are containerized. Containers can be started from images downloaded from a container repository (e.g. [Docker Hub](https://hub.docker.com/)) or they can be native executables (e.g. binaries or scripts) containerized at runtime. While Docker is currently required on every node, it may become optional in the future, as components and packages migrate to using the Mesos Universal Container Runtime for imaged and native workloads.
 
-DC/OS上的所有任务都是容器化的。容器可以从容器库(例如[Docker Hub](https://hub.docker.com/))下载的>镜像启动，或者它们可以是处在容器运行时可执行文件(例如二进制文件或脚本)。虽然Docker目前在每个节点上>都是必需的，但随着组件和软件包迁移到使用Meso 标准容器运行时(Universal Container Runtime)来处理镜像>和原生工作流，将来可能会变成可选项。
+## Operating System
 
-## 操作系统
+As an operating system, DC/OS abstracts the cluster hardware and software resources and provides common services to applications. On top of cluster management and container orchestration functionality, these common services additionally provide package management, networking, logging and metrics, storage and volumes, and identity management.
 
-作为一个操作系统，DC/OS抽象了集群硬件和软件资源，作为能用服务提供给应用程序。 除集群管理和容器编排功>能外，这些通用服务还提供软件包管理，网络连接，日志记录和性能度量，存储和卷管理，以及身份认证。
-与Linux类似，DC/OS同时具有系统空间(又名内核空间)和用户空间。系统空间是用户无法访问的保护区域，涉及>资源分配，安全性和进程隔离等底级操作。用户空间是用户应用程序，任务和服务的运行的地方。 内置的包管理器可以用来将服务安装到用户空间中。
+Similar to Linux, DC/OS has both system space (aka kernel space) and user space. The system space is a protected area that is not accessible to users and involves low-level operations such as resource allocation, security, and process isolation. The user space is where the user applications, jobs, and services live. The built-in package manager can be used to install services into the user space.
 
-与Linux不同，DC/OS不是[主机操作系统](/1.10/overview/concepts/#host-operating-system)。DC/OS跨越多台
-机器，但依靠每台机器都运行自己的主机操作系统和内核。
-
+Unlike Linux, DC/OS is not a [host operating system](/1.10/overview/concepts/#host-operating-system). DC/OS spans multiple machines, but relies on each machine to have its own host operating system and host kernel.
