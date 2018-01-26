@@ -27,12 +27,12 @@ DC/OS 组件是构成 DC/OS 核心的 [ systemd 单元 ](https://www.freedesktop
 
 ## 健康状态
 
-Possible health states are unhealthy and healthy. We infer this from codes 0 and 1.
+可能的健康状况是不健康和健康的。 我们从代码0和1推断这一点。
 
-* **Healthy** All cluster nodes are healthy. The units are loaded and not in the "active" or "inactive" state.
-* **Unhealthy** One or more nodes have issues. The units are not loaded or are in the "active" or "inactive" state.
+* **Healthy** 所有群集节点都健康。 这些单元被加载，不处于“活动”或“不活动”状态。
+* **Unhealthy**一个或多个节点有问题。 这些单元未加载或处于“活动”或“非活动”状态。
 
-The system health API has four possible states: 0 - 3, OK; CRITICAL; WARNING; UNKNOWN. Future DC/OS iterations will leverage these codes to give more robust and detailed cluster health state information in the UI.
+系统健康API有四种可能的状态：0 - 3，OK; CRITICAL; WARNING; UNKNOWN。 未来的DC / OS迭代将利用这些代码在UI中提供更健壮，更详细的集群运行状况信息。
 
 ## 系统健康 HTTP API 端点
 
@@ -60,13 +60,13 @@ sudo su -
 
 3. 运行这些命令以获得群集健康:
     
-    * System health by unit:
+    * 系统健康按单位:
         
         ```bash
 curl --unix-socket /run/dcos/dcos-diagnostics.sock http://localhost/system/health/v1/units
 ```
 
-* System health by node:
+* 节点的系统健康状况：
     
     ```bash
 curl --unix-socket /run/dcos/dcos-diagnostics.sock http://localhost/system/health/v1/nodes
@@ -88,12 +88,12 @@ DC/OS 用户界面使用这些聚合端点来生成您在系统运行状况控�
 
 ### 缺少群集主机
 
-The system health API relies on Mesos-DNS to know about all the cluster hosts. It finds these hosts by combining a query from `mesos.master` A records as well as `leader.mesos:5050/slaves` to get the complete list of hosts in the cluster.
+系统健康 API 依赖于 Mesos-DNS 来了解所有的群集主机。 它通过将 ` mesos.master ` 中的查询以及 `leader.mesos:5050/slaves` 来获取群集中的主机的完整列表, 从而找到这些主机。
 
-This system has a known bug where an agent will not show up in the list returned from `leader.mesos:5050/slaves` if the Mesos agent service is not healthy. This means the system health API will not show this host.
+此系统有一个已知的 bug, 其中的agent不会显示在从 ` leader.mesos:5050/slaves ` 如果 mesos 代理服务不正常。 这意味着系统运行状况 API 不会显示此主机。
 
-If you experience this behavior it's most likely your Mesos agent service on the missing host is unhealthy.
+如果您遇到此行为, 则最有可能是您的 Mesos 代理服务在缺少的主机上是不健康的。
 
 ## 排除故障
 
-If you have any problems, you can check if the diagnostics service is running by SSH’ing to the Mesos leading master and checking the systemd status of the diagnostics component (`dcos-d3t.service`).
+如果您有任何问题, 可以检查诊断服务是否通过 SSH "ing" Mesos 的主主机运行, 并检查诊断组件的 systemd 状态 (` dcos-d3t.service `)。
