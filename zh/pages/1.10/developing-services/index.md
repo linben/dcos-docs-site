@@ -28,4 +28,4 @@ DC/OS 宇宙包含在 dc/os 上可安装的所有服务。 有关 DC/OS 宇宙�
 
 # 发布包
 
-All packaged services are required to meet a certain standard as defined by Mesosphere. For details on publishing a DC/OS service, see [Publish the package](https://github.com/mesosphere/universe/blob/version-3.x/docs/tutorial/GetStarted.md#step-5--publish-the-package).
+所有打包服务都需要满足Mesosphere定义的特定标准。 有关发布DC / OS服务的详细信息，请参见<a href =“https://github.com/mesosphere/universe/blob/version-3.x/docs/tutorial/GetStarted.md#step-5--publish -the-package“>发布软件包</a>。
