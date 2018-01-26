@@ -8,7 +8,6 @@ enterprise: false
 ---
 <!-- This source repo for this topic is https://github.com/dcos/dcos-docs -->
 
-The purpose of the feature maturity phases is to educate customers, partners, and Mesosphere field and support organizations about the maturity and quality of features.
 功能成熟的目的是教育客户，合作伙伴和Mesosphere以及支持机构关于功能的成熟度和质量。
 
 # <a name="criteria"></a>标准
