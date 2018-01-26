@@ -1,31 +1,31 @@
 ---
 layout: layout.pug
-navigationTitle: Monitoring, Logging, and Debugging
-title: Monitoring, Logging, and Debugging
+navigationTitle: 监视、日志记录和调试
+title: 监视、日志记录和调试
 menuWeight: 110
 excerpt: ""
 ---
-Monitoring the health of all the pieces that make up DC/OS is vital to datacenter operators and for troubleshooting hard-to-diagnose bugs. You can monitor the health of your cluster components from the DC/OS UI component health page. The component health page displays information from the system health API, which monitors the core DC/OS components.
+监视构成 DC/OS 的所有部件的运行状况对于数据中心操作员和诊断诊断错误非常重要。 您可以从 "DC/OS UI 组件健康" 页监视群集组件的运行状况。 "组件健康" 页显示系统运行状况 API 的信息, 它监视核心 DC/OS 组件。
 
-DC/OS components are the [systemd units](https://www.freedesktop.org/wiki/Software/systemd/) that make up the core of DC/OS. These components are monitored by our internal diagnostics utility (`dcos-diagnostics.service`). This utility scans all the DC/OS units, and then exposes an HTTP API on each host. For a complete description of the DC/OS components, see the [documentation](/1.10/overview/architecture/components/).
+DC/OS 组件是构成 DC/OS 核心的 [ systemd 单元 ](https://www.freedesktop.org/wiki/Software/systemd/)。 这些组件由我们的内部诊断实用程序 (` dcos-diagnostics.service`) 进行监视。 此实用程序扫描所有 DC/OS 单元, 然后在每个主机上公开一个 HTTP API。 有关 DC/OS 组件的完整说明, 请参见 [ 文档 ](/1.10/overview/architecture/components/)。
 
-The component health page provides the health status of all DC/OS system components that are running in systemd. You can drill down by health status, host IP address, or specific systemd unit.
+"组件健康" 页提供在 systemd 中运行的所有 DC/OS 系统组件的健康状态。您可以按健康状态、主机 IP 地址或特定的 systemd 单元进行向下钻取。
 
-## Getting Started
+## 入门
 
-Launch the [DC/OS UI](/1.10/gui/) and navigate to the **System -> Components** page. You can sort components by health.
+启动 [ DC/OS UI ](/1.10/gui/) 并导航到 ** 系统->> 组件 ** 页面。可以按运行状况对组件进行排序。
 
 ![system health](/1.10/img/component-system-view.png)
 
-You can click on a DC/OS component to view the details, including role, node, and health.
+您可以单击 DC/OS 组件来查看详细信息, 包括角色、节点和健康。
 
 ![node detail](/1.10/img/component-node-detail.png)
 
-You can debug further by clicking the node to view the component journald (log) output.
+通过单击节点查看组件 journald (日志) 输出, 可以进一步调试。
 
 ![log](/1.10/img/component-node-output.png)
 
-## Health States
+## 健康状态
 
 Possible health states are unhealthy and healthy. We infer this from codes 0 and 1.
 
@@ -34,31 +34,31 @@ Possible health states are unhealthy and healthy. We infer this from codes 0 and
 
 The system health API has four possible states: 0 - 3, OK; CRITICAL; WARNING; UNKNOWN. Future DC/OS iterations will leverage these codes to give more robust and detailed cluster health state information in the UI.
 
-## System health HTTP API endpoint
+## 系统健康 HTTP API 端点
 
-The system health endpoint is exposed through the DC/OS diagnostics utility on the master nodes:
+系统健康端点通过主节点上的 DC/OS 诊断实用程序公开:
 
 ```bash
 curl --unix-socket /run/dcos/dcos-diagnostics.sock http://localhost/system/health/v1
 ```
 
-## Aggregation
+## 聚合模式
 
-Aggregation of the cluster health endpoints is accomplished by the same diagnostics application on the master nodes. You can explore this API further by making a few queries to any master in your cluster:
+群集健康端点的聚合由主节点上的同一诊断应用程序完成。 通过对群集中的任何母版进行一些查询, 可以进一步探索此 API:
 
-1. SSH to your master node:
+1. SSH 到您的master node:
     
     ```bash
 dcos node ssh --master-proxy --leader
 ```
 
-2. Run this command to open a root session:
+2. 运行此命令以打开根会话:
     
     ```bash
 sudo su -
 ```
 
-3. Run these commands to get cluster health:
+3. 运行这些命令以获得群集健康:
     
     * System health by unit:
         
@@ -72,21 +72,21 @@ curl --unix-socket /run/dcos/dcos-diagnostics.sock http://localhost/system/healt
 curl --unix-socket /run/dcos/dcos-diagnostics.sock http://localhost/system/health/v1/nodes
 ```
 
-* System health report:
+* 系统运行状况报告:
     
     ```bash
 curl --unix-socket /run/dcos/dcos-diagnostics.sock http://localhost/system/health/v1/report
 ```
 
-The DC/OS user interface uses these aggregation endpoints to generate the data you explore in the system health console.
+DC/OS 用户界面使用这些聚合端点来生成您在系统运行状况控制台中所浏览的数据。
 
-## Known Issues
+## 已知问题
 
-### Misinterpreting System Health by Unit
+### 按单位曲解系统健康
 
-You can sort system health by systemd unit. However, this search can bring up misleading information as the service itself can be healthy but the node on which it runs is not. This manifests itself as a service showing "healthy" but nodes associated with that service as "unhealthy". Some people find this behavior confusing.
+您可以按 systemd 单位对系统运行状况进行排序。 但是, 此搜索可能会带来误导信息, 因为服务本身可以是健康的, 但它运行的节点不是。 这体现为一个服务, 显示 "健康", 但与该服务相关的节点 "不健康"。 有些人发现这种行为令人迷惑。
 
-### Missing Cluster Hosts
+### 缺少群集主机
 
 The system health API relies on Mesos-DNS to know about all the cluster hosts. It finds these hosts by combining a query from `mesos.master` A records as well as `leader.mesos:5050/slaves` to get the complete list of hosts in the cluster.
 
@@ -94,6 +94,6 @@ This system has a known bug where an agent will not show up in the list returned
 
 If you experience this behavior it's most likely your Mesos agent service on the missing host is unhealthy.
 
-## Troubleshooting
+## 排除故障
 
 If you have any problems, you can check if the diagnostics service is running by SSH’ing to the Mesos leading master and checking the systemd status of the diagnostics component (`dcos-d3t.service`).
