@@ -1,25 +1,25 @@
 ---
 layout: layout.pug
-navigationTitle: Deploying Services and Pods
-title: Deploying Services and Pods
+navigationTitle: 部署服务和吊舱
+title: 部署服务和吊舱
 menuWeight: 130
 excerpt: ""
 enterprise: false
 ---
 <!-- This source repo for this topic is https://github.com/dcos/dcos-docs -->
 
-DC/OS uses Marathon to manage processes and services. Marathon is the "init system" for DC/OS. Marathon starts and monitors your applications and services, automatically healing failures.
+DC/OS 使用马拉松来管理流程和服务。马拉松是 DC/OS 的 "init 系统"。马拉松开始并监视您的应用程序和服务, 自动修复故障。
 
-A native Marathon instance is installed as a part of DC/OS installation. After DC/OS has started, you can manage the native Marathon instance through the **Services** tab of the DC/OS web interface or from the DC/OS CLI with the `dcos marathon` command.
+本机马拉松实例作为 DC/OS 安装的一部分安装。 在 dc/os 启动后, 您可以通过 dc/os web 界面的 ** 服务 ** 选项卡或使用 ` dcos 马拉松 ` 命令的 dc/os CLI 来管理本机马拉松实例。
 
-DC/OS services are Marathon applications that are deployed on DC/OS. DC/OS services are available from a package repository, such as the [Mesosphere Universe](/1.10/overview/concepts/#mesosphere-universe), or you can create your own.
+DC/OS 服务是在 DC/OS 上部署的马拉松应用程序。 DC / OS服务可以从包存储库获得，例如[ Mesosphere Universe ](/1.10/overview/concepts/#mesosphere-universe)，或者您可以创建自己的。
 
-# DC/OS Services
+# DC/OS 服务
 
-You can run DC/OS services you create or install a package from the [Universe package repository](/1.10/gui/catalog/). Both services you create and those you install from Universe appear on the **Services** tab of the DC/OS web interface when they are running.
+您可以运行从 [ "宇宙软件包存储库" ](/1.10/gui/catalog/) 创建或安装软件包的 DC/OS 服务。 在 DC/OS web 界面的 ** 服务 ** 选项卡上, 当它们运行时, 您创建的服务和从 "从宇宙中安装的" 都将出现。
 
-Services you create yourself are administered by Marathon and can be configured and run [from the DC/OS CLI](/1.10/cli/command-reference/) with `dcos marathon` subcommands (e.g. `dcos marathon app add <myapp>.json`) or via the DC/OS web interface.
+您自己创建的服务由马拉松管理, 并且可以通过 ` dcos 马拉松 ` 子 (例如 ` dcos 马拉松应用程序添加 < myapp >) 配置和运行 <a href="/1.10/cli/command-reference/"> 来自 DC/OS cli </a>. json`) 或通过 DC/OS web 界面。
 
-# Universe Package Repository
+# 宇宙包装资料库
 
-Packaged DC/OS services created by Mesosphere or the community, like Spark or Kafka, appear on the **Catalog** tab of the DC/OS web interface, or you can search for a package from [the DC/OS CLI](/1.10/cli/command-reference/). You can configure and run Universe services from the DC/OS web interface or via the DC/OS CLI with the `dcos package install <package-name>` command.
+由中间层或社区创建的封装的 dc/os 服务, 如火花或卡夫卡, 出现在 dc/os web 界面的 ** 目录 ** 选项卡上, 或者您可以从 [ dc/os cli ](/1.10/cli/command-reference/) 中搜索包。 您可以使用` dcos package install< package-name> `命令，从DC / OS Web界面或通过DC / OS CLI配置和运行Universe服务。
