@@ -1,33 +1,33 @@
 ---
 layout: layout.pug
-navigationTitle: Networking
-title: Networking
+navigationTitle: 网络
+title: 网络
 menuWeight: 70
 excerpt: ""
 enterprise: false
 ---
 <!-- This source repo for this topic is https://github.com/dcos/dcos-docs -->
 
-DC/OS provides a number of tools out-of-the-box, ranging from basic network connectivity between containers to more advanced features, such as load balancing and service discovery.
+DC / OS提供了许多开箱即用的工具，从容器之间的基本网络连接到更高级的功能（如负载平衡和服务发现）。
 
 # IP Per Container
 
-Allows containers to run on any type of IP-based virtual networks, with each container having its own network namespace.
+允许容器在任何类型的基于 IP 的虚拟网络上运行, 每个容器都有自己的网络命名空间。
 
-DC/OS supports IP per container for the Universal container runtime (UCR) by using the Container network interface (CNI). DC/OS supports IP per container for the Docker container runtime by using the Container network model (CNM).
+DC/OS 通过使用容器网络接口 (CNI) 支持通用容器运行时 (UCR) 的每个容器的 IP。 DC/OS 通过使用容器网络模型 (全国) 为泊坞窗容器运行时支持每个容器的 IP。
 
-DC/OS provides an out-of-the box virtual networking solution for IP per container called DC/OS overlay that works both with UCR and Docker container runtimes. The DC/OS overlay uses the CNI/CNM support in Mesos to provide IP per container.For more information, see the [Containerizer documentation](/1.10/deploying-services/containerizers/).
+DC/OS 为每个容器中的 IP 提供了一个现成的虚拟网络解决方案, 称为 dc/os 覆盖, 既适用于 UCR 和泊坞窗容器运行时。 DC/OS 覆盖使用 Mesos 中的 CNI/全国支持来提供每个容器的 IP。有关更多信息, 请参见 [ Containerizer 文档 ](/1.10/deploying-services/containerizers/)。
 
-# DNS-Based Service Discovery
+# 基于 DNS 的服务发现
 
-DC/OS includes highly available, distributed, DNS-based service discovery. The service discovery mechanism in DC/OS contains these components:
+DC/OS 包括高可用性、分布式、基于 DNS 的服务发现。DC/OS 中的服务发现机制包含以下组件:
 
-- A centralized component called Mesos DNS, which runs on every master.
-- A distributed component called Spartan that runs on every agent.
+- 一个集中式组件, 称为 Mesos DNS, 它在每个主机上运行。
+- 在每个代理上运行的称为Spartan的分布式组件。
 
 ## Mesos DNS
 
-Mesos DNS is a centralized, replicated, DNS server that runs on every master. Every task started by DC/OS gets a well-known DNS name. This provides a replicated highly available DNS service on each of the masters. Every instance of Mesos DNS polls the leading Mesos master and generates a fully qualified domain name (FQDN) for every service running in DC/OS with the domain `*.mesos`. For more information, see the [Mesos DNS documentation](/1.10/networking/mesos-dns/).
+Mesos DNS是一个集中的，复制的DNS服务器，可以在每个主服务器上运行。 Every task started by DC/OS gets a well-known DNS name. This provides a replicated highly available DNS service on each of the masters. Every instance of Mesos DNS polls the leading Mesos master and generates a fully qualified domain name (FQDN) for every service running in DC/OS with the domain `*.mesos`. For more information, see the [Mesos DNS documentation](/1.10/networking/mesos-dns/).
 
 ## DNS Forwarder (Spartan)
 
@@ -39,7 +39,7 @@ Spartan acts as a DNS masquerade for Mesos DNS on each agent. The Spartan instan
 
 The Spartan instance on each agent also acts as a DNS server for any service that is load balanced using the DC/OS internal load balancer called [Minuteman](/1.10/networking/load-balancing-vips/). Any service that is load balanced by Minuteman gets a [virtual-ip-address (VIP)](/1.10/networking/mesos-dns/) and an FQDN in the `"*.l4lb.thisdcos.directory"` domain. The FQDN allocated to a load-balanced service is then stored in Spartan. All Spartans instances exchange the records they have discovered locally from Minuteman by using GOSSIP. This provides a highly available distributed DNS service for any task that is load balanced by Minuteman. For more information, see the [Spartan repository](https://github.com/dcos/spartan).
 
-# Load Balancing
+# 负载平衡
 
 DC/OS offers one load balancing option out-of-the-box: [Minuteman](/1.10/networking/load-balancing-vips/).
 
@@ -60,7 +60,7 @@ Two other load balancers, [Edge-LB](/service-docs/edge-lb/) and [Marathon-LB](/s
 
 ## Minuteman
 
-Minuteman is a distributed layer 4 virtual IP east-west load balancer that is installed by default. It's highly scalable and highly available, offering 0 hop load balancing, no single choke point, and tolerance to host failures.
+Minuteman是一个分布式层4虚拟 IP 东-西负载平衡器, 默认情况下安装。 它具有高度的可伸缩性和高度可供使用, 提供0跃点负载平衡, 没有单一的瓶颈, 并容忍主机故障。
 
 ## Edge-LB
 
