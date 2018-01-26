@@ -37,7 +37,7 @@ Spartan acts as a DNS masquerade for Mesos DNS on each agent. The Spartan instan
 - DNS server Proxy with links to all Active/Active DNS server daemons.
 - DNS server cache service for local services.
 
-The Spartan instance on each agent also acts as a DNS server for any service that is load balanced using the DC/OS internal load balancer called [Minuteman](/1.10/networking/load-balancing-vips/). Any service that is load balanced by Minuteman gets a [virtual-ip-address (VIP)](/1.10/networking/mesos-dns/) and an FQDN in the `"*.l4lb.thisdcos.directory"` domain. The FQDN allocated to a load-balanced service is then stored in Spartan. All Spartans instances exchange the records they have discovered locally from Minuteman by using GOSSIP. This provides a highly available distributed DNS service for any task that is load balanced by Minuteman. For more information, see the [Spartan repository](https://github.com/dcos/spartan).
+每个agent上的斯巴达实例也充当了使用称为 [ Minuteman ](/1.10/networking/load-balancing-vips/) 的 DC/OS 内部负载平衡器负载均衡的任何服务的 DNS 服务器。 Any service that is load balanced by Minuteman gets a [virtual-ip-address (VIP)](/1.10/networking/mesos-dns/) and an FQDN in the `"*.l4lb.thisdcos.directory"` domain. The FQDN allocated to a load-balanced service is then stored in Spartan. All Spartans instances exchange the records they have discovered locally from Minuteman by using GOSSIP. This provides a highly available distributed DNS service for any task that is load balanced by Minuteman. For more information, see the [Spartan repository](https://github.com/dcos/spartan).
 
 # 负载平衡
 
@@ -64,7 +64,7 @@ Minuteman是一个分布式层4虚拟 IP 东-西负载平衡器, 默认情况下
 
 ## Edge-LB
 
-[ Edge-LB](/service-docs/edge-lb/0.1.9/) 在 HAProxy 上生成。 HAProxy provides base functionality such as load balancing for TCP and HTTP-based applications, SSL support, and health checking. In addition, Edge-LB provides first class support for zero downtime service deployment strategies, such as blue/green deployment. Edge-LB subscribes to Mesos and updates HAProxy configuration in real time.
+[ Edge-LB](/service-docs/edge-lb/0.1.9/) 在 HAProxy 上生成。 HAProxy 提供基本功能, 如基于 TCP 和 HTTP 的应用程序的负载平衡、SSL 支持和运行状况检查。 In addition, Edge-LB provides first class support for zero downtime service deployment strategies, such as blue/green deployment. Edge-LB 订阅 Mesos, 并实时更新 HAProxy 配置。
 
 Edge-LB proxies and load balances traffic to all services that run on DC/OS. In contrast, Marathon-LB can only work with Marathon tasks. For example, if you are using Cassandra, Edge-LB can load balance the tasks launched by Cassandra.
 
