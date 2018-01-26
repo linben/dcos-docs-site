@@ -1,31 +1,31 @@
 ---
 layout: layout.pug
-title: Developing DC/OS Services
+title: 开发DC / OS服务
 menuWeight: 160
 excerpt: ""
 enterprise: false
 ---
 <!-- This source repo for this topic is https://github.com/dcos/dcos-docs -->
 
-DC/OS includes a service packaging specification and a [repository](/1.10/administering-clusters/repo/) that catalogs those packages. This section describes what is necessary to package and provide your own service on DC/OS.
+DC / OS包含一个服务打包规范和一个[存储库](/1.10/administering-clusters/repo/)，用于对这些包进行编目。 本节介绍在DC / OS上打包和提供自己的服务所需的内容。
 
-# <a name="universe"></a>Universe package repository
+# <a name="universe"></a>宇宙包装资料库
 
-The DC/OS Universe contains all of the services that are installable on DC/OS. For more information on DC/OS Universe, see the [GitHub Universe repository](https://github.com/mesosphere/universe).
+DC/OS 宇宙包含在 dc/os 上可安装的所有服务。 有关 DC/OS 宇宙的更多信息, 请参见 [ github 宇宙存储库 ](https://github.com/mesosphere/universe)。
 
-# DC/OS service structure
+# DC/OS 服务结构
 
-Each DC/OS service in the Universe is comprised of JSON configuration files. These files are used create the packages that are installed on DC/OS.
+宇宙中的每个 DC/OS 服务都由 JSON 配置文件组成。这些文件用于创建安装在 DC/OS 上的软件包。
 
-| Filename                 | Description                                                                                              | Required |
-| ------------------------ | -------------------------------------------------------------------------------------------------------- | -------- |
-| `config.json`            | Specifies the supported configuration properties, represented as a JSON-schema.                          | No       |
-| `marathon.json.mustache` | Specifies a mustache template that creates a Marathon app definition capable of running your service.    | No       |
-| `package.json`           | Specifies the high level metadata about the package.                                                     | Yes      |
-| `resource.json`          | Specifies all of the required externally hosted resources (e.g. Docker images, HTTP objects and images). | No       |
+| 文件名                      | 描述                                    | 必填  |
+| ------------------------ | ------------------------------------- | --- |
+| `config.json`            | 指定支持的配置属性, 表示为 JSON 架构。               | No  |
+| `marathon.json.mustache` | 指定用于创建能够运行服务的马拉松应用程序定义的小胡子模板。         | No  |
+| `package.json`           | 指定包的高级别元数据。                           | Yes |
+| `resource.json`          | 指定所有必需的外部托管资源 (例如, 泊坞窗图像、HTTP 对象和图像)。 | No  |
 
-For more information, see [Creating a DC/OS Package](https://github.com/mesosphere/universe/blob/version-3.x/docs/tutorial/GetStarted.md#step-3--creating-a-dcos-package).
+有关详细信息, 请参阅 [ 创建 DC/OS 程序包 ](https://github.com/mesosphere/universe/blob/version-3.x/docs/tutorial/GetStarted.md#step-3--creating-a-dcos-package)。
 
-# Publishing a package
+# 发布包
 
 All packaged services are required to meet a certain standard as defined by Mesosphere. For details on publishing a DC/OS service, see [Publish the package](https://github.com/mesosphere/universe/blob/version-3.x/docs/tutorial/GetStarted.md#step-5--publish-the-package).
