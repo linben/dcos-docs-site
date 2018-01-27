@@ -1,7 +1,7 @@
 ---
 layout: layout.pug
-navigationTitle: Mount Disk Resources
-title: Mount Disk Resources
+navigationTitle: 装载磁盘资源
+title: 装载磁盘资源
 menuWeight: 0
 excerpt: ""
 enterprise: false
