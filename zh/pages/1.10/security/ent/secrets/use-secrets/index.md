@@ -6,101 +6,103 @@ menuWeight: 1
 excerpt: ""
 enterprise: true
 ---
-Your service definition can reference secrets as environment variables or as a file.
+您可以在服务定义中以环境变量或文件的方式引用密钥.
 
-## File-based secrets
+## 基于文件的密钥
 
-You can reference the secret as a file for increased security from other processes, or if your service needs to read secrets from files mounted in the container.
+您可以将密码作为文件来引用，以提高进程的安全性，或者服务从挂载在容器中的文件中读取密钥。
 
-Referencing a file-based secret can be particularly useful for:
+引用基于文件的密钥对于以下场景特别有用：
 
-- Kerberos keytabs or other credential files.
-- SSL certificates.
-- Configuration files with sensitive data.
+- Kerberos密钥凭据或其他证书文件。
+- SSL证书。
+- 包含有敏感数据的配置文件。
 
-File-based secrets are available in the sandbox of the task (`$MESOS_SANDBOX/<configured-path>`).
+基于文件的密钥在可以在任务sandbox找到（`$MESOS_SANDBOX/<configured-path>`）。
 
-**Prerequisites:**
+**先决条件:**
 
-- An existing secret. The examples below use a secret called `my-secret` stored in the `developer` path. If you complete the steps in [Creating secrets](/1.10/security/ent/secrets/create-secrets/), you will meet this prerequisite.
+- 已有的密钥。 以下示例使用存储在`developer`路径下名为`my-secret`的密钥。 如果您已完成[创建密钥](/1.10/security/ent/secrets/create-secrets/)中的步骤，将具备此先决条件。
 
-- [DC/OS CLI installed](/1.10/cli/install/) and the [DC/OS Enterprise CLI installed](/1.10/cli/enterprise-cli/#ent-cli-install).
+- [安装DC/OS CLI](/1.10/cli/install/)并[安装DC/OS Enterprise CLI](/1.10/cli/enterprise-cli/#ent-cli-install)。
 
-- If your [security mode](/1.10/security/ent/#security-modes) is `permissive` or `strict`, you must [get the root cert](/1.10/security/ent/tls-ssl/get-cert/) before issuing the curl commands in this section. If your [security mode](/1.10/security/ent/#security-modes) is `disabled`, you must delete `--cacert dcos-ca.crt` from the commands before issuing them.
+- 如果您的安全模式是宽容或严格的，那么在发布本节中的curl命令之前，您必须获得root证书。 如果您的安全模式被禁用，您必须从命令中删除--cacert dcos-ca.crt，然后再发出它们。
 
-- The appropriate permissions for your [security mode](/1.10/security/ent/#security-modes).
+- 如果您的[安全模式](/1.10/installing/ent/custom/configuration/configuration-parameters/#security-enterprise) 是`permissive`或`strict`，在使用本节的curl命令前，需要先执行[获取DC/OS权威公钥包](/1.10/security/ent/tls-ssl/get-cert/) 中所列步骤. 如果您的[安全模式](/1.10/installing/ent/custom/configuration/configuration-parameters/#security-enterprise) 是`disabled`, 您需要从以下命令中删除`--cacert dcos-ca.crt`.
+
+- 适合[安全模式](/1.10/security/ent/#security-modes)的权限。
 
 <table class="table">
-  <tr>
-    <th>
-      Permission
-    </th>
-    
-    <th>
-      Enforced in
-    </th>
-  </tr>
-  
-  <tr>
-    <td>
-      <code>dcos:adminrouter:service:marathon full</code>
-    </td>
-    
-    <td>
-      All security modes
-    </td>
-  </tr>
-  
-  <tr>
-    <td>
-      <code>dcos:service:marathon:marathon:services:/[&lt;i>service-group&lt;/i> full</code>
-    </td>
-    
-    <td>
-      <code>strict</code> and <code>permissive</code> security modes
-    </td>
-  </tr>
+<tr>
+<th>
+  权限
+</th>
+
+<th>
+  作用于
+</th>
+</tr>
+
+<tr>
+<td>
+  <code>dcos:adminrouter:service:marathon full</code>
+</td>
+
+<td>
+  所用安全模式
+</td>
+</tr>
+
+<tr>
+<td>
+    <code>dcos:service:marathon:marathon:services:/[&lt;i>service-group&lt;/i> full</code>
+</td>
+
+<td>
+  <code>strict</code>和<code>permissive</code> 安全模式
+</td>
+</tr>
 </table>
 
-In `strict` mode, users may also need the following.
+在`strict`安全械下，用户也需要以下权限.
 
-- `dcos:adminrouter:ops:mesos full`: to view **Task** panel information.
-- `dcos:adminrouter:ops:slave full`: to view the details about the task, including the logs.
+- `dcos:adminrouter:ops:mesos full`: 来查看 **任务** 面板信息.
+- `dcos:adminrouter:ops:slave full`: 查看任务详细信息，包括日志.
     
-    As long as the path of the secret and the path of the group [match up properly](/1.10//security/ent/#spaces), the service will be able to access the secret value.
+    只要密钥路径和组路径[相匹配](/1.10//security/ent/#spaces)，服务就能够访问密钥值。
 
-The procedure differs depending on whether or not you want to make the secret available to a [pod](/1.10/deploying-services/pods/) or to an individual service.
+根据是否要将密钥提供给[豆荚](/1.10/deploying-services/pods/)或单个服务，过程会有所不同。
 
-- [Individual service](#service)
-- [Pod](#pod)
+- [单个服务](#service)
+- [豆荚](#pod)
 
-# <a name="service"></a>Configuring a service to use a secret
+# <a name="service"></a>配置单个服务使用密钥
 
-The procedure varies by interface. Refer to the section that corresponds to your desired interface.
+此过程在不同的接口下会有不同。请参考您使用的接口相应段落。
 
-- [GUI](#deploying-the-service-via-the-web-interface)
+- [用户图形界面](#deploying-the-service-via-the-web-interface)
 
 - [Marathon API](#deploying-the-service-via-marathon-app-definition)
 
-## <a name="deploying-the-service-via-the-web-interface"></a>Configuring a service to use a secret via the GUI
+## <a name="deploying-the-service-via-the-web-interface"></a>通过用户图形界面配置单个服务使用密钥
 
-1. Log into the GUI as a user with the necessary permissions as discussed in the [previous section](#service).
+1. 使用[上节](#service)讨论过的具备相应权限的用户登录用户图形界面.
 
-2. Click the **Services** tab.
+2. 点击 **服务列表** 标签.
 
-3. Click the **+** icon in the top right.
+3. 点击右上角的 **+** 图标.
     
     ![Add a Service](/1.10/img/add-service.png)
 
-4. Click the **JSON Editor** toggle.
+4. 点击 **JSON Editor** 开关.
 
-5. Select the contents of the default JSON schema and delete them so that no text is shown in the black box.
+5. 选择默认JSON框架里的内容，并删除，在编辑框显示为空白，没有内容.
 
-6. Copy one of the following simple application definitions and paste it into the black box. This application definition creates a new service inside of the developer group and references a secret stored inside a developer path.
+6. 拷贝下列之一的应用程序定义文件范例，粘贴在空白编辑框。应用程序定义文件会创建一个在develop组中新服务，引用保存在developer路径下的密钥.
     
-    Environment variable-based secret:
+    基于环境变量的密钥:
     
-    ```json
+```json
 {  
   "id":"/developer/service",
   "cmd":"sleep 100",
@@ -117,9 +119,9 @@ The procedure varies by interface. Refer to the section that corresponds to your
 }
 ```
 
-In the example above, DC/OS stores the secret under the environment variable `"MY_SECRET"`. Observe how the `"env"` and `"secrets"` objects are used to define environment variable-based secrets.
+在上例中，DC/OS在`"MY_SECRET"`环境变量中保存密钥。观察如何使用`"env"`和`"secrets"`对象来定义基于环境变量的密钥。
 
-File-based secret:
+基于文件密钥:
 
 ```json
 {
@@ -141,31 +143,31 @@ File-based secret:
 }
 ```
 
-In the example above, the secret will have the filename `path` and will be available in the task's sandbox (`$MESOS_SANDBOX/path`).
+在上例中，密钥文件名为`path`，并保存在任务sandbox(`$MESOS_SANDBOX/path`).
 
-Because the service and the secret paths match, the service will be able to access the secret. See [Spaces](/1.10/security/ent/#spaces) for more details about the paths.
+由于服务与密钥路径相匹配，服务可以访问密钥。更多有关路径的信息，请参看[空间](/1.10/security/ent/#spaces).
 
-7. Click **REVIEW & RUN**.
+7. 点击 **REVIEW & RUN**.
 
-8. Click **RUN SERVICE**.
+8. 点击 **RUN SERVICE**.
 
-9. Click the group name of your service, i.e., **developer**.
+9. 点击您的服务组名, 例如 **developer**.
 
-10. Click the name of your service.
+10. 点击您的服务名.
 
-11. Click the name of its task.
+11. 点击任务名.
 
-12. Scroll through the **Details** tab to locate your `DCOS_SECRETS_DIRECTIVE`.
+12. 在**Details** 标签中找到您的 `DCOS_SECRETS_DIRECTIVE`.
 
-# <a name="deploying-the-service-via-marathon-app-definition"></a>Configuring a service to use an environment variable-based secret via Marathon app definition
+# <a name="deploying-the-service-via-marathon-app-definition"></a>通过Marathon应用程序定义配置服务使用基于环境变量的密钥
 
-1. Log into the CLI as a user with the necessary permissions via `dcos auth login`. Refer to [About configuring services and pods to use secrets](#service) to discover the required permissions.
+1. 使用具务具备足够权限的用户通过`dcos auth login`登陆命令行界面. 参阅[配置服务和豆荚使用密钥](#service) 了解需要的权限.
 
-2. Within a text editor, create an application definition for your Marathon service. The following application definition creates a new service inside of the developer group and references a secret stored inside a developer path.
+2. 在文件编辑器内，为Marathon服务创建应用程序定义。以下应用程序定义在developer组中创建一个新服务，引用develop路径下的密钥。
     
-    Environment variable-based secret:
+    基于环境变量的密钥:
     
-    ```json
+```json
 {  
   "id":"/developer/service",
   "cmd":"sleep 100",
@@ -182,9 +184,9 @@ Because the service and the secret paths match, the service will be able to acce
 }
 ```
 
-In the example above, DC/OS stores the secret under the environment variable `"MY_SECRET"`. Observe how the `"env"` and `"secrets"` objects are used to define environment variable-based secrets.
+在上例中，DC/OS在`"MY_SECRET"`环境变量中保存密钥。观察如何使用`"env"`和`"secrets"`对象来定义基于环境变量的密钥。
 
-File-based secret:
+基于文件的密钥:
 
 ```json
 {
@@ -206,41 +208,39 @@ File-based secret:
 }
 ```
 
-Because the service group and the secret paths match, the service will be able to access the secret. See [Spaces](/1.10/security/ent/#spaces) for more details about the paths.
+由于服务与密钥路径相匹配，服务可以访问密钥。更多有关路径的信息，请参看[空间](/1.10/security/ent/#spaces).
 
-3. Save the file with a descriptive name, such as `myservice.json`.
+3. 将文件保存为一个能说明意义的名字，例如`myservice.json`.
 
-4. Add the service to DC/OS via the DC/OS CLI.
+4. 通过DC/OS命令添加服务到DC/OS中.
     
-    ```bash
+```bash
 dcos marathon app add myservice.json
 ```
 
-Alternatively, use the Marathon API to deploy the app as shown below.
+或者使用Marathon API来部署应用程序，如下.
 
 ```bash
 curl -X POST --cacert dcos-ca.crt $(dcos config show core.dcos_url)/service/marathon/v2/apps -d @myservice.json -H "Content-type: application/json" -H "Authorization: token=$(dcos config show core.dcos_acs_token)"
 ```
 
-5. Open the DC/OS GUI.
+6. 点击您的服务组名, 例如 **developer**.
 
-6. Click the group name of your service, i.e., **developer**.
+7. 点击您的服务名.
 
-7. Click the name of your service.
+8. 点击任务名.
 
-8. Click the name of its task.
+9. 在**Details** 标签中找到您的 `DCOS_SECRETS_DIRECTIVE`.
 
-9. Scroll through the **Details** tab to locate your `DCOS_SECRETS_DIRECTIVE`.
+# <a name="pod"></a>配置豆荚使用密钥
 
-# <a name="pod"></a>Configuring a pod to use a secret
+1. 使用具务具备足够权限的用户通过`dcos auth login`登陆命令行界面. 参阅[配置服务和豆荚使用密钥](#service) 了解需要的权限.
 
-1. Log into the CLI as a user with the necessary permissions via `dcos auth login`. Refer to [About configuring services and pods to use secrets](#service) for more information about the permissions.
-
-2. Within a text editor, create an application definition for your pod. You can add the secret using the `"environment"` and `"secrets"` objects as shown below. The following simple application defines a new service inside of the developer group and references a secret stored inside a developer path. It stores the secret under the environment variable `"MY_SECRET"`.
+2. 在文件编辑器内，为豆荚创建应用程序定义。您可以使用`"environment"`和`"secrets"`对象添加密钥，如下例所示。以下应用程序定义在developer组中创建一个新服务，引用develop路径下的密钥。它在环境变量`"MY_SECRET"`下储存密钥.
     
-    Environment variable-based secret:
+    基于环境变量的密钥:
     
-    ```json
+```json
 {
   "id": "/developer/pod-secret",
   "environment": {
@@ -277,7 +277,7 @@ curl -X POST --cacert dcos-ca.crt $(dcos config show core.dcos_url)/service/mara
 }
 ```
 
-File-based secret:
+基于文件的密钥:
 
 ```json
 {
@@ -312,22 +312,22 @@ File-based secret:
 }
 ```
 
-**Note:** Because the service group and the secret paths match, the pod will be able to access the secret. See [Namespacing](/1.10//security/ent/#spaces) for more details about the paths.
+**注意:** 由于服务与密钥路径相匹配，服务可以访问密钥。更多有关路径的信息，请参看[空间](/1.10/security/ent/#spaces).
 
-3. Save the file with a descriptive name, such as `mypod.json`.
+3. 将文件保存为一个能说明意义的名字，例如`myservice.json`.
 
-4. Use the DC/OS CLI to deploy the pod as shown below.
+4. 通过DC/OS命令行部署豆荚，如下所示.
     
-    ```bash
+```bash
 dcos marathon pod add mypod.json
 ```
 
-5. Open the DC/OS GUI.
+5. 打开DC/OS图形用户界面.
 
-6. Click the group name of your service, i.e., **developer**.
+6. 点击您的服务组名, 例如 **developer**.
 
-7. Click the name of your pod.
+7. 点击您的豆荚名.
 
-8. Click to open the **Configuration** tab.
+8. 点击打开 **Configuration** 标签.
 
-9. Scroll to the **Environment Variables** area to locate your secret `MY_SECRET`.
+9. 在**环境变量** 区域内找到您的 `DCOS_SECRETS_DIRECTIVE`.
