@@ -89,7 +89,7 @@ dcos security secrets create --value=top-secret developer/my-secret
 
 2. 使用以下命令创建新密钥
     
-    ```bash
+```bash
 dcos security secrets create -f my-secret.txt developer/my-secret
 ```
 
