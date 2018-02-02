@@ -6,10 +6,10 @@ menuWeight: 60
 excerpt: ""
 enterprise: true
 ---
-Use the DC/OS Enterprise Secret Store to secure sensitive information like database passwords, API tokens, and private keys. Storing secrets in secret paths allows you to restrict which services can retrieve the value.
+使用DC/OS企业版密钥商店来保护数据库密码，API密钥和私钥等敏感信息。将密钥存储在秘密路径中，仅允许的服务可以检索该值。
 
-[Authorized Marathon services](/1.10//security/ent/#spaces) can retrieve the secrets at deployment and store their values under environment variables.
+[授权Marathon服务](/1.10//security/ent/#spaces) 可以在部署时检索密钥并将其值存储在环境变量中。
 
-In addition, the [Secrets API](/1.10/security/ent/secrets/secrets-api/) allows you to [seal](/1.10/security/ent/secrets/seal-store/)/[unseal](/1.10/security/ent/secrets/unseal-store/)<!-- and [reinitialize](/1.10/security/ent/secrets/custom-key/)--> the Secret Store.
+此外，[密钥API](/1.10/security/ent/secrets/secrets-api/) 可以让您[加密](/1.10/security/ent/secrets/seal-store/)/[解密](/1.10/security/ent/secrets/unseal-store/) 密钥商店。
 
-You can also find information about secrets in the [Permissions Reference](/1.10/security/ent/perms-reference/#secrets) section.
+您还可以在[权限参考指南](/1.10/security/ent/perms-reference/#secrets) 部分找到有关秘密的信息。
