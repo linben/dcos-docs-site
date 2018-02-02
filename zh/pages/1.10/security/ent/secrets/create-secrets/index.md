@@ -61,7 +61,7 @@ enterprise: true
 
 2. 使用以下命令创建密钥
     
-    ```bash
+```bash
 curl -X PUT --cacert dcos-ca.crt -H "Authorization: token=$(dcos config show core.dcos_acs_token)" -d '{"value":"very-secret"}' $(dcos config show core.dcos_url)/secrets/v1/secret/default/developer/my-secret -H 'Content-Type: application/json'
 ```
 
@@ -73,7 +73,7 @@ curl -X PUT --cacert dcos-ca.crt -H "Authorization: token=$(dcos config show cor
 
 2. 使用以下命令创建密钥
     
-    ```bash
+```bash
 dcos security secrets create --value=top-secret developer/my-secret
 ```
 
