@@ -1,25 +1,25 @@
 ---
 layout: layout.pug
-navigationTitle: Mount Disk Resources
-title: Mount Disk Resources
+navigationTitle: 装载磁盘资源
+title: 装载磁盘资源
 menuWeight: 0
 excerpt: ""
 enterprise: false
 ---
 <!-- This source repo for this topic is https://github.com/dcos/dcos-docs -->
 
-With DC/OS you can configure Mesos [`Mount` disk resources](http://mesos.apache.org/documentation/latest/multiple-disk/) across your cluster simply by mounting storage resources on agents using a well-known path.
+使用 DC/OS, 您可以在您的群集上配置 Mesos [ ` Mount` disk resources](http://mesos.apache.org/documentation/latest/multiple-disk/), 只需通过在已知路径上的代理上安装存储资源即可。
 
-When a DC/OS agent starts, it scans for volumes that match the pattern `/dcos/volume<N>`, where `<N>` is an integer. The agent is then automatically configured to offer these disk resources to other services.
+When a DC/OS agent starts, it scans for volumes that match the pattern `/dcos/volume<N>`, where `<N>` is an integer. 然后, 该代理将被自动配置为将这些磁盘资源提供给其他服务。
 
-# Example using loopback device
+# 使用环回设备的示例
 
-In this example, a disk resource is added to a DC/OS agent post-install on a running cluster. These same steps can be used pre-install without having to stop services or clear the agent state.
+在此示例中, 将磁盘资源添加到运行的群集上的 DC/OS 代理后安装。这些相同的步骤可以在安装前使用, 而不必停止服务或清除代理状态。
 
-***Warning:*** This will terminate any running tasks or services on the node.
+** * 警告: * **这将终止节点上的任何正在运行的任务或服务。
 
-1. Connect to an agent in the cluster with SSH.
-2. Examine the current agent resource state.
+1. 使用 SSH 连接到群集中的代理。
+2. 检查当前代理资源状态。
     
     ```bash
 cat /var/lib/dcos/mesos-resources
@@ -29,9 +29,9 @@ cat /var/lib/dcos/mesos-resources
 MESOS_RESOURCES='[{"ranges": {"range": [{"end": 21, "begin": 1}, {"end": 5050, "begin": 23}, {"end": 32000, "begin": 5052}]}, "type":  "RANGES", "name": "ports"}, {"role": "*", "type": "SCALAR", "name": "disk", "scalar": {"value": 47540}}]'
 ```
 
-Note there are no references yet for `/dcos/volume0`.
+注意 `/dcos/volume0 ` 还没有引用。
 
-3. Stop the agent.
+3. 停止代理。
     
     * On a [private](/1.10/overview/concepts/#private-agent-node) agent:
         
@@ -73,20 +73,20 @@ This is suitable for testing purposes only. Mount volumes must have at least 200
 
 6. Create fstab entry and mount.
     
-    Ensure the volume is mounted automatically at boot time. Something similar could also be done with a systemd mount unit.
+    确保在启动时自动装入卷。类似的东西也可以用一个 systemd 安装单元来完成。
     
     ```bash
 echo "/root/volume0.img /dcos/volume0 auto loop 0 2" | sudo tee -a /etc/fstab
 sudo mount /dcos/volume0
 ```
 
-7. Reboot.
+7. 重启
     
     ```bash
 sudo reboot
 ```
 
-8. SSH to the agent and review the journald logs for references to the new volume `/dcos/volume0`.
+8. SSH 到代理并检查 journald 日志, 以查看对新卷 `/dcos/volume0 ` 的引用。
     
     ```bash
 journalctl -b | grep '/dcos/volume0'
@@ -101,7 +101,7 @@ In particular, there should be an entry for the agent starting up and the new vo
     May 05 19:18:58 dcos-agent-public-01234567000001 mesos-slave[1891]: " --oversubscribed_resources_interval="15secs" --perf_duration="10secs" --perf_interval="1mins" --port="5051" --qos_correction_interval_min="0ns" --quiet="false" --recover="reconnect" --recovery_timeout="15mins" --registration_backoff_factor="1secs" --resources="[{"name": "ports", "type": "RANGES", "ranges": {"range": [{"end": 21, "begin": 1}, {"end": 5050, "begin": 23}, {"end": 32000, "begin": 5052}]}}, {"name": "disk", "type": "SCALAR", "disk": {"source": {"mount": {"root": "/dcos/volume0"}, "type": ""}}, "role": "*", "scalar": {"value": 74}}, {"name": "disk", "type": "SCALAR", "role": "*", "scalar": {"value": 47540}}]" --revocable_cpu_low_priority="true" --sandbox_directory="/mnt/mesos/sandbox" --slave_subsystems="cpu,memory" --strict="true" --switch_user="true" --systemd_enable_support="true" --systemd_runtime_directory="/run/systemd/system" --version="false" --work_dir="/var/lib/mesos/slave"
     
 
-# Example using a mount volume within a Marathon app
+# 在马拉松应用程序中使用装入卷的示例
 
 ```json
 {
@@ -192,7 +192,7 @@ Cloud provider storage services are typically used to back DC/OS mount volumes. 
 
 # Best practices
 
-`Mount` disk resources are primarily for stateful services like Kafka and Cassandra which can benefit from having dedicated storage available throughout the cluster. Any service that uses a `Mount` disk resource has exclusive access to the reserved resource. However, it is still important to consider the performance and reliability requirements for the service. The performance of a `Mount` disk resource is based on the characteristic of the underlying storage and DC/OS does not provide any data replication services. Consider the following:
+`Mount` disk resources are primarily for stateful services like Kafka and Cassandra which can benefit from having dedicated storage available throughout the cluster. Any service that uses a `Mount` disk resource has exclusive access to the reserved resource. However, it is still important to consider the performance and reliability requirements for the service. The performance of a `Mount` disk resource is based on the characteristic of the underlying storage and DC/OS does not provide any data replication services. 先看如下代码：
 
 * Use `Mount` disk resources with stateful services that have strict storage requirements.
 * Carefully consider the filesystem type, storage media (network attached, SSD, etc.), and volume characteristics (RAID levels, sizing, etc.) based on the storage needs and requirements of the stateful service.

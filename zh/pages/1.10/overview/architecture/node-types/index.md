@@ -1,72 +1,81 @@
-DC/OS节点是运行DC/OS组件的虚拟或物理机。DC/OS节点通过网络互联形成一个DC/OS集群。
+---
+layout: layout.pug
+navigationTitle: Node Types
+title: Node Types
+menuWeight: 1
+excerpt: ""
+enterprise: false
+---
+<!-- This source repo for this topic is https://github.com/dcos/dcos-docs -->
 
-DC/OS集群由三种类型的节点组成：主节点，私有代理和公共代理。
+A DC/OS node is a virtual or physical machine on which DC/OS components run. DC/OS nodes are networked together to form a DC/OS cluster.
 
-## 主节点
-
-DC/OS主节点是与其他主节点一起工作，负责管理集群其余部分的节点。
-
-主节点包含大量DC/OS组件，包括Mesos主进程。
+A DC/OS cluster is composed of three types of nodes: masters, private agents, and public agents.
 
 ![DC/OS Node Types](/1.10/img/dcos-node-types.png)
 
-### 保护区域
+## Master Nodes
 
-根据分布，部署方法和基础架构配置，主节点可以在公开访问区域，也可以在受限制访问网络区域中以提高安全性。常见策略包括限制主节点访问办公室的IP段，并要求[VPN](https://en.wikipedia.org/wiki/Virtual_private_network) 访问。
+A DC/OS master node is a node that works together with other master nodes to manage the rest of the cluster.
 
-### 高可用性
+Master nodes contain the bulk of the DC/OS components, including a Mesos master process.
 
-多个主节点一起工作以提供高可用性和容错性。
+### Protected Zone
 
-只有一个主节点的集群可用于开发，但不具备高可用性，可能无法从故障中恢复。
+Depending on distribution, deployment method, and infrastructure configuration, master nodes may be publicly accessible or in a network zone that restricts access to improve security. Common strategies include restricting master node access to the IP range of your offices and requiring [VPN](https://en.wikipedia.org/wiki/Virtual_private_network) access.
 
-### 领袖选举
+### High Availability
 
-Mesos执行[领袖选举](https://en.wikipedia.org/wiki/Leader_election) 并将传入的流量路由到当前领导者以确保一致性。
+Multiple master nodes work together to provide high availability and fault tolerance.
 
-像Mesos一样，其他很多DC/OS主节点组件也执行相互独立的领导者选举。这意味着像Marathon和ZooKeeper这些不同组件的领导者可能在不同的主节点上。
+A cluster with only one master node is usable for development, but is not highly available and may not be able to recover from failure.
 
-### 法定数量
+### Leader Election
 
-为保持一致性，符合法定数量（半数加一）的主节点必须保持在线。
+Mesos performs [leader election](https://en.wikipedia.org/wiki/Leader_election) and routes incoming traffic to the current leader to ensure consistency.
 
-例如，三个主节点集群允许一个离线;五个主节点允许两个离线，允许在滚动更新期间失败。额外的主节点可以添加额外的风险容灾度。
+Like Mesos, several other DC/OS master node components perform independent leader election. This means that the leaders for different components, like Marathon and ZooKeeper, may be on different master nodes.
 
-主节点的数量只能在安装时指定。这主要是因为多个组件在不同节点上领导者改变以及法定数量改变的复杂性。这在将来可能会改变。
+### Quorum
 
-## 代理节点
+To maintain consistency, a quorum (half plus one) of master nodes must be connected at all times.
 
-DC/OS计算节点是运行用户任务的节点。
+For example, having three master nodes allows one to be down; having five master nodes allows two to be down, allowing for failure during a rolling update. Additional master nodes can be added for additional risk tolerance.
 
-代理节点包含一些DC/OS组件，包括Mesos代理进程。
+The number of master nodes can only be specified during installation. This is primarily because of the complexity of changing the quorum and configuration of multiple components with leaders on different nodes. This may change in the future.
 
-代理节点可以是公共或私有的，具体取决于代理和网络配置。
+## Agent Nodes
 
-### 公共代理节点
+A DC/OS agent node is a node on which user tasks are run.
 
-公共代理节点是位于从外部可以访问访问的网络上的代理节点，它允许通过外部通过集群[基础结构网络]（/1.10/overview/concepts/＃infrastructure-network）访问集群。
+Agent nodes contain a few DC/OS components, including a Mesos agent process.
 
-公共代理节点上的资源默认情况下被配置为只分配给指定为`slave_public`角色的任务。公共代理程序节点上的Mesos代理程序还具有“public_ip：true”代理程序属性以帮助其被发现。
+Agent nodes can be public or private, depending on agent and network configuration.
 
-公共代理节点主要用于对外的反向代理负载均衡，如Marathon-LB。这提供了一个[DMZ](https://en.wikipedia.org/wiki/DMZ_%28computing%29) 减少恶意攻击者可以攻击的区域。
+### Public Agent Nodes
 
-集群通常只有少数公共代理节点，因为少数负载平衡就可以处理多个服务的代理。
+A public agent node is an agent node that is on a network that allows ingress from outside of the cluster via the cluster’s [infrastructure networking](/1.10/overview/concepts/#infrastructure-network).
 
-### 私有代理节点
+The resources on public agent nodes are, by default, configured to only be allocated to tasks that specify the `slave_public` role. The Mesos agents on public agent nodes also have the `public_ip:true` agent attribute to assist in their discovery.
 
-私有代理节点是位于无法从外部访问的网络上的代理节点，该节点无法通过集群[基础结构网络](/1.10/overview/concepts/＃infrastructure-network) 从外部访问。
+Public agent nodes are used primarily for externally facing reverse proxy load balancers, like Marathon-LB. This provides a [DMZ](https://en.wikipedia.org/wiki/DMZ_%28computing%29) that decreases the surface area accessible by malicious attackers.
 
-私有代理节点上的资源默认情况下配置为允许无差异化分配。更确切地说，这些资源可以被赋予`*`(任意) 角色，允许它们被分配给任何没有指定角色的任务。有关更多信息，请参阅[Mesos资源角色](http://mesos.apache.org/documentation/latest/roles/)。
+Clusters generally have only a few public agent nodes, because a few load balancers can usually handle proxying to multiple services.
 
-由于这些资源没有差别，因此大多数任务都在私有代理节点上进行调度，并且从集群外部无法访问，从而减少了恶意攻击者可攻击区域。由于这个原因，集群通常由大部分私有代理节点组成。同样，默认情况下，大多数[Mesosphere Universe](/1.10/overview/concepts/#mesosphere-universe)软件包都安装在私有代理节点上。
+### Private Agent Nodes
 
-## 更多信息
+A private agent node is an agent node that is on a network that does not have ingress access from outside of the cluster via the cluster’s [infrastructure networking](/1.10/overview/concepts/#infrastructure-network).
 
-有关主节点和代理节点组件的更多信息，请参见[组件](/1.10/overview/architecture/components/)。
+The resources on private agent nodes are, by default, configured to allow undifferentiated allocation. More precisely, the resources are given the `*` role, allowing them to be allocated to any task that does not specify a role. For more information, see [Mesos resource roles](http://mesos.apache.org/documentation/latest/roles/).
 
-有关安全性的更多信息，请参见[集群保护](/1.10/administering-clusters/).
+Because these resources are undifferentiated, most tasks are scheduled on private agent nodes and are inaccessible from outside the cluster, decreasing the surface area accessible by malicious attackers. For this reason, clusters are generally comprised of mostly private agent nodes. Likewise, most [Mesosphere Universe](/1.10/overview/concepts/#mesosphere-universe) packages install by default on private agent nodes.
 
-有关扩展群集的更多信息，请参阅[添加代理节点](/1.10/administering-clusters/add-a-node/).
+## More Information
 
-有关配置公共节点的详细信息，请参阅[转换代理节点类型](/1.10/administering-clusters/convert-agent-type/).
+For more on master and agent node components, see [Components](/1.10/overview/architecture/components/).
 
+For more on security, see [Securing Your Cluster](/1.10/administering-clusters/).
+
+For more on scaling your cluster, see [Adding Agent Nodes](/1.10/administering-clusters/add-a-node/).
+
+For more on configuring public nodes, see [Converting Agent Node Types](/1.10/administering-clusters/convert-agent-type/).

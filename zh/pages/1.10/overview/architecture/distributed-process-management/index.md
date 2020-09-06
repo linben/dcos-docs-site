@@ -1,90 +1,105 @@
 ---
 layout: layout.pug
-navigationTitle:  Distributed Process Management
+navigationTitle: Distributed Process Management
 title: Distributed Process Management
 menuWeight: 5
-excerpt:
-
+excerpt: ""
 enterprise: false
 ---
-
 <!-- This source repo for this topic is https://github.com/dcos/dcos-docs -->
 
+This section describes the management of processes in a DC/OS cluster, from the resource allocation to the execution of a process.
 
-本节介绍从资源分配到执行进程的DC/OS集群中进程管理。
-
-在高层次上，当用户启动进程时，这种交互发生在DC/OS组件之间。通信发生在不同的层之间，例如用户与模拟器进行交互，以及同一层内，例如主节点与代理节点间通讯。
+At a high level, this interaction takes place between the DC/OS components when a user launches a process. Communication occurs between the different layers, such as the user interacting with the scheduler, and within a layer, for example, a master communicating with agents.
 
 ![Concept of distributed process management in DC/OS](/1.10/img/dcos-architecture-distributed-process-management-concept.png)
 
-以下例子，用户使用Marathon服务启动一个基于Docker引擎的容器：
+Here is an example, using the Marathon service and a user launching a container based on a Docker image:
 
 ![Example of distributed process management in DC/OS](/1.10/img/dcos-architecture-distributed-process-management-example.png)
 
-上述组件之间的按时间顺序的交互看起来像这样。 请注意执行者和任务被合并为一个块，因为在实践中往往是这样的：
+The chronological interaction between the above components looks like this. Notice that Executors and Task are folded into one block since in practice this is often the case:
 
 ![Sequence diagram for distributed process management in DC/OS](/1.10/img/dcos-architecture-distributed-process-management-seq-diagram.png)
 
-详细来说，包括以下步骤：
+In detail, here are the steps:
 
 <table class="table">
-<thead>
-<tr>
-<th>步骤</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
+  <tr>
+    
+<th>Step</th>
+<th>Description</th>
+  </tr>
+  
+  <tr>
+    
 <td>1</td>
-<td>客户端/调度器开始：客户端需要知道如何与调度器通讯，启动一个进程，例如通过Mesos-DNS或是DC/OS命令行。</td>
-</tr>
-<tr>
+<td>Client/Scheduler init: the Client needs to know how to connect to the Scheduler to launch a process, for example via Mesos-DNS or DC/OS CLI.</td>
+  </tr>
+  
+  <tr>
+    
 <td>2</td>
-<td>Mesos主节点发送资源邀约给调度器：资源邀约是基于所有节点上的集群资源，并通过在Mesos主节点上使用<a href="https://www.cs.berkeley.edu/~alig/papers/drf.pdf">DRF</a>算法计算得到.</td>
-</tr>
-<tr>
+<td>Mesos master sends resource offer to Scheduler: the resource offers are based on cluster resources managed through agents and the <a href="https://www.cs.berkeley.edu/~alig/papers/drf.pdf">DRF</a> algorithm in Mesos master.</td>
+  </tr>
+  
+  <tr>
+    
 <td>3</td>
-<td>由于没有来自客户端的进程请求在等待，调度器会拒绝资源邀约。如果客户端没有初始化进程，调度器会拒绝来自主节点的资源邀约。</td>
-</tr>
-<tr>
+<td>Scheduler declines resource offers because no process requests from Clients are pending. As long as no clients have initiated a process, the scheduler will reject offers from the master.</td>
+  </tr>
+  
+  <tr>
+    
 <td>4</td>
-<td>客户端初始化进程。例如，用户通过DC/OS<a href="/1.10/gui/">Services</a> 标签或是HTTP路径<code>/v2/app</code>创建了一个Marathon应用.</td>
-</tr>
-<tr>
+<td>Client initiates process launch. For example, this could be a user creating a Marathon app via the DC/OS <a href="/1.10/gui/">Services</a> tab or via the HTTP endpoint <code>/v2/app</code>.</td>
+  </tr>
+  
+  <tr>
+    
 <td>5</td>
-<td>Mesos主节点提供资源邀约。例如, <code>cpus(*):1; mem(*):128; ports(*):[21452-21452]</code></td>
-</tr>
-<tr>
+<td>Mesos master sends the resource offers . For example, <code>cpus(*):1; mem(*):128; ports(*):[21452-21452]</code></td>
+  </tr>
+  
+  <tr>
+    
 <td>6</td>
-<td>如果资源邀约符合进程调度器的要求，它就会接受资源邀约，并发送<code>launchTask</code>请求给Mesos主节点.</td>
-</tr>
-<tr>
+<td>If resource offer matches the requirements the Scheduler has for the process, it accepts the offer and sends a <code>launchTask</code> request to Mesos master.</td>
+  </tr>
+  
+  <tr>
+    
 <td>7</td>
-<td>Mesos主节点指导Mesos代理节点启动任务.</td>
-</tr>
-<tr>
+<td>Mesos master directs Mesos agents to launch tasks.</td>
+  </tr>
+  
+  <tr>
+    
 <td>8</td>
-<td>Mesos代理节点透过执行器启动任务.</td>
-</tr>
-<tr>
+<td>Mesos agent launches tasks via Executor.</td>
+  </tr>
+  
+  <tr>
+    
 <td>9</td>
-<td>执行器将任务状态返回给Mesos代理节点.</td>
-</tr>
-<tr>
+<td>Executor reports task status to Mesos agent.</td>
+  </tr>
+  
+  <tr>
+    
 <td>10</td>
-<td>Mesos代理节点将任务状态返回给Mesos主节点.</td>
-</tr>
-<tr>
+<td>Mesos agent reports task status to Mesos master.</td>
+  </tr>
+  
+  <tr>
+    
 <td>11</td>
-<td>Mesos主节点将任务状态返回给调度器.</td>
-</tr>
-<tr>
+<td>Mesos master reports task status to scheduler.</td>
+  </tr>
+  
+  <tr>
+    
 <td>12</td>
-<td>调度器将进程状态返回给客户端.</td>
-</tr>
-</tbody>
+<td>Scheduler reports process status to client.</td>
+  </tr>
 </table>
-
-[auth]: /1.10/security/ent/
-[components]: /1.10/overview/architecture/components/

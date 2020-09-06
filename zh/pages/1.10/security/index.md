@@ -1,7 +1,7 @@
 ---
 layout: layout.pug
-navigationTitle: Security
-title: Security
+navigationTitle: 安全
+title: 安全
 menuWeight: 80
 excerpt: ""
 enterprise: false

@@ -1,99 +1,120 @@
 ---
 layout: layout.pug
-excerpt: ""
+excerpt:
 title: DC/OS Overlay
 navigationTitle: Overlay
 menuWeight: 5
 ---
-# DC/OS overlay: An IP-per-Container solution for DC/OS
+
+# DC/OS复用: DC/OS每容器一个IP的解决方案
 
 ## 介绍
 
-From a networking standpoint, to provide an end-user experience similar to that provided by a virtual machine environment it’s important to provide each container with its own IP address and network namespace. Providing containers with an isolated network stack ensures logical network isolation as well as network performance isolation between containers. Further, an IP-per-container allows the user/developer to use the traditional network operational tools (traceroute, tcpdump, wireshark) and processes they are familiar with, and helps their productivity in debugging network connectivity/performance issues. From an operational standpoint it becomes much easier to identify container specific traffic, and hence simplifies enforcement of network performance and security policies for containers.
+从网络的角度来看，为了提供与虚拟机环境相似的最终用户体验，为每个容器提供自己的IP地址和网络名称空间是非常重要的。为容器提供隔离的网络堆栈可确保逻辑网络隔离以及容器之间的网络性能隔离。此外，每个容器有自己IP允许用户/开发人员使用传统的网络工具（traceroute，tcpdump，wireshark）以及他们熟悉的流程，在设计网络连接/性能问题时帮助他们提升效率。从运维的角度来看，识别特定容器的流量变得更加容易，因此简化了容器的网络性能和安全策略。
 
-A default IP-per-container solution for DC/OS needs to be agnostic of the network on which DC/OS runs. Thus, to achieve IP-per-container we need to use a virtual network. Overlays make the container network topology independent of the underlying host network. Further, overlays provide complete segregation of container traffic from host traffic making policy enforcement on container traffic much simpler and independent of the host traffic. The challenge with implementing overlays is the cost of encapsulating and decapsulating container traffic, when containers send and receive traffic. To minimize the impact of these encap and decap operations on container network throughput, it is imperative that the overlay implements the encap/decap operations as part of the packet processing pipeline within the kernel.
+DC/OS默认的每容器一IP解决方案与运行DC/OS的网络无关。因此，要实现每容器一IP，我们需要使用虚拟网络。复用使得容器网络拓扑独立于底层的主机网络。此外，复用提供了对主机流量和容器流量的完全隔离，使得对容器流量的策略执行变得简单得多，并且独立于主机流量。实现复用的挑战是容器发送和接收流量时封装和解封装容器流量的成本。为了将这些封装和解封装操作对容器网络吞吐量的影响降至最低，复用必须将封装/解封装操作作为内核中的包处理一部分。
 
-To achieve an IP-per-container solution for DC/OS, using overlays, we therefore need to choose an overlay technology that is actively supported by the Linux kernel. The most common overlay supported by the linux kernel is the VxLAN.
+为达到DC/OS每容器一IP的解决方案，使用复用，我们最终采用被Linux内核支持的复用技术.linux内核所支持最通用的复用技术是VxLAN.
 
-The overlay design for DC/OS makes the following assumptions/observations:
+DC/OS复用设计带来了以下的假设/观察：
 
-- We cannot assume a centralized IPAM, due to lack of guarantee of availability and reliability on a centralized IPAM.
-- We need to avoid layer 2 flooding to make the network scalable. This implies that we can’t rely on broadcasting ARPs to learn container’s MAC addresses. 
-- The solution needs to support Unified Containerizer a.k.a (MesosContainerizer) and DockerContainerizer, i.e., on the same overlay we should be able to run Docker and Mesos containers and allow them to talk to each other.
+- 由于缺乏对集中式IPAM的可用性和可靠性的保证，我们不能假设集中式IPAM。
+- 我们需要避免第2层广播风暴，使网络可扩展。这意味着我们不能依靠广播ARP来学习容器的MAC地址。
+- 这个解决方案需要支持通用容器又称（Mesos容器）和Docker容器，例如在同一个复用层上，我们应该能够运行Docker和Mesos容器，并允许他们相互通讯。
 
-In this document, based on the above assumption/constraints, we describe a software architecture for a control-plane within DC/OS that will allow the implementation of a VxLAN based layer 3 overlay.
+在本文中，基于上述假设/约束条件，我们描述了DC/OS中控制平面的软件体系结构，该体系结构允许实现基于VxLAN的第3层复用。
 
-Before describing the software architecture we describe the packet flow that will explain the operational aspects of the overlay, which will help build an intuition for the various components described in the software architecture.
+在描述软件体系结构之前，我们会通过描述数据包流来解释复用层的操作，这将有助于为软件体系结构中描述的各种组件构建印象。
 
-## DC/OS overlay in action
+## DC/OS复用层操作
 
 ![Agent configuration for containers running on MesosContainerizer and Docker once the VxLAN has been configured.](/1.10/img/overlay-fig-1.png)
 
-Figure 1: Agent configuration for containers running on MesosContainerizer and Docker once the VxLAN has been configured.
+图1: 运行Mesos和Docker容器的代理节点配置，使用VxLAN
 
-We can explain the operation of the overlay with an example. Figure 1 shows a 2 agent DC/OS cluster. To get the DC/OS overlay to work we need to allocate a subnet large enough to address the containers running on the overlay. The address space selected should be non-overlapping from the host network to ensure any misconfiguration when setting up the overlay. In the exampe shown, the host network is 10.0.0.0/8 and the address space chosen for the overlay is 9.0.0.0/8 .
+我们可以用一个例子来说明复用层的操作. 图1显示2个代理DC/OS集群节点。为保证DC/OS复用正常运行，我们需要分配一个足够大的子网，以便为运行在复用层上的容器分配地址。选择使用的地址空间不能与主机网络相重叠，以保证在配置复用网络时配置正确。如上例所示，主机网段是10.0.0.0/8，使用的复用网段空间是9.0.0.0/8.
 
-Ideally we would like an IPAM to perform address allocation for all containers on the overlay. However, it’s hard to solve reliability and consistency issues with a global IPAM. E.g., how do we notify the IPAM when the slave dies? What should be the availability of the IPAM to guarantee a 99% uptime of the cluster (without IPAM containers cannot function)? Given the complications arising from a global IPAM, we choose to go with a simpler architecture of carving out the address space into smaller chunks, and allowing the agent to own this chunk. In the example, the 9.0.0.0/8 space has been split into /24 subnets, with each subnet being owned by the agent. In the example Agent 1 has been allocated 9.0.1.0/24 and Agent 2 has been allocated 9.0.2.0/24.
+理想中，我们想使用一个IPAM来为复用层上所有的容器分配地址。然后，很难解决全局IPAM可靠性和一致性的问题。例如：当从节点离线时，如何通知IPAM？如何保证IPAM的可用性，以保证集群99%的时间可用（没有IPAM，容器便无法工作）？鉴于全局IPAM所带来的复杂情况，我们选择采用更简单的架构，将地址空间划分为更小的块，并允许代理节点拥有该块。在这个例子中，9.0.0.0/8空间被分成了24个子网，每个子网都由代理节点拥有。 在示例中，代理节点1分配了9.0.1.0/24，而代理节点2分配了9.0.2.0/24。
 
-Given a /24 subnet for the agent, the subnet needs to be further split into smaller chunks since the Mesos agent might need to launch Mesos containers, as well as Docker containers. As with the agents, we could have a static allocation between Mesos containers and Docker containers. In the example we have statically carved out the /24 space into a /25 space for Mesos containers and Docker containers. Also, it’s important to note that the Mesos containers are launched by the MesosContainerizer on the “m-dcos” bridge and the Docker container are launched by the DockerContainerizer, using the Docker daemon, on the “d-dcos’ bridge. Let us describe the packet flow for container-to-container communication.
+为代理节点分配一个/24子网，子网需要进一步拆分成更小的块，因为Mesos代理节点可能需要启动Mesos容器和Docker容器。在代理节点上，我们可以为Mesos容器和Docker容器之间进行静态地址分配。在这个例子中，我们静态地将/24网段划分成两个/25网段用于Mesos容器和Docker容器。 此外，重要的是要注意，Mesos容器由MesosContainerizer在“m-dcos”网桥上启动，而Docker容器由DockerContainerizer在“d-dcos”网桥上使用Docker进程启动。 让我们描述一下容器到容器通讯数据包流。
 
-### Container-to-Container communication on the same host
+### 在同一主机上的容器到容器通讯
 
-Assume a Mesos container on 9.0.1.0/25 wants to talk to a Docker container on 9.0.1.128/25. The packet flow will be as follows: - Container on the 9.0.1.0/25 sends packet to the default gateway, which is the “m-dcos” bridge, allocated the IP address 9.0.1.1/25. - The m-dcos bridge will consume the packet, and since m-dcos bridge exists in the host network namespace it will send the packet up the network stack to be routed. - The packet will be sent to d-dcos which will switch the packet to the 9.0.1.128/25 subnet.
+运行在9.0.1.0/25上的Mesos容器要与9.0.1.128/25上的Docker容器通讯。数据包流如下:
+- 在9.0.1.0/25上的容器将数据包发到默认网关，默认网关运行在“m-dcos”网桥上，分配地址为9.0.1.1/25. 
+- m-dcos会处理数据包，由于m-dcos网桥存在于主机的网络地址空间，它会将数据包发送到网络堆栈，正常路由.
+- 数据包会发到d-dcos，数据包会交换到9.0.1.128/25网段.
 
-### Container-to-Container communication on different hosts
+### 在不同主机上的容器到容器通讯
 
-Assume a Mesos container on 9.0.1.0/25 (Agent 1) wants to talk to a Docker container on 9.0.2.128/25 (Agent 2). The packet flow will be as follows: - The packet from 9.0.1.0/25 will be sent to the default gateway on the “m-dcos” bridge (9.0.1.1/25). The bridge will consume the packet and send it up the network stack. Since bridge is in the host network namespace the packet will get routed using the host network namespace routing table. - The host will have a route 9.0.2.0/24 -> 44.128.0.2 (we will explain in the next section how this route is installed), which basically tells the host that to send this packet you need to send it via VxLAN1024 (there is also an entry for 44.128.0.0/20 -> VxLAN1024). - Since 44.128.0.2 is directly connected on VxLAN1024. The kernel will try to ARP for 44.128.0.2. During configuration of the overlay DC/OS would have installed an entry in the ARP cache for the VTEP end-point 44.128.0.2, and the kernel ARP lookup would succeed. - The kernel routing module would send the packet to the VxLAN device VxLAN1024 with the destination MAC set to **70:B3:D5:00:00:02**. - To forward the packet VxLAN1024 needs an entry with the MAC address **70:B3:D5:00:00:01** as the key. This entry in the VxLAN forwarding database would be programmed by DC/OS. Pointing to the IP address of Agent 2. The reason DC/OS is able to program this entry is because it is aware of the agent IP and the VTEPs existing on all the agents. - At this point the packet is encapsulated in a UDP header (specified by the VxLAN FDB), and send to VTEP existing on Agent 2. - The VxLAN1024 on Agent 2 decapsulate the packet, and since the destination MAC address is set to VxLAN1024 MAC address on agent 2, the packet will be consumed by VxLAN1024 on Agent 2 to be routed. - In Agent 2 the routing table has entries for the subnet 9.0.2.128/25, as directly connected to the bridge “d-dcos”. The packet will therefore be forwarded to the container connected to the “d-dcos” bridge.
+运行在9.0.1.0/25（代理节点1）上的Mesos容器要与9.0.2.128/25（代理节点2）上的Docker容器通讯。数据包流如下:
+- 在9.0.1.0/25上的容器将数据包发到运行运行在“m-dcos”网桥上默认网关（9.0.1.1/25）。网桥会处理数据包，将包发送到网络堆栈。由于网络在主机网络命名空间，数据名会使用主机网络命名空间的路由表进行路由。
+- 主机上有路由条目9.0.2.0/24 -> 44.128.0.2 (我们会在下节讲解这条路由是如何被配置的), 这基本上就是让主机通过VxLAN1024(有一个路由条目44.128.0.0/20 -> VxLAN1024).来发送您想要发送的数据包.
+- 44.128.0.2与VxLAN1024直连。内核会使用ARP查询44.128.0.2。在配置DC/OS复用网络时，会配置与VTEP端点44.128.0.2相匹配的ARP缓存，内核APR查询成功.
+- 内核路由模块会将数据包以**70:B3:D5:00:00:02**为目标地址发送到VxLAN设备VxLAN1024.
+- 转发数据包到VxLAN1024的关键是MAC地址为**70:B3:D5:00:00:01**的条目。这个条目在VxLAN转发数据库中，由DC/OS构建。这个条目会指向代理节点2的IP地址。DC/OS能够构建这个条目是因为代理节点IP与VTEPs设备在所有节点上存在.
+- 此时，数据包会使用UDP包头(VxLAN FDB指定)封装，转发到代理节点2上的VTEP设置.
+- 代理节点2上的VxLAN1024会解封装数据包，由于目标MAC地址已经配置为代理节点2的VxLAN1024接口的MAC地址，数据包会被代理节点上的VxLAN1024所接收并路由.
+- 在代理节点2的路由表中有网段9.0.2.128/25的条目，即直连的网桥“d-dcos”. 因而，数据包会转发到连接在“d-dcos”网桥的容器上.
 
-### Challenges
+### 挑战
 
-As must be evident from the packet walk through for “Container-to-Container communication on different hosts”, for the DC/OS overlay to function there are quite few pieces of metadata that need to be pre-configured into the agent for the routing and switching to work properly. Here we will list the information that is required by the DC/OS overlay to operate properly.
+从“在不同主机上容器之间的通讯”的数据包传输必须是明显的，DC/OS复用网络需要在代理节点上预先配置一些元数据以便数据包的路由和交换能正确工作。以下，我们列出一些能使DC/OS复用网络能正常运转的信息：
 
-- Within DC/OS we need a SAM (A Subnet Allocation Module that will inform the agents of the subnets that have been allocated to them).
-- Within the agent, there needs to be an entity that configures the docker daemon with the portion of the subnet (in the example the 9.0.1.128/25 network) that has been allocated to the docker daemon.
-- Within the agent, there needs to be an entity that allocates IP addresses to the containers launched by the MesosContainerizer (in the example the 9.0.1.0/25 network).
-- Within DC/OS we need an entity that will program the VxLAN forwarding database on each agent, with the MAC addresses of all the VTEPs existing on all the agents, along with the encap information (agent IP, UDP port) required to encapsulate the packets correctly. The same entity also needs to program the ARP cache on each agent with the MAC address of all VTEPs, for their corresponding IP addresses.
+- 在DC/OS内，我们需要一个SAM (一个子网分配模块可以通知代理节点它们分配的网段).
+- 在代理节点上，需要为docker服务配置部分子网（例如9.0.1.128/25网段），这部分子网其实已分配给docker进程.
+- 在代理节点上，需要分配IP地址以运行Mesos容器(例如9.0.1.0/25网段).
+- 在DC/OS内，我们需要在每个代理节点上构建VxLAN转发数据库，其中包括所有代理节点上VTEP接口的MAC地址，也维护所有正确封装数据包的封装信息(代理节点IP, UDP端口) . 也需要构建包括所有代理节点上VTEP接口MAC地址，及其所对应IP地址的ARP缓存.
 
-The challenges gives us a laundry list that need to be addressed to make the DC/OS overlay functional. In the next section we will describe the software architecture of the control plane for DC/OS overlay. The control-plane will configure and programme the metadata listed in the “Challenges” section to make it functional.
+这给我们列出了一个能使DC/OS复用功能正常运行需要解决问题的列表。 在下一节中，我们将描述用于DC/OS复用网络控制平面的软件体系结构。控制平面将配置和构建“挑战”部分中列出的元数据，使其功能正常。
 
-## Software Architecture
+## 软件架构
 
 ![Software architecture for DC/OS overlay control plane.](/1.10/img/overlay-fig-2.png)
 
-Figure 2: Software architecture for DC/OS overlay control plane.
+Figure 2: DC/OS复用网络控制平台软件架构
 
-Figure 2 describes the software architecture that we plan to implement to realize a control plane for the DC/OS overlay. The blocks in orange are the missing pieces that have to be built. Below, we describe each of the missing pieces and functionality that they provide.
+图2描述我们实现DC/OS复用网络控制平面的软件架构。橙色的部分是缺失的，还需要构建的。下面我们说明每一个缺失部分，以及他们的功能.
 
-### DC/OS modules for Mesos
+### 用于Mesos的DC/OS模块
 
-**Code:** [Mesos Module(s) for DC/OS Overlay Network](https://github.com/dcos/dcos-mesos-modules/tree/master/overlay)
+**代码:** [Mesos Module(s) for DC/OS Overlay Network](https://github.com/dcos/dcos-mesos-modules/tree/master/overlay)
 
-To configure the underlying DC/OS overlay we need an entity that can allocate subnets to each agent. The entity also needs to configure linux bridges to launch Mesos and Docker containers in their own subnets. Further, the VTEP on each Agent needs to be allocated IP addresses and MAC addresses and the Agent routing table needs to be configured with the correct routes to allow containers to communicate over the DC/OS overlay.
+为配置底层的DC/OS复用网络，我们需要一个可以为每个代理节点分配子网的实体。该实体还需要配置linux网桥，以便在自己的子网中启动Mesos和Docker容器。此外，每个代理节点上的VTE接口需要分配IP地址和MAC地址，代理节点路由表需要配置正确的路由以允许容器通过DC/OS复用网络进行通讯。
 
-We plan to achieve all the above requirements for the DC/OS overlay by having two Mesos modules, a master DC/OS module and an Agent DC/OS module. We list the responsibilities of both these modules below:
+我们计划通过具有两个Mesos模块，一个主节点DC/OS模块和一个代理节点DC/OS模块来实现DC/OS复用网络。我们在下面列出这两个模块的职责：
 
-#### Master Mesos overlay module:
+#### 主Mesos复用网络模块:
 
-The master module will be run as part of the Mesos master and will have the following responsibilities: 1. It will be responsible for allocating the subnet to each of the agents. We will describe in more detail how the master module will use the replicated log to checkpoint this information for recovery during failover to a new Master. 2. It will listen for the agent overlay modules to register and recover their allocated subnet. The agent overlay module will also use this endpoint to learn about the overlay subnets allocated to it (in case of multiple virtual networks), the subnets allocated to each of the Mesos and Docker bridges within an overlay and the VTEP IP and MAC address allocated to it. 3. It exposes an HTTP endpoint “overlay-master/state” that presents the state of all the virtual networks in DC/OS. The response of this endpoint is backed by the following protobuf: https://github.com/dcos/mesos-overlay-modules/blob/master/include/overlay/overlay.proto#L86
+主模块作为主节点的部分来运行，有如下职责：
+1. 它负责为每个代理节点分配网段。我们将更详细地描述主模块如何使用复制的日志来检查这些信息，以便在有故障，服务迁移到新主节点时进行恢复.
+2. 它监听代理节点复用模块注册，恢复他们之前分配的网段。代理节点复用模块也使用这个端点来了解分配给它的复用网段（假如有多个虚拟网络），在复用网络上分配给每一个Mesos和Docker网桥的网段，VTEP接口IP以及MAC地址.
+3. 它暴露HTTP端点 “overlay-master/state” 展示在DC/OS里所有虚拟网络的状态。这个端点的回复由以下支持: https://github.com/dcos/mesos-overlay-modules/blob/master/include/overlay/overlay.proto#L86
 
-#### Agent Mesos overlay module:
+#### 代理Mesos复用网络模块:
 
-The agent overlay module runs as part of the Mesos agents and has the following responsibilities: 1. It is responsible for registering with the master overlay module. After registration it retrieves the allocated agent subnet, the subnet allocated to its Mesos and Docker bridges and VTEP information (IP and MAC address of the VTEP). 2. Based on the allocated agent subnet, it is responsible for generating a CNI (Container Network Interface) network config to be used by the `network/cni` isolator for the `MesosContainerizer`. 3. It is responsible for creating a *Docker network* to be used by the *`DockerContainerizer`*. 4. It exposes an HTTP endpoint `overlay-agent/overlays` that is used by the Virtual Network Service to retrieve information about the overlays on that particular agent.
+代理复用模块作为代理节点的部分来运行，有如下职责：
+1. 它负责向主复用模块注册。在注册之后，它拿到分配的代理节点网段，分配给它Mesos和Docker网段的网段，VTEP信息（VTEP接口的IP和MAC地址）.
+2. 基于分配的代理节点子网，它负责生成CNI（容器网络接口）网络配置，以供`network/cni`隔离器用于`Mesos容器`.
+3. 它负责创建一个 _Docker network_ 供 _`DockerContainerizer`_ 使用.
+4. 它暴露HTTP端点`overlay-agent/overlays`供虚拟网络服务获取在特定代理节点上的复用网络信息.
 
-### Using replicated log to coordinate subnet allocation in Master:
+### 使用复制的日志来协调主节点的网段分配:
 
-For MesosContainerizer and DockerContainerizer to launch containers on a given subnet, the Mesos agent needs to learn the subnet allocated to itself. Further, the subnet needs to be learned before the MesosContainerizer or the DockerContainerizer start.
+对于Mesos容器和Docker容器在特定的子网上启动容器，Mesos代理节点需要学习分配给自己的子网。此外，子网需要在Mesos容器或Docker容器启动之前学习。
 
-The master overlay module will be responsible for allocating the subnet, the VTEP IP and the MAC address associated with VTEP. While allocating new subnets and caching this information itself is straightforward, maintaining this information consistently during master failover is challenging. To allow for this information persist across master failover the master overlay module will use the [Mesos replicated log](http://mesos.apache.org/documentation/latest/replicated-log-internals/ "Mesos Documentation"). The algorithm that allows the master overlay module to checkpoint this information and recover it, once master failover has been completed is as follows : 1. Whenever a new agent overlay module registers with the master module, the master module will try allocating a new subnet, a new VTEP IP and a new MAC address for the VTEP to the registered agent module. It will however, not respond to the registration request, with the allocated information till this information has been written , successfully, into the replicated log. 2. On failover the master module will read the replicated log and recreate the subnet, VTEP IP, and VTEP MAC address information and build a cache of this allocated information in memory. 3. The agent overlay module’s registration request would fail in case the registration request was received in the middle of a Master failover. In this case it is the responsibility of the agent overlay module to locate the new master and try registering with the overlay module on the new master.
+主复用模块负责分配子网，VVTEP IP和MAC地址。虽然分配新的子网并缓存这些信息本身很简单，但是在主节点故障迁移时，维护这些信息的一致性是具有挑战性的。为了使这些信息在主节点故障迁移中保持不变，主复用模块将使用[Mesos复制日志](http://mesos.apache.org/documentation/latest/replicated-log-internals/ "Mesos Documentation")。 一旦主节点故障迁移完成，允许主复用模块检查该信息并恢复它的算法如下：
+1. 每当新的代理复用模块向主模块注册时，主模块将尝试为注册的代理模块分配VTEP的新子网，新VTEP IP和新MAC地址。然而，它将不会对注册请求做出响应回复这些信息，直到这些分配信息成功写入复制日志。
+2. 在主模块故障迁移时，会读取复制的日志，重新创建子网，VTEP IP, VTEP MAC地址信息，并将这些信息缓存在内存中.
+3. 代理复用模块的注册请求如发生在主模块故障迁移时，注册请求会失败。如果这样的情况发生，代理复用模块会查找新的主模块，尝试向新的主模块注册.
 
-### Configuring MesosContainerizer and DockerContainerizer to use the allocated subnet.
+### 使用分配的网段配置Mesos容器和Docker容器
 
-Once DC/OS module retrieves the subnet information from the master DC/OS module, it performs the following operations to allow MesosContainerizer and DockerContainerizer to launch containers on the overlay:
+一量DC/OS模块从主DC/OS模块中获得子网信息，它会做如下操作，以便Mesos容器和Docker容器在复用网段上启动容器:
 
-For MesosContainerizer the DC/OS module can generate a CNI config at a specified location. The CNI config will have the bridge information and IPAM information for the network/cni isolator to configure containers on the `m-<virtual network name>` bridge.
+对于Mesos容器，DC/OS模块会在特定的位置生成CNI配置。CNI配置中有网桥信息和IPAM信息，以供network/cni隔离器在`m-<virtral network name>>`网桥上配置容器.
 
-For DockerContainerizer the DC/OS module, after retrieving the subnet, will create a `docker network` with the canonical name `d-<virtual network name>`. It will do so using the following docker command:
-
+对于Docker容器, 在获得子网后，DC/OS模块会创建一个名为`d-<virtaul network name>`的`docker网络`。这会使用如下docker命令:
 ```sh
 docker network create \
 --driver=bridge \
@@ -104,19 +125,19 @@ docker network create \
 <virtual network name>
 ```
 
-**NOTE:** The assumption for DockerContainerizer to work with the DC/OS overlay is that the host is running Docker v1.11 or greater.
+**NOTE:** Docker容器运行DC/OS复用网络需要Docker v1.11或更高版本.
 
-**NOTE:** The default `<overlay MTU>` = 1420 bytes.
+**NOTE:** 默认`<overlay MTU>` = 1420字节.
 
-### Virtual Network Service: Overlay Orchestration
+### 虚拟网络服务: 复用协调
 
-**Code:** https://github.com/dcos/navstar.git
+**代码:** https://github.com/dcos/navstar.git
 
-Virtual Network Service is the overlay orchestrator service running on each agent which is responsible for the following functionality. It is a system which contains non-realtime components of the DC/OS overlay, as well as other networking-related chunks of DC/OS. The Virtual Network Service running on each agent is responsible for the following functionality:
+虚拟网络服务是在每个代理节点上运行的复用网络协调服务，它负责以下功能。它是一个非实时的DC/OS复用网络组件，以及与DC/OS相关的其他网络相关的组件。在每个代理节点上运行的虚拟网络服务负责以下功能：
 
-- Talking to the agent overlay module and learning the subnet, VTEP IP and MAC address allocated to the agent.
-- Creating the VTEP on the agent.
-- Programming the routes to various subnets on various agents.
-- Programming the ARP cache with the VTEP IP and MAC addresses.
-- Programming the VxLAN FDB with the VTEP MAC address and tunnel endpoint information.
-- Using [Lashup](https://github.com/dcos/lashup/ "GitHub repository"), a distributed CRDT store, to reliably disseminate agent overlay information to all agents within the cluster. This is one of most important functions performed by Virtual Network Service, since only by having global knowledge of all the agents in the cluster can Virtual Network Service program the routes on each agent for all the overlay subnets on all the agents.
+- 说到代理模块，它学习分配给代理节点的网段，VTEP IP和MAC地址
+- 在代理节点上创建VTEP接口
+- 为其他节点创建到各种网段的路由
+- 构建VTEP IP与MAC地址的ARP缓存
+- 构建VxLAN FDB，包括VTEP MAC地址和tunnel端点信息
+- 使用分布式CRDT存储[Lashup](https://github.com/dcos/lashup/ "GitHub repository") 向集群内的所有代理节点可靠地发布代理节点复用网络信息。这是虚拟网络服务所执行的最重要功能之一，因为只有拥有集群中所有代理节点的全部信息，虚拟网络服务才能在每个代理节点上为所有代理上的所有复用子网构建路由。

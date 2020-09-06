@@ -1,175 +1,179 @@
 ---
 layout: layout.pug
-navigationTitle:  Features
+navigationTitle: Features
 title: Features
 menuWeight: 3
-excerpt:
+excerpt: ""
 ---
+This is an overview of the features that make DC/OS more than the sum of its parts.
 
-这是DC/OS特性的概述，让DC/OS功能更多
+## <a name="high-resource-utilization"></a>High Resource Utilization
 
+DC/OS makes it easy to get the most out of your compute resources.
 
-## <a name="high-resource-utilization"></a>更高的资源利用率
+Deciding where to run processes to best utilize cluster resources is hard, NP-hard in-fact. Deciding where to place long-running services which have changing resource requirements over time is even harder. In reality there's no single scheduler that can efficiently and effectively place all types of tasks. There's no way for a single scheduler to be infinitely configurable, universally portable, lightning fast, and easy to use - all at the same time.
 
-DC/OS可以轻松地充分利用计算资源。
+DC/OS manages this problem by separating resource management from task scheduling. Mesos manages CPU, memory, disk, and GPU resources. Task placement is delegated to higher level schedulers that are more aware of their task's specific requirements and constraints. This model, known as two-level scheduling, enables multiple workloads to be colocated efficiently.
 
-决定在那儿运行这些进程可以最好的利用集群资源是非常难的，事实上这是一个非确定性多项式难题。判断在那儿运行需要长期运行的服务更加困难，这需要不断调整新源需求。在现实中，没有任何一个调度程序可以非常高效的处理所有类型的任务。单个调度程序无法满足永远可配置，通用便携，闪电般快速，易于使用 - 所有这些。
+## <a name="mixed-workload-colocation"></a>Mixed Workload Colocation
 
-DC/OS通过将资源管理与任务调度分离来管理此问题。 Mesos管理CPU，内存，磁盘和GPU资源。任务调度委派给更高级别的调度程序，他们更了解任务的具体要求和限制。这种称为两级调度的模型能够使多个工作负载高效地共存。
+DC/OS makes it easy to run all your computing tasks on the same hardware.
 
+For scheduling long-running services, DC/OS tightly integrates with Marathon to provide a solid stage on which to launch microservices, web applications, or other schedulers.
 
-## <a name="mixed-workload-colocation"></a>混合工作负载托管
+For other types of work, DC/OS makes it easy to select and install from a library of industry-standard schedulers. This opens the door to running batch jobs, analytics pipelines, message queues, big data storage, and more.
 
-DC/OS使您可以轻松地在同一硬件上运行所有计算任务。
+For complex custom workloads, you can even write your own scheduler to optimize and precisely control the scheduling logic for specific tasks.
 
-为了调度一直运行的服务，DC/OS与Marathon紧密集成，提供一个可以启动微服务，Web应用程序或其他调度程序的坚实平台。
+## <a name="container-orchestration"></a>Container Orchestration
 
-对于其他类型的工作，DC/OS可以轻松地从符合行业标准的调度程序库中进行选择和安装。这为运行批处理作业，分析管道，消息队列，大数据存储等等打开了大门。
+DC/OS provides easy-to-use container orchestration right out of the box.
 
-对于复杂的自定义工作负载，甚至可以编写自己的调度程序来优化和精确控制特定任务的调度逻辑。
+Docker provides a great development experience, but trying to run Docker containers in production presents significant challenges. To overcome these challenges, DC/OS includes Marathon as a core component, giving you a production-grade, battle-hardened scheduler that is capable of orchestrating both containerized and non-containerized workloads.
 
-## <a name="container-orchestration"></a>容器编排
+With Marathon, you have the ability to reach extreme scale, scheduling tens of thousands of tasks across thousands of nodes. You can use highly configurable declarative application definitions to enforce advanced placement constraints with node, cluster, and grouping affinities.
 
-DC/OS直接提供易于使用的容器编排。
+## <a name="extensible-resource-isolation"></a>Extensible Resource Isolation
 
-Docker提供了很好的开发体验，但是试图在生产环境中运行Docker容器是一个很大的挑战。为了克服这些挑战，DC/OS将Marathon作为一个核心组件，为您提供了一个生产级，经过强化的调度程序，可以协调容器化和非容器化的工作负载。
+DC/OS makes it possible to configure multiple resource isolation zones.
 
-借助Marathon，您可以达到极限规模，调度数千个节点上的数万个任务。您可以使用高度可配置的声明式应用程序定义来具体的执行节点，集群或分组。
+Not all tasks have the same requirements. Some require maximum isolation for security or performance guarantees. Others are ephemeral, public, or easily restarted. And most are somewhere in between.
 
-## <a name="extensible-resource-isolation"></a>可扩展的资源隔离
+The simplest isolation method is to just delegate to Docker. It’s trivial to run Docker containers on DC/OS, but Docker is a bit of a blunt instrument when it comes to isolation. The [Mesos containerizer](http://mesos.apache.org/documentation/latest/containerizers/) is much more flexible, with multiple independently configurable isolators, and pluggable custom isolators. The Mesos containerizer can even run Docker containers without being chained to the fragility of `dockerd`.
 
-DC/OS可配置多个资源隔离区。
+## <a name="stateful-storage-support"></a>Stateful Storage Support
 
-并不是所有的任务都有相同的要求。有些需要最大限度地隔离安全或性能保证。有些则是短暂的，公开的或易于重启的。但大多数是介于两者之间的。
+DC/OS gives your services multiple persistent and ephemeral storage options.
 
-最简单的隔离方法是委托给Docker。在DC/OS上运行Docker容器是非常容易的，但是在隔离时，Docker不是一个好工具。[Mesos容器](http://mesos.apache.org/documentation/latest/containerizers/)更加灵活，具有多个独立可配置的隔离器和热插拔的定制化隔离器。 Mesos容器甚至可以运行Docker容器而不会与dockerd的弱点相关联。
+External persistent volumes, the bread and butter of block storage, are available on many platforms. These are easy to use and reason about because they work just like legacy server disks, however, by design, they compromise speed for elasticity and replication.
 
-## <a name="stateful-storage-support"></a>支持状态化存储
+Distributed file systems are a staple of cloud native applications, but they tend to require thinking about storage in new ways and are almost always slower due to network-based interaction.
 
-DC/OS为您的服务提供了多种持久化和易失性存储选项
+Local ephemeral storage is the Mesos default for allocating temporary disk space to a service. This is enough for many stateless or semi-stateless 12-factor and cloud native applications, but may not be good enough for stateful services.
 
-外部持久卷，基本的块存储，可在许多平台上使用。易于使用因为它们像传统服务器磁盘一样工作，但是，设计原理决定，它们会降低弹性以及复制的速度。
+Local persistent volumes bridge the gap and provide fast, persistent storage. If your service is replicating data already or your drives are RAID and backed up to nearline or tape drive, local volumes might give you enough fault tolerance without the speed tax.
 
-分布式文件系统是云原生应用程序的主要组成部分，但是他们往往需要以新的方式考虑存储，并且由于基于网络的交互而几乎总是较慢。
+## <a name="package-management"></a>Public Management
 
+DC/OS makes it easy to install both public community and private proprietary packaged services.
 
-本地易失性存储是Mesos的默认方式，将临时磁盘空间分配给服务。这对于许多无状态或半无状态的，和云原生应用程序来说已经足够了，但是对于有状态的服务来说可能还不够好。
+The Mesosphere Universe Package Repository connects you with a library of open source industry-standard schedulers, services, and applications. Why reinvent the wheel if you don't have to? Take advantage of community projects to handle batch job scheduling, highly available data storage, robust message queuing, and more.
 
-本地持久性卷填补了这个空白，提供快速，持久化的存储。如果您的服务本身会复制数据，或者您的驱动器是RAID并备份到近线或磁带驱动器，则本地卷可能会为您提供足够好的容错性，而不需要损失速度。
+DC/OS also supports installing from multiple package repositories: you can host your own private packages to be shared within your company or with your customers.
 
-## <a name="package-management"></a>公共管理
+## <a name="cloud-agnostic-installer"></a>Cloud-Agnostic Installer
 
-DC/OS可以轻松安装来自公共社区或是私有的服务。
+The DC/OS Installer makes it easy to install DC/OS on any cluster of physical or virtual machines.
 
-Mesosphere通用包存储库将您与符合开源行业标准的调度器，服务，应用程序库相连接。如非必要，为什么要重复造轮子？利用社区项目来处理批量任务调度，高可用的数据存储，强大的消息队列等等。 
+For users with their own on-premise hardware or virtual machine provisioning infrastructure, the GUI or CLI Installer provides a quick, intuitive way to install DC/OS.
 
-DC/OS还支持从多个软件包仓库进行安装：您可以管理自己的私有软件包，以便在公司内部或与客户共享。
+For users deploying to the public cloud, DC/OS offers several configurable cloud provisioning templates for AWS, Azure, and Packet.
 
-## <a name="cloud-agnostic-installer"></a>独立于云的安装程序
+For the advanced user, the Advanced Installer provides a scriptable, automatable interface to integrate with your prefered configuration management system.
 
-DC/OS安装程序使在任何集群的物理或虚拟机上安装DC/OS变得容易。
+## <a name="web-and-command-line-interfaces"></a>Web and Command Line Interfaces
 
-对于拥有自己的本地硬件或虚拟机基础架构的用户，图形或命令行安装程序提供了一种快速，直观的安装DC/OS的方法。
+The DC/OS web and command line interfaces make it easy to monitor and manage the cluster and its services.
 
-对于部署到公共云的用户，DC/OS为AWS，Azure和Packet提供了多个可配置的云模板。
+The DC/OS web interface lets you monitor resource allocation, running services, current tasks, component health, available packages, and more with intuitive browser-based navigation, real-time graphs, and interactive debugging tools.
 
-对于高级用户，高级安装程序提供可编写脚本的自动化界面，以便与您的首选配置管理系统集成。
+The DC/OS command line interface provides control of DC/OS from the comfort of a terminal. It’s powerful, yet easily scriptable, with handy plugins to interact with installed services.
 
-## <a name="web-and-command-line-interfaces"></a>Web和命令行界面
+## <a name="elastic-scalability"></a>Elastic Scalability
 
-DC/OS Web和命令行界面使监控和管理集群及其服务变得非常简单。
+DC/OS gives you the power to easily scale your services up and down with the turn of a dial.
 
-借助直观的基于浏览器的导航，实时图形和交互式调试工具，DC/OS Web界面可让您监控资源分配，服务运行，当前任务，组件健康状态，可用软件包等。
+Horizontal scaling is trivial in Marathon, as long as your service supports it. You can change the number of service instances at any time. DC/OS even lets you autoscale the number of instances based on session count, using the Marathon Load Balancer.
 
-DC/OS命令行界面从终端提供DC/OS的控制。它功能强大，易于编写脚本，可通过插件与已安装的服务进行交互。
+Vertical scaling is also supported in Marathon, allowing you to allocate more or less resources to services and automatically performing a rolling update to reschedule the instances without downtime.
 
-## <a name="elastic-scalability"></a>弹性伸缩
+Adding nodes to a DC/OS cluster is a snap too. The DC/OS Installer uses immutable artifacts that allow you to provision new nodes without having to recompile, reconfigure, or re-download component packages from flaky remote repositories.
 
-DC/OS使您可以轻松地通过点击数字的方式来缩放您的服务。
+## <a name="high-availability"></a>High Availability
 
-只要您的服务支持，在Marathon中弹性缩放是轻而易举的。您可以随时更改服务实例的数量。 DC/OS甚至可以使用Marathon负载均衡器基于会话数自动调整实例数量。
+DC/OS is highly available and makes it easy for your services to be highly available too.
 
-Marathon也支持垂直缩放，允许您为服务分配更多或更少的资源，并自动执行滚动升级以重新调度实例，而无需停机。
+Mission-critical services require health monitoring, self-healing, and fault tolerance both for themselves and the platform and infrastructure they run on. DC/OS gives you multiple layers of protection.
 
-将节点添加到DC/OS集群也很简单。 DC/OS安装程序使用不可变原件，使您无需从远程存储库重新编译，重新配置或重新下载组件包，即可部署新节点。
+To achieve self-healing, DC/OS services are monitored by Marathon and restarted when they fail. Even legacy services that don't support distribution or replication can be automatically restarted by Marathon to maximize uptime and reduce service interruption. On top of that, all core DC/OS components, including Marathon, are monitored by the DC/OS diagnostics service and restarted by `systemd` when they fail.
 
-## <a name="high-availability"></a>高可用
+To achieve fault tolerance, DC/OS can run in multiple master configurations. This provides not just system-level fault tolerance but also scheduler-level fault tolerance. DC/OS can even survive node failure during an upgrade with no loss of service.
 
-DC/OS具有很好的高可用性，使得您的服务也具备高可用特性。
+## <a name="zero-downtime-upgrades"></a>Zero Downtime Upgrades
 
-关键任务服务需要其自身具有健康监控，自我修复和容错能力，以及其运行平台和基础架构也需要具体这些能力。DC/OS为您提供多层保护。
+DC/OS provides automation for updating services and the systems with zero downtime.
 
-为了实现自我修复，DC/OS服务由Marathon监控并在失败时重启。 即使是不支持分发或复制的传统服务，Marathon也可以自动重新启动，以最大限度地延长正常运行时间并减少服务中断。 最重要的是，包括Marathon在内的所有核心DC/OS组件都由DC/OS诊断服务进行监控，并在发生故障时由`systemd`重新启动。
+DC/OS services running on Marathon can all be updated with rolling, blue-green, or canary deployment patterns. If the update fails, roll it back with a single click. These powerful tools are critical for minimizing downtime and user interruption.
 
-为了实现容错，DC/OS可以在多个主节点的配置下运行。这不仅提供系统级容错，而且提供调度程序级容错。在升级过程中，DC/OS甚至可以承受节点故障而不会丢失服务。
+DC/OS itself also supports zero-downtime upgrades with its powerful installer. Stay up-to-date with the latest open source components with a single combined update.
 
-## <a name="zero-downtime-upgrades"></a>零宕机时间升级
+## <a name="integration-tested-components"></a>Integration-Tested Components
 
-DC/OS可以在零停机时间的情况自动更新服务和系统。
+DC/OS provides a well-tested set of open source components and bakes them all together with a single combined installer.
 
-在Marathon上运行的DC/OS服务都可以使用滚动，蓝绿或金丝雀部署方式进行更新。如果更新失败，只需单击一下即可回滚。这些强大的工具对于减少停机时间和中断用户服务至关重要。
+Mixing and matching open source components can be a pain. You never know which versions will work together or what the side effects of their interactions will be. Let the Mesos experts handle it for you! Get to production quickly and focus on the quality of your products, not the stability of your platform.
 
-DC/OS本身还通过其强大的安装程序支持零宕机升级。通过简单的升级与最新的开源组件保持同步。
+## <a name="service-discovery-and-dist-load-balancing"></a>Service Discovery and Distributed Load Balancing
 
-## <a name="integration-tested-components"></a>充分集成测试的组件
+DC/OS includes several options for automating service discovery and load balancing.
 
-DC/OS提供了一套经过充分测试的开源组件，并将它们与安装程序一起提供。
+Distributed services create distributed problems, but you don't have to solve them all yourself. DC/OS includes automatic DNS endpoint generation, an API for service lookup, transport layer (L4) virtual IP proxying for high speed internal communication, and application layer (L7) load balancing for external-facing services.
 
-开源组件的混合和互相适配会很痛苦。你永远不知道哪个版本可以一起工作，或者他们之间的副作用将是什么。 让Mesos专家为您处理！快速投入生产，关注产品质量，而不是平台的稳定性。
+## <a name="lb—mgmt-plane"></a>Control and Management plane for Distributed Load Balancers
 
-## <a name="service-discovery-and-dist-load-balancing"></a>服务发现和分布式负载均衡
+DC/OS Enterprise provides a centralized management & control plane for service availability & performance monitoring.
 
-DC/OS提供几个用于自动化服务发现和负载平衡的选项。
+While Distributed Load Balancers are ideal for service discovery and service availability of DC/OS Services, monitoring and managing them requires tooling and effort. DC/OS Enterprise comes with centralized control and management plane for DC/OS Distributed Load balancer that consists of an aggregation API which unifies all distributed engines into a single service centric view and single set of service health metrics. DC/OS Enterprise, also includes a Service Performance & health monitoring UI that helps monitor service performance as well as root cause service degradation issues and identify root causes.
 
-分布式服务带来分布式的问题，但是您不必自己解决所有问题。DC/OS包括自动DNS端点生成，用于服务查找的API，用于高速内部通信的传输层（L4）虚拟IP代理以及用于外部服务的应用层（L7）负载平衡。
+## <a name="perimeter-security"></a>Cluster Perimeter Security
 
-## <a name="lb—mgmt-plane"></a>分布式负载平衡器的控制和管理
-
-DC/OS企业版为服务可用性和性能监控提供集中管理和控制平台。
-
-尽管分布式负载均衡器非常适合DC/OS服务的服务发现和服务可用性，但监控和管理它们需要工具和工作。 DC/OS企业版通过一个集中式API为DC/OS分布式负载均衡器提供了集中式控制和管理平台，该集中API将所有分布式引擎统一为一个服务中心视图和一组服务健康度量标准。 DC/OS企业版还包含一个服务性能和运行状况监视界面，可帮助监视服务性能以及根本原因服务降级问题并确定问题原因。
-
-## <a name="perimeter-security"></a>群集周边安全
-
-DC/OS提供约定俗成的设计，以确保DC/OS集群和任何客户端（UI/浏览器，CLI，API客户端等）之间的管理和程序通信发生在安全区域，所有请求都通过SSL安全通道传输。DC/OS主节点是管理安全区域内进入DC/OS集群的入口点，更具体地说，API网关是一个名为“Admin Router”的组件，用作管理到DC/OS集群的所有管理连接的反向代理。
+DC/OS provides prescriptive design to ensure administrative and programmatic communication between DC/OS Clusters & any client (UI/Browsers, CLIs, API Clients etc.) happens over the Admin security zone and all requests are transported over SSL secured channel. DC/OS Master nodes are the entry point into the DC/OS Cluster within the Admin security zone and more specifically, the API Gateway is a component named ‘Admin Router’ that serves as reverse proxy managing all administrative connectivity into DC/OS Clusters.
 
 [enterprise]
-## <a name="identity-access-mgmt"></a>身份和访问管理
+
+## <a name="identity-access-mgmt"></a>Identity and Access Management
+
 [/enterprise]
 
-DC/OS企业版包括内置的身份和访问管理，允许我们创建用户和组，并为每个用户和组分配不同级别的权限。 DC/OS企业版支持以下类型的用户和组：
+DC/OS Enterprise includes built-in Identity and Access Management that allows our users to create Users and Groups and assign varying level of Authorization privileges to each user and group. DC/OS Enterprise supports following types of Users and Groups:
 
-* 本地用户
-* 本地团体
-* 远程LDAP用户
-* 远程LDAP组（仅用于导入本地组）
-* 远程SAML用户
-* 服务用户帐户
+* Local Users
+* Local Groups
+* Remote LDAP Users
+* Remote LDAP Groups (only for importing into local group)
+* Remote SAML User
+* Service User Account
 
-DC / OS企业版IAM服务还包括对可以分配给上述每个主体/用户的授权控制的支持。用户可以以“主题”的形式授予特定的一组权限，可以在“对象”上执行“操作”，其中“对象”可以是特定DC/OS服务的API端点到Marathon应用程序，“行动”列举对象上可能的一组操作，如“创建，读取，更新或删除”。
+DC/OS Enterprise IAM Service also includes support for authorization controls that can be assigned to each of the above principals/users. Users can be given specific set of permissions in the form ‘Subject’ can perform ‘Action’ on ‘Object’ where ‘Object’ can be an API endpoint to a particular DC/OS Service to a Marathon Application group and ‘Action’ enumerates the set of actions that are possible on the Object such as “Create, Read, Update or Delete”.
 
 [enterprise]
-## <a name="identity-provider"></a>具有LDAP，SAML和OpenID Connect的外部身份验证程序
+
+## <a name="identity-provider"></a>External Identity Provider with LDAP, SAML & OpenID Connect
+
 [/enterprise]
 
-DC/OS企业版集成了支持LDAP v3接口（包括Microsoft Active Directory）和基于SAML的身份认证程序，以便您可以从已有的用户目录中向DC/OS导入外部的用户，并在DC/OS内管理的这些用户和用户组并授权。
+DC/OS Enterprise integrates Identity Providers that support LDAP v3 Interface (including Microsoft Active Directory) and SAML based identity providers such that you can import users external to DC/OS from your existing User Directory and manage authorization on those users and user group within DC/OS.
 
 [enterprise]
-## <a name="cluster-encryption"></a>集群安全和加密通讯
+
+## <a name="cluster-encryption"></a>Cluster security with encrypted communication
+
 [/enterprise]
 
-DC/OS Enterprise旨在安全地在本地和云上运行。为确保集群安全，DC/OS企业版支持DC/OS集群内部组件之间的通讯加密。 这是通过运行在DC/OS主节点上的CA颁发的证书来确保的，并且所有代理节点在安装时都安装的CA.crt。 此机制确保DC/OS集群内各种服务之间的所有通信都在安全的SSL通道上。
+DC/OS Enterprise is designed to run securely on-premises and in the cloud. To ensure cluster security, DC/OS Enterprise supports encrypted communication between DC/OS Cluster Internal components. This is achieved by ensuring that DC/OS runs with a Certificate Authority that issues certificates for DC/OS Master Nodes and all Agent nodes have an installed CA.crt at bootstrap time. This mechanism ensures all communication between the various services within DC/OS cluster are over secure SSL channels.
 
 [enterprise]
-## <a name="workload-isolation"></a>容器级别授权解决工作负载隔离
+
+## <a name="workload-isolation"></a>Workload Isolation with Container level authorization
+
 [/enterprise]
 
-DC/OS企业版支持细粒度的工作负载隔离，使组织内的多个业务组能够在共享集群内运行容器和工作负载，但仍然可以确保除了由不同工作负载之间的Linux cGroup提供的性能隔离外，还有安全隔离。 工作负载安全隔离由在每个代理节点上运行的DC/OS授权模块完成，并负责对DC/OS IAM服务进行授权检查，以验证工作负载的用户/所有者是否有权在集群中的任何位置（包括代理节点上）执行他们正在尝试的操作。
+DC/OS Enterprise supports fine-grained workload isolation to enable multiple business groups within an organization to run containers & workloads within a shared cluster but still be guaranteed that there is security isolation in addition to performance isolation provided by Linux cGroups between the varying workloads. Workload security isolation is performed by a DC/OS Authorization module that runs on every agent node and is responsible for making authorization checks against DC/OS IAM Service to verify that the user/owner of the workload is authorized to perform the action they are trying to execute anywhere within the cluster including on the Agent node.
 
-## <a name="software-defined-networks"></a>每个容器都有IP，运行在可扩展虚拟网络（SDN）
+## <a name="software-defined-networks"></a>IP per Container with Extensible Virtual Networks (SDN)
 
-DC/OS内置支持基于容器网络接口（CNI）标准的虚拟网络。默认情况下，创建一个名为dcos的虚拟网络，并且任何连接到虚拟网络的容器都会分配到自己的专用IP。这允许用户运行对动态分配的端口不友好的工作负载，并且可以绑定现有应用配置中的现有端口。现在，随着对专用IP/容器的支持，工作负载可以自由绑定到任何端口，因为每个容器都可以访问整个可用的端口范围。
+DC/OS comes built-in with support Virtual Networks leveraging Container Network Interface(CNI) standard. By default, there is one virtual network named `dcos` is created and any container that attaches to a Virtual Network, receives its own dedicated IP. This allows users to run workloads that are not friendly to dynamically assigned ports and would rather bind the existing ports that is in their existing app configuration. Now, with support for dedicated IP/Container, workloads are free to bind to any port as every container has access to the entire available port range.
 
-## <a name="network-isolation"></a>虚拟网段上的网络隔离
+## <a name="network-isolation"></a>Network Isolation of Virtual Network Subnets
 
-DC/OS现在支持在安装时创建多个虚拟网络，并将不重叠的子网与每个虚拟网络相关联。此外，DC/OS用户可以在DC/OS代理节点上编写网络隔离规则，以确保隔离虚拟网络子网上的流量。
+DC/OS now supports the creation of multiple virtual networks at install time and associate non-overlapping subnets with each of the virtual networks. Further, DC/OS users can program Network Isolation rules across DC/OS Agent nodes to ensure that traffic across Virtual Network subnets is isolated.

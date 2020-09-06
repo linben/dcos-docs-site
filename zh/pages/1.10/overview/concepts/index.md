@@ -1,412 +1,405 @@
 ---
 layout: layout.pug
-navigationTitle:  Concepts
-title: Concepts
+navigationTitle: 概念
+title: 概念
 menuWeight: 5
-excerpt:
-
+excerpt: ""
 enterprise: false
 ---
-
 <!-- This source repo for this topic is https://github.com/dcos/dcos-docs -->
 
+# <a name="dcos-concepts"></a>DC/OS 概念
 
-
-# <a name="dcos-concepts"></a>DC/OS概念
-
-DC/OS由许多开源组件组成，其中一些在DC/OS之前就已经存在。本文档中使用的术语可能与您熟悉的术语类似，但可能在DC/OS中以不同的方式使用。
+DC/OS由许多开源组件组成, 其中有几个是在 dc/os 之前存在的。 本文档中使用的术语可能与您熟悉的预先存在的术语类似, 但是, 它们可能与 DC/OS 使用不同的方式。
 
 - [DC/OS](#dcos)
 - [DC/OS GUI](#dcos-gui)
 - [DC/OS CLI](#dcos-cli)
-- [Cluster](#dcos-cluster)
-- [Network](#network)
-  - [Infrastructure Network](#infrastructure-network)
-  - [Virtual Network](#dcos-virtual-network)
-- [Node](#dcos-node)
-  - [Master Node](#dcos-master-node)
-  - [Agent Node](#dcos-agent-node)
-    - [Private Agent Node](#private-agent-node)
-    - [Public Agent Node](#public-agent-node)
-- [Host Operating System](#host-operating-system)
-- [Bootstrap Machine](#bootstrap-machine)
-- [Service](#dcos-service)
-  - [Marathon Service](#marathon-service)
-  - [Systemd Service](#systemd-service)
-  - [System Service](#system-service)
-  - [User Service](#user-service)
-- [Service Group](#dcos-service-group)
-- [Job](#dcos-job)
-- [Scheduler](#dcos-scheduler)
-- [Scheduler Service](#dcos-scheduler-service)
-- [Component](#dcos-component)
-- [Package](#dcos-package)
-- [Package Manager](#dcos-package-manager)
-- [Package Registry](#dcos-package-registry)
+- [集群](#dcos-cluster)
+- [网络](#network) 
+  - [基础设施网络](#infrastructure-network)
+  - [虚拟网络](#dcos-virtual-network)
+- [节点](#dcos-node) 
+  - [Master节点](#dcos-master-node)
+  - [Agent节点](#dcos-agent-node) 
+    - [Private Agent节点](#private-agent-node)
+    - [Public Agent 节点](#public-agent-node)
+- [主机操作系统](#host-operating-system)
+- [自举机](#bootstrap-machine)
+- [服务](#dcos-service) 
+  - [马拉松服务](#marathon-service)
+  - [Systemd 服务](#systemd-service)
+  - [系统服务](#system-service)
+  - [用户服务](#user-service)
+- [服务组](#dcos-service-group)
+- [工作](#dcos-job)
+- [计划任务](#dcos-scheduler)
+- [调度程序服务](#dcos-scheduler-service)
+- [组件](#dcos-component)
+- [包](#dcos-package)
+- [软件包管理器](#dcos-package-manager)
+- [包注册表](#dcos-package-registry)
 - [Mesosphere Universe](#mesosphere-universe)
-- [Container Registry](#container-registry)
-- [Cloud Template](#cloud-template)
+- [容器注册表](#container-registry)
+- [云模板](#cloud-template)
 
 ### <a name="dcos"></a>DC/OS
 
-DC/OS是一个运行在数据中心的[distributed operating system](https://en.wikipedia.org/wiki/Distributed_operating_system).
+DC/OS 是数据中心的 [ 分布式操作系统 ](https://en.wikipedia.org/wiki/Distributed_operating_system)。
 
-- 与传统的分布式操作系统不同，DC/OS也是一个容器平台，用于管理基于本机可执行文件或容器镜像，如[Docker镜像](https://docs.docker.com/engine/tutorials/dockerimages/)，的容器化任务。
-- 与传统的[操作系统](https://en.wikipedia.org/wiki/Operating_system)不同, DC/OS在一组[集群节点](#cluster)上运行, 而不是一台单机. 每一个DC/OS节点都有[主机操作系统](#host-operating-system)用于管理底层主机.
-- DC/OS由很多组件组成，最或者是分布式系统内核([Mesos](#mesos))和容器编排引擎([Marathon](#marathon)).
-- 在1.6版本以前, DC/OS被称为数据中心操作系统(DCOS). 从1.6版本开始，平台改名为DC/OS并开源.
-- 在DC/OS开源的同时, Mesosphere企业版DC/OS(https://mesosphere.com/product/) 等高级版本包含额外的闭源组件和功能（例如多租户，细粒度权限，密钥管理和端到端加密）。
+- 与传统的分布式操作系统不同, DC/OS 也是一个容器平台, 它管理基于本机可执行文件或容器映像的集装箱化任务, 如 [ 泊坞窗图像 ](https://docs.docker.com/engine/tutorials/dockerimages/)。
+- 与传统的[操作系统](https://en.wikipedia.org/wiki/Operating_system)不同，DC / OS运行在[节点集群](#cluster)，而不是一台机器。 每个DC / OS节点还有一个管理底层机器的[主机操作系统](#host-operating-system)。
+- DC / OS由许多组件组成，最显着的是分布式系统内核([ Mesos ](#mesos)) 和容器编排引擎([ Marathon ](#marathon))。
+- 在版本1.6 之前, DC/OS 被称为数据中心操作系统 (DCOS)。与版本1.6 平台被重命名了到 DC 或 OS 和开放来源。
+- 虽然DC / OS本身是开源的，但像[ Mesosphere Enterprise DC / OS ](https://mesosphere.com/product/)这样的高级发行版可能包含其他封闭源组件和功能(例如多租户 ，细粒度的权限，秘密管理和端到端加密)。
 
-### <a name="dcos-gui"></a>DC/OS图形用户界面
+### <a name="dcos-gui"></a>DC/OS GUI
 
-[DC/OS图形用户界面(GUI)](/1.10/gui/) 是基于浏览器的远程DC/OS管理，控制界面。图形用户界面也被为DC/OS图形界面或DC/OS网页接口。
+[DC / OS图形用户界面(GUI)](/1.10/gui/)是用于从网络浏览器远程控制和管理DC / OS群集的接口。 GUI有时也被称为DC / OS UI或DC / OS Web界面。
 
-### <a name="dcos-cli"></a>DC/OS命令行界面
+### <a name="dcos-cli"></a>DC/OS CLI
 
-[DC/OS命令行界面(CLI)](/1.10/cli/) 是基于终端DC/OS管理，控制界面。
+[ DC / OS命令行界面(CLI)](/1.10/cli/)是一个用于从终端远程控制和管理DC / OS群集的界面。
 
 ### <a name="dcos-cluster"></a>集群
 
-DC/OS集群是一组通过网络互联的DC/OS节点，其中包括符合法定数量的主节点和任意数量的公共和私有代理节点。
+DC / OS群集是一组网络化的DC / OS节点，具有多个主节点和任意数量的公共和/或私人代理节点。
 
 ### <a name="network"></a>网络
 
-DC/OS有两种网络: 基础架构网络和虚拟网络。
+DC / OS有两种类型的网络：基础设施网络和虚拟网络。
 
-#### <a name="infrastructure-network"></a>基础架构网络
+#### <a name="infrastructure-network"></a>基础设施网络
 
-基础架构网络是由DC/OS所运行的基础设施所提供的物理的或虚拟网络。DC/OS并不管理或者控制这一网络，但需要它存在，DC/OS节点间才能通讯。
+基础架构网络是由运行DC / OS的基础架构提供的物理或虚拟网络。 DC / OS不管理或控制此网络层，但要求DC / OS节点才能进行通信。
 
 #### <a name="dcos-virtual-network"></a>虚拟网络
 
-DC/OS虚拟网络就是在集群内部用来DC/OS组件间互联，以及容器化任务互联的虚拟网络.
+DC / OS虚拟网络是群集内部的虚拟网络，用于连接DC / OS上运行的DC / OS组件和容器化任务。
 
-- DC/OS的虚拟网络是由虚拟网络服务(Navstar)管理的VXLAN.
-- 在任务使用前，虚拟网络需要由管理员来配置。
-- DC/OS上的任务可能会选择运行在特定的虚拟网络上，并给定容器特定的IP。
-- 虚拟网络允许对在DC/OS上运行的任务进行逻辑细分。
-- 虚拟网络上的每个任务都可以配置可选的地址组，通过虚拟隔离只与同一网络和地址组上的任务进行通讯。
+- 由DC / OS提供的虚拟网络是由虚拟网络服务(Navstar) 管理的VXLAN。
+- 虚拟网络必须由管理员配置才能被任务使用。
+- DC / OS上的任务可能会选择放置在特定的虚拟网络上，并给定容器特定的IP。
+- 虚拟网络允许对在DC / OS上运行的任务进行逻辑细分。
+- 虚拟网络上的每个任务都可以配置可选的地址组，将通信虚拟隔离到同一网络和地址组上的任务。
 
 ### <a name="dcos-node"></a>节点
 
-DC/OS节点是Mesos代理进程或Mesos主节点进程运行的虚拟或物理机。DC/OS节点需要网络互联以形成DC/OS集群.
+DC / OS节点是运行Mesos代理和/或Mesos主进程的虚拟或物理机器。 DC / OS节点联网在一起形成一个DC / OS群集。
 
-#### <a name="dcos-master-node"></a>主节点
+#### <a name="dcos-master-node"></a>Master节点
 
-DC/OS主节点就是运行一组DC/OS组件，共同管理集群其他部分的虚拟或物理机.
+DC / OS master 点是运行一组DC / OS组件的虚拟或物理机器，它们一起工作来管理集群的其余部分。
 
-- 每个主节点包括多个DC/OS组件，包括著名的[Mesos master](#mesos-master) 进程.
-- 主节点达到[quorum](https://en.wikipedia.org/wiki/Quorum_%28distributed_computing%29)时可提供集群协调的一致性。为防止[split brain](https://en.wikipedia.org/wiki/Split-brain_%28computing%29)集群分区, 集群应该有奇数个主节点。例如，3个主节点的集群可以允许1个主节点离线，5个主节点的集群可以允许2个离线，在滚动升级允许出来失败。另外，集群主节点可以添加来提升容错性。
-- 一个主节点的集群一般用于研发，并不具备高可以用性和错误恢复的能力。
+- 每个主节点都包含多个DC / OS组件，其中最着名的是一个[ Mesos master ](#mesos-master)进程。
+- 主节点在[法定人数](https://en.wikipedia.org/wiki/Quorum_%28distributed_computing%29)中工作，以提供集群协调的一致性。 为了避免[裂脑](https://en.wikipedia.org/wiki/Split-brain_%28computing%29)集群分区，集群应该总是有奇数个主节点。 例如，有三个主节点允许一个人下来; 有五个主节点允许两个关闭，允许在滚动更新期间失败。 额外的主节点可以添加额外的风险容忍度。
+- 只有一个主节点的集群可用于开发，但不具备高可用性，可能无法从故障中恢复。
 
-#### <a name="dcos-agent-node"></a>代理节点
+#### <a name="dcos-agent-node"></a>Agent节点
 
-DC/OS代理节点是Mesos任务运行的虚拟或物理机。
+DC / OS agent 节点是运行Mesos任务的虚拟或物理机器。
 
-- 每个代理节点包含多个DC/OS组件，包括著名的[Mesos agent](#mesos-agent)进程.
-- 代理节点可能是[private](#private-agent-node)或[public](#public-agent-node), 取决于节点网络配置.
+- Each agent node contains multiple DC/OS components, including most notably a [Mesos agent](#mesos-agent) process.
+- Agent nodes can be [private](#private-agent-node) or [public](#public-agent-node), depending on agent and network configuration.
 
-更多信息, 请参阅[Network Security](/1.10/administering-clusters/) 和[Adding Agent Nodes](/1.10/administering-clusters/add-a-node/).
+For more information, see [Network Security](/1.10/administering-clusters/) and [Adding Agent Nodes](/1.10/administering-clusters/add-a-node/).
 
-##### <a name="private-agent-node"></a>私有代理节点
+##### <a name="private-agent-node"></a>Private Agent节点
 
-私有代理节点是一个不允许通过集群基础网络与集群外通讯的代理节点。
+A private agent node is an agent node that is on a network that *does not* allow ingress from outside of the cluster via the cluster’s infrastructure networking.
 
-- 默念情况下，私有代理节点上的Mesos代理程序配置允许将其资源分配给任意Mesos角色('*').
-- 在私有代理节点上，很多服务包会默认安装。
-- 一般来说，集群中大部分是私有代理节点。
+- The Mesos agent on each private agent node is, by default, configured with none of its resources allocated to any specific Mesos roles (`*`).
+- Most service packages install by default on private agent nodes.
+- Clusters are generally comprised of mostly private agent nodes.
 
-##### <a name="public-agent-node"></a>公共代理节点
+##### <a name="public-agent-node"></a>Public Agent 节点
 
-私有代理节点是一个允许通过集群基础网络与集群外通讯的代理节点。
+A public agent node is an agent node that is on a network that *does* allow ingress from outside of the cluster via the cluster’s infrastructure networking.
 
-- 在每个公共代理节点上，Mesos代理程序配置了'public_ip:true'属性，其资源可以分配给'slave_publie'的角色.
-- 公共代理节点主要用于外部反向代理负载均衡器，例如[Marathon-LB](/service-docs/marathon-lb/).
-- 集群中一般只有少部分公共代理节点，因为一个负载均衡器可以处理多个服务的代理.
+- The Mesos agent on each public agent node is configured with the `public_ip:true` agent attribute and all of its resources allocated to the `slave_public` role.
+- Public agent nodes are used primarily for externally facing reverse proxy load balancers, like [Marathon-LB](/service-docs/marathon-lb/).
+- Clusters generally have only a few public agent nodes, because a single load balancer can handle proxying multiple services.
 
-更多信息，请参阅[Converting Agent Node Types](/1.10/administering-clusters/convert-agent-type/).
+For more information, see [Converting Agent Node Types](/1.10/administering-clusters/convert-agent-type/).
 
 ### <a name="host-operating-system"></a>主机操作系统
 
-主机操作系统是运行在每个DC/OS节点上，DC/OS组件底层的[operating system](https://en.wikipedia.org/wiki/Operating_system)，用于管理本地软硬件资源，为其他程序和服务提供通用服务.
+A host operating system is the [operating system](https://en.wikipedia.org/wiki/Operating_system) that runs on each DC/OS node underneath the DC/OS components, manages the local hardware and software resources, and provides common services for running other programs and services.
 
-- 目前DC/OS支持以下主机操作系统: [CentOS](https://www.centos.org/), [RHEL](https://www.redhat.com/en/technologies/linux-platforms/enterprise-linux), and [CoreOS](https://coreos.com/).
-- 主机操作操作系统管理本地软硬件资源，DC/OS管理集群任务和资源，所以用户一般不需要在节点上与主机操作系统产生交互.
+- DC/OS currently supports the following host operating systems: [CentOS](https://www.centos.org/), [RHEL](https://www.redhat.com/en/technologies/linux-platforms/enterprise-linux), and [CoreOS](https://coreos.com/).
+- While the host OS manges local tasks and machine resources, DC/OS manages cluster tasks and resources so that the user does not generally need to interact with the host operating systems on the nodes.
 
-### <a name="bootstrap-machine"></a>引导主机
+### <a name="bootstrap-machine"></a>自举机
 
-引导主机即DC/OS安装程序组件配置，编译，分发的主机.
+A bootstrap machine is the machine on which the DC/OS installer artifacts are configured, built, and distributed.
 
-- 引导主机在技术上并不被认为是集群的一个部分，因为DC/OS并没有安装在上面（这在未来可能会改变）。对于大部分安装方法，引导主机需要通过基本架构网络与其他机器互联.
-- 有时引导主机会被用作跳板机，ssh连接其他集群节点，以便增加安全性和日志
-- 从引导主机，可以改变以Exhibitor运行ZooKeeper的主机点IP，这是方法之一。其他方法包括S3, DNS，或静态IP等其他方式。更多信息，请参阅[configuring the exhibitor storage backend](/1.10/installing/custom/configuration/configuration-parameters/#exhibitor_storage_backend).
-- 如果引导主机不需要作为ssh跳板机来处理其他主节点修改IP，可以在引导完成后关机，或按需启动加入到集群中 [add new nodes](/1.10/administering-clusters/add-a-node/) .
+- The bootstrap machine is not technically considered part of the cluster since it does not have DC/OS installed on it (this may change in the future). For most installation methods, the bootstrap node must be accessible to and from the machines in the cluster via infrastructure networking.
+- The bootstrap machine is sometimes used as a jumpbox to control SSH access into other nodes in the cluster for added security and logging.
+- One method of allowing master nodes to change IPs involves running ZooKeeper with Exhibitor on the bootstrap machine. Other alternatives include using S3, DNS, or static IPs, with various tradeoffs. For more information, see [configuring the exhibitor storage backend](/1.10/installing/custom/configuration/configuration-parameters/#exhibitor_storage_backend).
+- If a bootstrap machine is not required for managing master node IP changes or as an SSH jumpbox, it can be shut down after bootstrapping and spun up on demand to [add new nodes](/1.10/administering-clusters/add-a-node/) to the cluster.
 
-更多信息，请参阅[system requirements](/1.10/installing/custom/system-requirements/#bootstrap-node).
+For more information, see the [system requirements](/1.10/installing/custom/system-requirements/#bootstrap-node).
 
 ### <a name="dcos-service"></a>服务
 
-DC/OS服务是一个或多个服务实例的集合，可以作为一个群同时启动或停止，在异常停止时自动重启.
+A DC/OS service is a set of one or more service instances that can be started and stopped as a group and restarted automatically if they exit before being stopped.
 
-- 服务目前只是一个DC/OS图形界面的抽象概念，通过命令行或是API被转换为Marathon应用和豆夹。随着“服务”这个名称被上游推入组件API，这种区别将随着时间而改变。.
-- 在主机操作系统中，"服务"有时候也指systemd服务。通过被认为是组件，并不实际运行在Marathon或是Mesos上.
-- 服务可以是系统服务或用户服务。 这种区分是新的，而且还在不断演变，因为命名空间已经转化为全系统的一体模式。
+- Services is currently just a DC/OS GUI abstraction that translates to Marathon apps and pods in the CLI and API. This distinction will change over time as the name "service" is pushed upstream into component APIs.
+- Sometimes "service" may also refer to a systemd service on the host OS. These are generally considered components and don’t actually run on Marathon or Mesos.
+- A service may be either a system service or a user service. This distinction is new and still evolving as namespacing is transformed into a system-wide first class pattern.
 
-#### <a name="marathon-service"></a>Marathon服务
+#### <a name="marathon-service"></a>马拉松服务
 
-Marathon服务包括0个或多个容器化服务实例。每个服务实例包括一个或多个容器化Mesos任务。
+A Marathon service consists of zero or more containerized service instances. Each service instance consists of one or more containerized Mesos tasks.
 
-- Marathon任务和豆荚都被认为是服务
-    - 1个Marathon任务实例对应1个任务
-    - 1个Marathon豆荚实例对应多个任务
-- 服务实例会作为新的Mesos任务重启，假如它们过早退出
-- 服务实例会在其他代理节点上被重新调度，假如它们过早退出，或是节点宕机，或是节点不再有足够的资源
-- 服务实例可以直接通过[DC/OS API (Marathon)](/1.10/deploying-services/marathon-api/)或是间接通过[DC/OS Package Manager (Cosmos)](#package-manager)从[package repository](#dcos-package-repository)例如[Mesosphere Universe](#mesosphere-universe)安装. [DC/OS GUI](#dcos-gui) 和[DC/OS CLI](#dcos-cli) 可以更容易的与DC/OS包管理器(Cosmos)进行交互.
-- Marathon服务可以是[DC/OS scheduler](#dcos-scheduler), 但并不是所有的服务都是调度器.
-- Marathon服务是Marathon服务实例的抽象概念，也是Mesos任务的抽象概念。其他调度器(e.g. DC/OS Jobs (Metronome), Jenkins)有他们自己的名字，也是Mesos任务的抽象概念.
+- Marathon apps and pods are both considered services. - Marathon app instances map 1 to 1 with tasks. - Marathon pod instances map 1 to many with tasks.
+- Service instances are restarted as a new Mesos Task when they exit prematurely.
+- Service instances may be re-scheduled onto another agent node if they exit prematurely and the agent is down or does not have enough resources anymore.
+- Services can be installed directly via the [DC/OS API (Marathon)](/1.10/deploying-services/marathon-api/) or indirectly via the [DC/OS Package Manager (Cosmos)](#package-manager) from a [package repository](#dcos-package-repository) like [Mesosphere Universe](#mesosphere-universe). The [DC/OS GUI](#dcos-gui) and [DC/OS CLI](#dcos-cli) may be used to interact with the DC/OS Package Manager (Cosmos) more easily.
+- A Marathon service may be a [DC/OS scheduler](#dcos-scheduler), but not all services are schedulers.
+- A Marathon service is an abstraction around Marathon service instances which are an abstraction around Mesos tasks. Other schedulers (e.g. DC/OS Jobs (Metronome), Jenkins) have their own names for abstractions around Mesos tasks.
 
-例如: Cassandra (scheduler), Marathon-on-Marathon, Kafka (scheduler), Nginx, Tweeter.
+Examples: Cassandra (scheduler), Marathon-on-Marathon, Kafka (scheduler), Nginx, Tweeter.
 
-#### <a name="systemd-service"></a>Systemd服务
+#### <a name="systemd-service"></a>Systemd 服务
 
-systemd服务是单个服务，包括单个可能是容器化的主机操作系统进程，由systemd管理运行在主节点或代理节点上，由DC/OS拥有.
+A systemd service is a service that consists of a single, optionally containerized, machine operating system process, running on the master or agent nodes, managed by systemd, owned by DC/OS itself.
 
-- 所有的systemd服务现在是主机系统服务，或DC/OS依赖项，或DC/OS组件，或由系统管理手工管理的服务.
+- All systemd services are currently either host OS service, DC/OS dependencies, DC/OS components, or services manually managed by the system administrator.
 
-例如: 大部分DC/OS组件, (system) Marathon.
+Examples: Most DC/OS components, (system) Marathon.
 
-#### <a name="system-service"></a>系统Service
+#### <a name="system-service"></a>系统服务
 
-系统服务是DC/OS用来实现或加强功能的服务，以Marathon服务或systemd服务的方式运行，由DC/OS或系统拥有.
+A system service is a service that implements or enhances the functionality of DC/OS itself, run as either a Marathon service or a systemd service, owned by the system (admin) user or DC/OS itself.
 
-- 系统服务需要特定权限与其他系统服务交互.
-- 在企业版DC/OS集群上作为系统服务运行需要特定的细粒度权限，而在开源DC/OS上，所有登录用户都具有相同的管理权限.
+- A system service may require special permissions to interact with other system services.
+- Permission to operate as a system service on an Enterprise DC/OS cluster requires specific fine-grained permissions, while on open DC/OS all logged in users have the same administrative permissions.
 
-例如: 所有的DC/OS组件.
+Examples: All DC/OS components.
 
 #### <a name="user-service"></a>用户服务
 
-服务服务是Marathon服务，而不是系统服务，由系统用户拥有.
+A user service is a Marathon service that is not a system service, owned by a user of the system.
 
-- 这种区别是新的，而且还在不断发展，因为命名空间转换为全系统一体模式，并映射到细粒度的用户和用户组权限.
+- This distinction is new and still evolving as namespacing is transformed into a system-wide first class pattern and mapped to fine-grained user and user group permissions.
 
-例如: Jenkins, Cassandra, Kafka, Tweeter.
+Examples: Jenkins, Cassandra, Kafka, Tweeter.
 
 ### <a name="dcos-service-group"></a>服务组
 
-DC/OS服务组是一组有层级关系（像路径）的用于命名空间和组织的DC/OS服务.
+A DC/OS service group is a hierarchical (path-like) set of DC/OS services for namespacing and organization.
 
-- 服务目前只能用于Marathon服务，不能用于systemd服务
-- 这个区别可能改变因为命名空间转换为全系统一体模式
+- Service groups are currently only available for Marathon services, not systemd services.
+- This distinction may change as namespacing is transformed into a system-wide first class pattern.
 
-### <a name="dcos-job"></a>任务
+### <a name="dcos-job"></a>工作
 
-DC/OS任务是一组类似于短期运行的任务实例，以Mesos任务方式运行，由DC/OS任务（Metronome）管理
+A DC/OS job is a set of similar short-lived job instances, running as Mesos tasks, managed by the DC/OS Jobs (Metronome) component.
 
-- 一个任务可以被创建运行一次，或是按计划多次运行
+- A job can be created to run only once, or may run regularly on a schedule.
 
-### <a name="dcos-scheduler"></a>调度器
+### <a name="dcos-scheduler"></a>计划任务
 
-DC/OS调度器是在主节点上以systemd服务方式或是在代理节点上以Mesos任务方式运行的Mesos调度器
+A DC/OS scheduler is a Mesos scheduler that runs as a systemd service on master nodes or Mesos task on agent nodes.
 
-- DC/OS调度器与Mesos调度器的主要区别是它在那里运行，以及它如何被安装
-- 有些调度器作为DC/OS组件被预安装(例如Marathon, DC/OS Jobs (Metronome)).
-- 有些调度器可以由用户作为用户服务安装(例如Kafka, Cassandra).
-- 有些调度器会运行多个服务实例，提供高可用(例如Marathon).
-- 在企业版DC/OS特定安全模式下, DC/OS调度器必须认证为服务帐户才可以注册成为Mesos框架.
+- The key differences between a DC/OS scheduler and Mesos scheduler are where it runs and how it is installed.
+- Some schedulers come pre-installed as DC/OS components (e.g. Marathon, DC/OS Jobs (Metronome)).
+- Some schedulers can be installed by users as user services (e.g Kafka, Cassandra).
+- Some schedulers run as multiple service instances to provide high availability (e.g. Marathon).
+- In certain security modes within Enterprise DC/OS, a DC/OS scheduler must authenticate and be authorized using a service account to register with Mesos as a framework.
 
-### <a name="dcos-scheduler-service"></a>调度器服务
+### <a name="dcos-scheduler-service"></a>调度程序服务
 
-DC/OS调度器服务是作为DC/OS服务(Marathon或systemd)长期运行的服务.
+A DC/OS scheduler service is a long-running DC/OS scheduler that runs as a DC/OS service (Marathon or systemd).
 
-- 由于DC/OS调度器也可以作为短期任务运行，所以并不是所有调度器都是服务.
+- Since DC/OS schedulers can also be run as short-lived tasks, not all schedulers are services.
 
 ### <a name="dcos-component"></a>组件
 
-DC/OS组件是分布在DC/OS上的系统服务.
+A DC/OS component is a DC/OS system service that is distributed with DC/OS.
 
-- 组件可以是systemd服务或是Marathon服务.
-- 组件可以以高可用的配置方式运行.
-- 大部分组件运行在主节点上，但也有部分(例如mesos-agent)运行在代理节点上.
+- Components may be systemd services or Marathon services.
+- Components may be deployed in a high availability configuration.
+- Most components run on the master nodes, but some (e.g. mesos-agent) run on the agent nodes.
 
-例如: Mesos, Marathon, Mesos-DNS, Bouncer, Admin Router, DC/OS Package Manager (Cosmos), History Service等
+Examples: Mesos, Marathon, Mesos-DNS, Bouncer, Admin Router, DC/OS Package Manager (Cosmos), History Service, etc.
 
-### <a name="dcos-package"></a>软件包
+### <a name="dcos-package"></a>包
 
-DC/OS软件包是一组元数据，描述使用Marathon配置，安装，卸载DC/OS服务.
+A DC/OS package is a bundle of metadata that describes how to configure, install, and uninstall a DC/OS service using Marathon.
 
-### <a name="dcos-package-manager"></a>包管理器
+### <a name="dcos-package-manager"></a>软件包管理器
 
-[DC/OS Package Manager (Cosmos)(https://github.com/dcos/cosmos))是在DC/OS集群上管理安装卸载软件包的组件.
+The [DC/OS Package Manager (Cosmos)(https://github.com/dcos/cosmos)) is a component that manages installing and uninstalling packages on a DC/OS cluster.
 
-- DC/OS图形界面和命令行作为客户端与DC/OS包管理器交互.
-- [DC/OS包管理器API](https://github.com/dcos/cosmos)允许程序化交互.
+- The DC/OS GUI and DC/OS CLI act as clients to interact with the DC/OS Package Manager.
+- The [DC/OS Package Manager API](https://github.com/dcos/cosmos) allows programmatic interaction.
 
 ### <a name="dcos-package-registry"></a>包注册表
 
-DC/OS包注册表是DC/OS的包存储库.
+A DC/OS package registry is a repository of DC/OS packages.
 
-- [DC/OS包管理器](#dcos-package-manager)可以配置多一个或多个包注册表中安装软件包.
+- The [DC/OS Package Manager](#dcos-package-manager) may be configured to install packages from one or more package registries.
 
 ### <a name="mesosphere-universe"></a>Mesosphere Universe
 
-Mesosphere Universe是一个公开的包注删表，由Mesosphere负责管理.
+The Mesosphere Universe is a public package registry, managed by Mesosphere.
 
-更多信息, 请查看Github上的[Universe repository](https://github.com/mesosphere/universe).
+For more information, see the [Universe repository](https://github.com/mesosphere/universe) on GitHub.
 
 ### <a name="container-registry"></a>容器注册表
 
-容器注册表就是预编译好的容器镜像存储库.
+A container registry is a repository of pre-built container images.
 
-[通用容器运行时](#mesos-containerizer-universal-container-runtime)和[Docker引擎](#mesos-containerizer-docker-runtime)都可以从分开或是私有的Docker容器注册表中运行Docker镜像.
+The [Universal Container Runtime](#mesos-containerizer-universal-container-runtime) and [Docker Engine](#mesos-containerizer-docker-runtime) can both run Docker images from public or private Docker container registries.
 
 ### <a name="cloud-template"></a>云模板
 
-云模板就是基础设施特定的方法，用于声明描述DC/OS集群.
+A cloud template is an infrastructure-specific method of declaratively describing a DC/OS cluster.
 
-更多信息，请参看[云安装选项](/1.10/installing/cloud/).
-
+For more information, see [Cloud Installation Options](/1.10/installing/cloud/).
 
 # <a name="mesos-concepts"></a>Mesos概念
 
-在讨论Apache Mesos时，以下术语在上下文中是正确的，但可能被DC/OS中的其他抽象概念隐藏。
+The following terms are contextually correct when talking about Apache Mesos, but may be hidden by other abstraction within DC/OS.
 
 - [Apache Mesos](#apache-mesos)
 - [Master](#mesos-master)
 - [Agent](#mesos-agent)
-- [Task](#mesos-task)
+- [任务](#mesos-task)
 - [Executor](#mesos-executor)
-- [Scheduler](#mesos-scheduler)
-- [Framework](#mesos-framework)
-- [Role](#mesos-role)
+- [计划任务](#mesos-scheduler)
+- [框架](#mesos-framework)
+- [角色](#mesos-role)
 - [Resource Offer](#mesos-resource-offer)
-- [Containerizer](#mesos-containerizer)
+- [Containerizer](#mesos-containerizer) 
   - [Universal Container Runtime](#mesos-containerizer-universal-container-runtime)
   - [Docker Engine](#mesos-containerizer-docker-engine)
-- [Exhibitor &amp; ZooKeeper](#mesos-exhibitor-zookeeper)
+- [Exhibitor & ZooKeeper](#mesos-exhibitor-zookeeper)
 - [Mesos\-DNS](#mesos-dns)
 
 ### <a name="apache-mesos"></a>Apache Mesos
 
-Apache Mesos是分布式系统内核，管理集群资源资源和任务.
+Apache Mesos is a distributed systems kernel that manages cluster resources and tasks.
 
-- Mesos是DC/OS的核心组件，比DC/OS更早出现，为整个平台带来稳定和成熟.
+- Mesos is one of the core components of DC/OS that predates DC/OS itself, bringing maturity and stability to the platform.
 
-更多信息，请参阅[Mesos website](http://mesos.apache.org/).
+For more information, see the [Mesos website](http://mesos.apache.org/).
 
-### <a name="mesos-master"></a>主程序
+### <a name="mesos-master"></a>Master
 
-Mesos主程序是运行在主节点上的一个进程，协调集群资源管理，以便任务编排.
+A Mesos master is a process that runs on master nodes to coordinate cluster resource management and facilitate orchestration of tasks.
 
-- Mesos主程序由符合法定数量的组成，并选一个主导者.
-- 主导Mesos主程序收集Mesos代理程序汇报的资源信息，为Mesos调度器提供资源邀约。调度器可能接受资源邀约，并在相应的节点上设置任务.
+- The Mesos masters form a quorum and elect a leader.
+- The lead Mesos master collects resources reported by Mesos agents and makes resource offers to Mesos schedulers. Schedulers then may accept resource offers and place tasks on their corresponding nodes.
 
-### <a name="mesos-agent"></a>代理程序
+### <a name="mesos-agent"></a>Agent
 
-Mesos代理程序是运行在代理节点上负责管理执行程序，任务，节点资源的进程.
+A Mesos agent is a process that runs on agent nodes to manage the executors, tasks, and resources of that node.
 
-- Mesos代理程序注册部分或全部节点资源，使得主Mesos主程序可以为调度器提供资源邀约，决定在那个节点上来运行任务.
-- Mesos代理程序向主Mesos主程序报告任务状态，最终反馈给相应的调度器.
+- The Mesos agent registers some or all of the node’s resources, which allows the lead Mesos master to offer those resources to schedulers, which decide on which node to run tasks.
+- The Mesos agent reports task status updates to the lead Mesos master, which in turn reports them to the appropriate scheduler.
 
 ### <a name="mesos-task"></a>任务
 
-Mesos任务是一个工作单元的抽象概念，由在DC/OS代理节点上运行的Mesos执行程序管理生命周期.
+A Mesos task is an abstract unit of work, lifecycle managed by a Mesos executor, that runs on a DC/OS agent node.
 
-- 任务通常是进程或线程，但也可能只是内联代码和在单线程队列中的条目，取决于执行程序是怎么设计的.
-- Mesos内置命令行执行程序以一个或多个[Mesos容器](#mesos-containerizer)进程的方式运行任务.
+- Tasks are often processes or threads, but could even just be inline code or items in a single-threaded queue, depending on how their executor is designed.
+- The Mesos built-in command executor runs each task as a process that can be containerized by one of several [Mesos containerizers](#mesos-containerizer).
 
-### <a name="mesos-executor"></a>执行程序
+### <a name="mesos-executor"></a>Executor
 
-Mesos执行程序是Mesos代理程序执行任务的方法.
+A Mesos executor is a method by which Mesos agents launch tasks.
 
-- 执行程序进程由Mesos代理程序在代理节点上运行并管理.
-- Mesos任务由他们的调度器定义，由特定的执行程序运行(或默认执行程序).
-- 每一个执行程序运行在它自己的容器内.
+- Executor processes are launched and managed by Mesos agents on the agent nodes.
+- Mesos tasks are defined by their scheduler to be run by a specific executor (or the default executor).
+- Each executor runs in its own container.
 
-更多有关框架调度器和执行程序的信息，请参阅[应用程序框架开发指南](http://mesos.apache.org/documentation/latest/app-framework-development-guide/).
+For more information about framework schedulers and executors, see the [Application Framework development guide](http://mesos.apache.org/documentation/latest/app-framework-development-guide/).
 
-### <a name="mesos-scheduler"></a>调度器
+### <a name="mesos-scheduler"></a>Scheduler
 
-Mesos调度器就是定义新的Mesos任务并为其配置资源（将其放到特定节点）的程序.
+A Mesos scheduler is a program that defines new Mesos tasks and assigns resources to them (placing them on specific nodes).
 
-- 调度器接收到资源邀约，包括CPU，内存等，将资源邀约分配给可以在Mesos节点上运行的任务.
-- 调度器必须在Mesos上注册为框架.
+- A scheduler receives resource offers describing CPU, RAM, etc., and allocates them for discrete tasks that can be launched by Mesos agents.
+- A scheduler must register with Mesos as a framework.
 
-例如: Kafka, Marathon, Cassandra.
+Examples: Kafka, Marathon, Cassandra.
 
-### <a name="mesos-framework"></a>框架
+### <a name="mesos-framework"></a>Framework
 
-Mesos框架包括调度器，任务，可以包括自定义执行程序.
+A Mesos framework consists of a scheduler, tasks, and optionally custom executors.
 
-- 术语框架和调度器有时可以互换使用。 在DC/OS的上下文中优先调度器.
+- The term framework and scheduler are sometimes used interchangeably. Prefer scheduler within the context of DC/OS.
 
-更多有关框架调度器和执行程序的信息，请参阅[应用程序框架开发指南](http://mesos.apache.org/documentation/latest/app-framework-development-guide/).
+For more information about framework schedulers and executors, see the [Application Framework development guide](http://mesos.apache.org/documentation/latest/app-framework-development-guide/).
 
-### <a name="mesos-role"></a>角色
+### <a name="mesos-role"></a>Role
 
-Mesos角色是一组共享预留资源，持久性卷和配额的Mesos框架。这些框架使用Mesos的等级主导资源公平（DRF）算法分组。
+A Mesos role is a group of Mesos frameworks that share reserved resources, persistent volumes, and quota. These frameworks are also grouped together in Mesos' hierarchical Dominant Resource Fairness (DRF) share calculations.
 
-- 角色常常被混淆为资源组，因为他们可以在代理上进行静态配置。分配实际上是相反的: 资源被分配给角色。
-- 角色资源分配可以在Mesos代理上静态配置，也可以在运行时通过Mesos API进行更改。
+- Roles are often confused as groups of resources, because of the way they can be statically configured on the agents. The assignment is actually the inverse: resources are assigned to roles.
+- Role resource allocation can be configured statically on the Mesos agent or changed at runtime using the Mesos API.
 
-### <a name="mesos-resource-offer"></a>资源邀约
+### <a name="mesos-resource-offer"></a>Resource Offer
 
-Mesos资源邀约提供从代理提供一组未分配的资源（例如cpu，磁盘，内存）给调度器，以便调度器可以将这些资源分配给一个或多个任务。资源邀约由主导Mesos主程序负责构建，但资源本身由各个代理程序反馈。
+A Mesos resource offer provides a set of unallocated resources (e.g. cpu, disk, memory) from an agent to a scheduler so that the scheduler may allocate those resources to one or more tasks. Resource offers are constructed by the leading Mesos master, but the resources themselves are reported by the individual agents.
 
-### <a name="mesos-containerizer"></a>容器化
+### <a name="mesos-containerizer"></a>Containerizer
 
-容器化提供了围绕特定容器运行时的容器和资源隔离抽象。支持的运行时包括通用容器运行时和Docker引擎。
+A containerizer provides a containerization and resource isolation abstraction around a specific container runtime. The supported runtimes are the Universal Container Runtime and Docker Engine.
 
-#### <a name="mesos-containerizer-universal-container-runtime"></a>通用容器运行时
+#### <a name="mesos-containerizer-universal-container-runtime"></a>Universal Container Runtime
 
-通用容器运行时从二进制可执行文件或是Docker镜像运行Mesos容器。Mesos容器由通用容器运行管理，即使是由Docker镜像启动也并不是Docker引擎管理.
+The Universal Container Runtime launches Mesos containers from binary executables and Docker images. Mesos containers managed by the Universal Container Runtime do not use Docker Engine, even if launched from a Docker image.
 
-#### <a name="mesos-containerizer-docker-engine"></a>Docker引擎
+#### <a name="mesos-containerizer-docker-engine"></a>Docker Engine
 
-[Docker引擎](https://www.docker.com/products/docker-engine)从Docker镜像运行Docker容器.
+The [Docker Engine](https://www.docker.com/products/docker-engine) launches Docker containers from Docker images.
 
-### <a name="mesos-exhibitor-zookeeper"></a>Exhibitor &amp; ZooKeeper
+### <a name="mesos-exhibitor-zookeeper"></a>Exhibitor & ZooKeeper
 
-Mesos依赖于ZooKeeper, 高性能的协调服务来管理集群状态。Exhibitor在[主节点](#master-node)上自动配置，并管理ZooKeeper.
+Mesos depends on ZooKeeper, a high-performance coordination service to manage the cluster state. Exhibitor automatically configures and manages ZooKeeper on the [master nodes](#master-node).
 
 ### <a name="mesos-exhibitor-zookeeper"></a>Mesos-DNS
 
-Mesos-DNS是在集群内提供服务发现功能的组件。Mesos-DNS允许在Mesos上运行的应用程序和服务通过使用域名系统（DNS）来查找对方，类似于服务在整个Internet中发现彼此的方式.
+Mesos-DNS is a DC/OS component that provides service discovery within the cluster. Mesos-DNS allows applications and services that are running on Mesos to find each other by using the domain name system (DNS), similar to how services discover each other throughout the Internet.
 
-更多信息，请参阅[Mesos-DNS文档](/1.10/networking/mesos-dns/).
+For more information, see the [Mesos-DNS documentation](/1.10/networking/mesos-dns/).
 
-# <a name="marathon-concepts"></a>Marathon概念
+# <a name="marathon-concepts"></a>马拉松概念
 
-在谈论Marathon时，以下术语在语境上是正确的，但可能被DC/OS中的其他抽象概念隐藏。
+The following terms are contextually correct when talking about Marathon, but may be hidden by other abstraction within DC/OS.
 
 - [Marathon](#marathon)
 - [Application](#marathon-application)
 - [Pod](#marathon-pod)
 - [Group](#marathon-group)
 
-### <a name="marathon"></a>Marathon
+### <a name="marathon"></a>马拉松
 
-Marathon是为Mesos和DC/OS工作的容器编排引擎.
+Marathon is a container orchestration engine for Mesos and DC/OS.
 
-- Marathon是DC/OS的核心组件，在DC/OS之前就存在，为平台带来稳定和成熟.
+- Marathon is one of the core components of DC/OS that predates DC/OS itself, bringing maturity and stability to the platform.
 
-更多信息, 请参阅[Marathon website](https://mesosphere.github.io/marathon/).
+For more information, see the [Marathon website](https://mesosphere.github.io/marathon/).
 
-### <a name="marathon-application"></a>应用程序
+### <a name="marathon-application"></a>报名
 
-Marathon应用程序是长期运行的服务，可能包括一个或多个与Mesos任务一一对应的实例.
+A Marathon application is a long-running service that may have one or more instances that map one to one with Mesos tasks.
 
-- 用户通过向Marathon提交应用程序定义（JSON）来创建应用程序。Marathon然后将一个或多个应用程序实例安排为Mesos任务，具体取决于指定的数量。
-- 应用程序目前支持使用[Mesos通用容器运行时](#mesos-universal-container-runtime) 或[Docker运行时](#mesos-docker-runtime).
+- The user creates an application by providing Marathon with an application definition (JSON). Marathon then schedules one or more application instances as Mesos tasks, depending on how many the definition specified.
+- Applications currently support the use of either the [Mesos Universal Container Runtime](#mesos-universal-container-runtime) or the [Docker Runtime](#mesos-docker-runtime).
 
-### <a name="marathon-pod"></a>豆荚
+### <a name="marathon-pod"></a>Pod
 
-Marathon豆荚是长期运行的服务，包括一个或多个与Mesos任务一对多的实例.
+A Marathon pod is a long-running service that may have one or more instances that map one to many with colocated Mesos tasks.
 
-- 用户通过向Marathon提交应用程序定义（JSON）来创建应用程序豆荚。Marathon然后将一个或多个应用程序豆荚实例安排为Mesos任务，具体取决于指定的数量。
-- 豆荚实例可以包含一个或多个使用特定共享资源（如IP，端口，存储卷）的任务.
-- 现在运行豆荚需要使用[Mesos通用容器运行时](#mesos-universal-container-runtime).
+- The user creates a pod by providing Marathon with a pod definition (JSON). Marathon then schedules one or more pod instances as Mesos tasks, depending on how many the definition specified.
+- Pod instances may include one or more tasks that share certain resources (e.g. IPs, ports, volumes).
+- Pods currently require the use of the [Mesos Universal Container Runtime](#mesos-universal-container-runtime).
 
-### <a name="marathon-group"></a>组
+### <a name="marathon-group"></a>群组
 
-Marathon组是是一个分层目录[路径](https://en.wikipedia.org/wiki/Path_%28computing%29) 结构中用于命名空间和组织的一组服务(应用程序和/或豆荚).
+A Marathon group is a set of services (applications and/or pods) within a hierarchical directory [path](https://en.wikipedia.org/wiki/Path_%28computing%29) structure for namespacing and organization.

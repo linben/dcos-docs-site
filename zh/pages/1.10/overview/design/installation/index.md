@@ -1,116 +1,127 @@
 ---
 layout: layout.pug
-excerpt: ""
-title: 'Design: Installation'
+excerpt:
+title: >
+    Design: Installation
 navigationTitle: Installation
 menuWeight: 4
 ---
-Building, installing and operating DC/OS must be a repeatable process. Even small error rates are unacceptable when you’re working with 10,000 hosts. Because DC/OS is comprised of more than 30 different libraries, services and support packages, a non-standard approach is required. Trying to treat each of those components as independent artifacts to install and configure on target hosts would introduce failures that would get in the way of relying on the system.
 
-Inspired by the approaches of many mature operating systems, it is possible to build a system that is bulletproof. Once the build process is complete, you end up with a single artifact that contains all the components required to install and run. This looks very similar to the ISO that you end up using to install your favorite Linux distribution.
+构建，安装和操作DC/OS必须是一个可重复的过程。 当操作10,000台主机时，即使很小的错误概率也是不可接受的。 由于DC/OS由30多个不同的库，服务和支持包组成，因此需要使用非标准方法。如果将这些组件中的每一个作为独立的组件在目标主机上进行安装和配置，会导致系统的故障。
 
-Having a single artifact allows us to make some assumptions and guarantees.
+受许多成熟操作系统的启发，构建一个坚固的系统。一旦构建过程完成，您将得到一个包含安装和运行所需的所有组件的工件。 这看起来非常类似于您最终用来安装您最喜爱的Linux发行版的ISO。
 
-- The bits are identical on every host, they just have different roles and use a different subset of components. 
-- Upgrades are atomic and don’t end up having odd component incompatibilities. 
-- Downloads do not depend on multiple different sources since there is just a single file that is trivial to verify for completion and corruption.
+有一个简单的工件允许我们做一些假设和保证。
 
-## Design Goals
+- 每个主机都是完全相同的，它们只是具有不同的角色，并使用不同的子组件。
+- 升级是原子性的，不会导致奇怪的组件不兼容。
+- 下载不依赖于多个不同的来源，因为只有一个文件，验证完整性和是否损坏非常容易.
 
-Before we jump into how everything works, let’s make the design goals explicit. It is important to understand the constraints you’re working with to get to the end architecture and design.
+## 设计目标
 
-- Dependencies on the host OS should be minimized. This enables DC/OS to run in as many environments as possible.
-- The host OS should be fully customizable. Everyone has a different set of tools that they are currently using. Those tools should work without any changes or porting. This is particularly important when it comes to hardware specific things like kernel modules.
-- Dependencies on the host should be minimized. It is hard to orchestrate the order with which dependent hosts come up (master, agents). They should be able to come up in any order and only start working when their dependencies are taken care of and provided to the cluster.
-- The minimum external infrastructure should be required. It is rare for external infrastructure such as PXE boot images and NFS storage to exist.
-- There should be a choice of method for deployment. You’re comfortable with your existing system, there’s no need to go and learn a new one. The integration should have a clean interface and be as minimal as possible.
-- Integration between DC/OS and existing systems such as config management tools and CloudFormation should be as easy as possible. The integration interface must be simple and well documented.
-- All dependencies and libraries should be bundled as a single artifact. Normal lifecycle processes will upgrade or downgrade libraries and dependencies entirely outside of DC/OS. By not relying on these, the system becomes less fragile and more stable.
-- Users should be able to modify code and configuration in a live system, if necessary. While this is an anti-pattern, it is one that can occasionally help with keeping your infrastructure up at critical times.
-- Installs must work as close to 100% as possible. Even 1% failures ends up causing 10 failure cases that require manual intervention when you’re operating a 1000 host cluster.
-- Upgrade and rollback of upgrades must be atomic at a host level.
-- The state of the cluster must be auditable. When running large clusters, it is easy to get into a situation that makes it hard to rely on the state of a single host.
+在我们深入了解一切工作之前，让我们明确设计目标。 了解您正在使用的最终体系结构和设计的约束条件非常重要。
 
-## Packaging
+- 尽可能减小对于主机操作系统的依赖。这样能使DC/OS运行于更多的环境。
+- 主机操作系统应该是完全可定制的。每个人都有一套正在使用的不同工具。这些工具应该不做任何个性就可移植。当涉及硬件特定的东西，如内核模块，这是很重要的。
+- 主机上的依赖关系应该被最小化。很难控制并依赖主机启动的顺序（主节点，代理节点）。他们应该能够以任何顺序启动，只有在他们的依赖被处理和提供给集群时才开始工作。
+- 最小化外部基础设施依赖。像PXE启动镜像和NFS存储这样的外部基础设施很少存在。
+- 应该可以选择部署方法。您习惯于现有的系统，没有必要去学习新的。整合应该有一个干净的界面，尽可能最小。
+- DC/OS与现有系统，如配置管理工具和CloudFormation，之间的集成应尽可能简单。集成接口必须简单，且有完备的文档。
+- 所有的依赖关系和库应该被捆绑成一个单一的工件。正常的生命周期流程将完全升级或降级DC/OS之外的库和依赖项。通过不依赖这些，系统变得不脆弱以及更稳定。
+- 如有必要，用户应该能够在实时更改系统中代码和配置。虽然这是一种非正常模式，但偶尔可以帮助您在关键时刻保证基础架构可用。
+- 安装必须尽可能接近100％。即使1％的故障最终导致了10个故障情况，当您运行1000个主机集群时就需要手动干预。
+- 升级和回滚升级在主机上必须是原子级的。
+- 集群的状态必须是可监控的。当运行大型集群时，很容易陷入一个难以依赖单个主机状态的情况。
 
-We chose tarballs for the packaging format because it works everywhere. A tarball is a compressible file format that bundles a number of files together into a single archive. While there are a lot of common packaging formats out there (deb, rpm, wheel, gem, jar, etc), they all are really just tarballs under the covers. Unfortunately almost all the common formats are built around a single distribution or language, making them hard to use across distros and languages. Some features like pre-install and post-install scripts are really handy to help nudge a system into the right “state”. That isn’t worth the possibility of having unpredictable results and/or untested corner cases. As such, we simplified and made the package installation one step: tarball extraction. No arbitrary code execution and guaranteed reproducibility.
 
-All of the components in DC/OS are built into a single tarball that eventually gets extracted to `/opt/mesosphere` on the host system. Inside that directory, you end up with something that looks a lot like `/usr/local`. Each component lives in its own package directory and then has the important files linked to the important directories like `bin` and `lib`.
+## 打包
 
-## Building
+我们选择tarball作为打包格式是因为它可以用在任何地方。tarball是一种可压缩的文件格式，可将多个文件一起打包成单个压缩文件。虽然有很多常见的封装格式（deb，rpm，wheel，gem，jar等），但它们都只是包装下的tarball。不幸的是，几乎所有的常见格式都是围绕一个发行版或语言构建的，这使得它们很难在其他发行版和语言之间使用。某些功能（如安装前和安装后脚本）非常方便，可以帮助将系统配置为正确的“状态”。这不值得，有可能带来不可预测的结果和/或未经测试的极端情况。因此，我们简化了包装安装这一步：tarball提取。没有任何代码执行和保证可重复性。
 
-The master artifact must be assembled somehow. Because the DC/OS build is made up of a changing list of components, the build tooling ends up looking like its own little package manager. Each component must be built from source, configured in a repeatable fashion and then added into the master artifact.
+DC/OS中的所有组件都放在一个tarball中，最终被提取到主机系统上的`/opt/mesosphere`。 在这个目录里，您最终会看到很像`/usr/local`的东西。每个组件都位于自己的软件包目录中，然后将重要的文件链接到像`bin`和`lib`这样的重要目录。
 
-A DC/OS package is defined by two files: [`build`](https://github.com/dcos/dcos/blob/master/packages/mesos/build) and [`buildinfo.json`](https://github.com/dcos/dcos/blob/master/packages/mesos/buildinfo.json). These state what must be downloaded and how to build it. At build time, the toolchain takes care of building, packaging and including all the artifacts required into the master tarball.
 
-## Installing
+## 构建
 
-Now that there’s a single package containing all the built components to run DC/OS, each installation must be configured before being placed on hosts. By keeping this configuration small and immutable, you can be sure that every host in your cluster will act the same way.
+主要构件必须以某种方式组装。由于DC/OS是由不断变化的组件列表组成的，因此构建工具看起来就像是自己的包管理器。每个组件必须从源代码构建，以可重复的方式进行配置，然后添加到主要工件中。
 
-With the configuration tool, all components are built into a package that contains everything to get the cluster running. You’ll pick from a small list of details like DNS configuration and bootstrap information. This then gets added to the single tarball that was built previously. You then have a package that is customized for your hardware and will repeatably create clusters of any size over and over.
+DC/OS包由两个文件定义：[`build`][1]和[`buildinfo.json`][2]。 这些说明需要下载什么以及如何构建它。在构建时，工具链负责构建，打包并包含主tarball中所需的所有工件。
 
-Orchestrating the rollout of an installation is difficult, particularly when you are required to do things in a specific order. To keep everything as simple as possible, at the host level DC/OS makes no assumptions about the state of the cluster. You can install agents and then masters or even install both at the same time!
 
-Once your package is built, you can get going by running `dcos_install.sh` on every host. This script only does three things:
+## 安装
 
-- Downloads the package to the current host.
-- Extracts the package into `/opt/mesosphere`.
-- Initiates installation using the [DC/OS Component Package Manager (Pkgpanda)](/1.10/overview/architecture/components/#dcos-component-package-manager).
+现在有一个包含所有运行DC/OS的内置组件的软件包，每次安装都必须先配置好才能放置在主机上。通过保持这种小而不可变的配置，可以确保集群中的每台主机都以相同的方式运行。
 
-That’s really it! Once the ZooKeeper cluster reaches quorum on the masters and Mesos comes up, every agent will join the cluster and you’ll be ready to go. We’ve kept the steps minimal to make sure they’re as reliable as possible.
+使用配置工具，所有组件都内置到一个包中，其中包含所有可以运行集群的组件。你会从一个小的列表中选择DNS配置和引导信息。然后将其添加到之前构建的单个压缩包中。然后，您将拥有一个为您的硬件定制的软件包，并可重复创建任意大小的集群。
 
-## Tradeoffs
+编排安装的部署非常困难，特别是当您需要按照特定顺序执行操作时。为了尽可能简单，在主机级别，DC/OS不会假设集群的状态。您可以先安装代理节点，然后主节点，或是同时安装两个！
 
-Obviously, there are other ways that this could have been architected. Let us take a look at some of the common questions and why the current decisions were made.
+软件包构建好之后，您可以在每台主机上运行`dcos_install.sh`。这个脚本只做以下3件事:
 
-## Immutable Configuration
+- 在当前主机上下载软件包.
+- 将软件包解压到`/opt/mesosphere`目录中.
+- 使用[DC/OS组件包管理器(Pkgpanda)](/1.10/overview/architecture/components/#dcos-component-package-manager) 初始化安装.
 
-The configuration for each cluster is generated at the beginning and becomes immutable. This allows us to guarantee that the configuration is correct on every host after install. Remember, you will be doing this for thousands of nodes. These guarantees around configuration reduce the amount of documentation required to run DC/OS and make it more easily supportable.
+就是这样！一旦ZooKeeper主节点集群达到法定数量，Mesos启动，代理节点就可以加入集群，您可以开始使用。我们尽量减少步骤，确定它是可依赖的.
 
-With an immutable configuration, there is no chance of a host getting part of its configuration updated / changed. Many of the production issues we’ve encountered are ameliorated by this design decision. Take a look at Joe Smith’s presentation on [Running Mesos in Production at Twitter](https://www.youtube.com/watch?v=nNrh-gdu9m4) if you’d like more context.
 
-### What IP should I bind to?
+## 权衡
 
-Deciding the IP and network interface that has access to the network and the Mesos master is non-trivial. Here are examples of environments that we cannot make default assumptions in:
+显然，还有其他方法可以构建。让我们来看看一些常见的问题，以及为什么用现在的方法。
 
-- In split horizon environments like AWS, the hostname might resolve to an external IP address instead of internal.
-- In environments without DNS, we need you to tell us what IP it is.
-- In environments with multiple interfaces, we’re unable to automatically pick which interface to use.
-- Not all machines have resolvable hostnames, so you can’t do a reverse lookup
+
+## 不可变的配置
+
+每个集群的配置在开始时生成，之后不可变。这使我们可以保证安装后每台主机上的配置都是正确的。请记住，您将会为成千上万的节点做这件事。这些配置文件保证减少了运行DC/OS所需的文档数量，使其更易于支持。
+
+使用不可变的配置，主机不可能更新/更改配置。 我们遇到的许多生产问题都是通过这个设计决定来解决的。更多信息，请参阅Joe Smith[关于在Twitter生产环境中运行Mesos](https://www.youtube.com/watch?v=nNrh-gdu9m4) 介绍。
+
+### 需要绑定到那个IP?
+
+决定访问网络和Mesos主机的IP和网络接口是非常重要的。以下环境，我们无法使用默认设置：
+
+- 在像水平分割环境中，如AWS，主机名可能会解析为外部IP地址而不是内部IP地址。
+- 在没有DNS的环境中，我们需要你告诉我们它是什么IP。
+- 在具有多个接口的环境中，我们无法自动选择使用哪个接口。
+- 并不是所有的机器都有可解析的主机名，所以你不能做反向查询
 
 Because of these constraints, we’ve struggled to produce a solid default. To make it as configurable as possible, we have a script that can be written to return the IP address we should bind to on every host. There are multiple examples in the documentation of how to write `ip-detect` for different environments which should cover most use cases. For those that the default doesn’t work, you will be able to write your own `ip-detect` and integrate it with your configuration. `ip-detect` is the most important part of the configuration and the only way your clusters will be able to come up successfully.
+由于这些限制，我们一直在努力找到一个稳定的默认值。为了使其尽可能可配置，我们写了有一个脚本，以返回我们应该绑定到每台主机的IP地址。关于如何为不同的环境编写`ip-detect`的文档有很多例子，它们应该涵盖大多数的用例。对于那些默认不起作用的，您将能够编写自己的`ip-detect`并将其与您的配置集成在一起。`ip-detect`是配置中最重要的部分，也是您的集群能够成功配置的唯一方式。
 
-### Single vs. Multiple Packages, Per-Provider Packages (RPM, DEB, etc)
+### 单个或多个包，预定义软件包 (RPM, DEB等等)
 
-Instead of having all the packages bundled together into a single image, we could have gone the default route that most use today and install them all separately. There are a couple problems that come from this immediately:
+不把所有的软件包捆绑在一起成为一个映像，我们可以使用目前最常用的方式，并单独安装。 有一些问题立即出现：
 
-- Moving between distributions requires porting and testing the packages.
-- Package installs have non-zero failure rates. We have seen 10-20% failure rates when trying to install packages. This prevents the cluster coming up successfully and makes it harder to operate.
-- Shipping multiple packages is far more difficult than having a single tarball to hand out. There’s overhead in ensuring multiple packages are robust.
-- Upgrades must be atomic. It is much more difficult to ensure this across multiple packages.
+- 在不同的发行版之间使用需要移植和测试软件包。
+- 软件包安装具有非零故障率。 试图安装软件包时，我们看到10-20％的失败率。 这样导致集群无法成功启动并使其更难操作。
+- 传送多个软件包要比单个压缩包分发困难得多。 在确保多个软件包健壮的情况下，开销很大。
+- 升级必须是原子的。多个包确保这一点要困难得多。
 
-### Tarball vs. Container
+### Tarball 与容器
 
-It would be possible to package DC/OS as a plethora of containers (or a single container with multiple processes). This combines the drawbacks of multiple packages with the instability of the Docker daemon. We’ve found that the Docker daemon crashes regularly and while that is acceptable for some applications, it isn’t something you want from the base infrastructure.
+可以将DC/OS打包为大量容器（或具有多个进程的单个容器）。这将多个软件包的缺点与Docker守护进程的不稳定性相结合。我们发现Docker守护进程经常崩溃，虽然这对于某些应用程序是可以接受的，但这不是基础架构的方式l。
 
-### Installation Method
+### 安装方法
 
-We could support any installation method under the sun. The plethora of configuration and package management that is currently used is intimidating. We’ve seen everything from Puppet to custom built internal tools. We want to enable these methods by providing a simple interface that works with as many tools as possible. The lowest common denominator here is bash.
+我们可以支持任何的安装方法。目前使用的很多的配置和包管理方法是可怕的。我们看了很多工具，从Puppet到定制的内部工具。 我们希望通过提供一个简单的界面，让其能与尽可能多的工具配合工作。 这里最通用的是bash。
 
-As it is difficult to maintain bash, we simplified the installation method as far as possible. The “image” that is built can be placed on top of a running host and operate independently. To install this, it only requires extraction. That’s a small, simple bash script that can work everywhere and integrate easily with other tooling. The entire exposed surface is minimal, and doesn’t give access to internals which if changed would make your cluster unsupportable and void the warranty.
+由于难以维护bash，我们尽可能简化了安装方法。 构建的“镜像”可以放在运行主机并独立运行。要安装它，只需要提取。这是一个小而简单的bash脚本，可以在任何地方工作，并可以轻松地与其他工具集成。整个暴露的东西是非常小，并不允许访问内部，如果更改将使您的集群不被支持，没有任何保障。
 
-### Host Images
+### 主机镜像
 
-It is possible to bake an entire host image that has been configured instead of a tarball that goes on top. Let’s look at why this doesn’t make sense as the sole method for installation:
+可以构建配置好的主机映像，而不是tarball。让我们看看为什么这个安装方法是没有意义的：
 
-- We end up being in the distribution update game. Every time RHEL releases a package update, we would be required to test, bundle and distribute that. This becomes even harder with CoreOS as we’d end up actually forking the project.
-- You want to choose their distribution. Some have existing support contracts with Canonical and some with RedHat.
-- You want to configure the base OS. There are security policies and configuration that must be applied to the host.
+- 我们最终会亡于发行版更新。每次RHEL发布软件包更新时，我们都需要测试，打包和发布。 CoreOS变得更加困难，我们最终将亡于复制项目。
+- 您想选择自己的发行版。 一些可以得到Canonical和RedHat的支持。
+- 您想配置基本的操作系统。有一些安全策略和配置必须应用于主机。
 
-Host images are a great way to distribute and install DC/OS. By providing the bash install method, it is just as easy to create a new host image for your infrastructure as it would be to integrate with a tool like Puppet.
+使用主机镜像是一个非常好的发行和安装DC/OS的方法。通过提供bash安装方法，为您的基础设施创建新的主机映像就像使用Puppet这样的工具进行集成一样简单。
 
-### Exposing config files directly to the user
+### 为用户直接暴露配置文件
 
-The components included in DC/OS have a significant amount of configuration options. We have spent a long time piecing the correct ones together. These are guaranteed to give you the best operations in production at scale. If we were to expose these options, it would increase the amount of knowledge required to run an DC/OS cluster.
+DC/OS中包含的组件具有大量的配置选项。我们花了很长时间找到正确的。这些选项保证给您在生产规模最优的配置。如果我们要公开这些选项，就会增加运行DC/OS集群所需的知识。
 
-Remember that clusters most look almost the same for package install to work. As soon as configuration parameters that the frameworks rely on change, we cannot guarantee that a package can install or run reliably.
+请记住，对于软件包安装而言，集群大部分看起来几乎相同。只要框架所依赖的配置参数发生变化，我们就无法保证软件包能够可靠地安装和运行。
+
+[1]: https://github.com/dcos/dcos/blob/master/packages/mesos/build
+[2]: https://github.com/dcos/dcos/blob/master/packages/mesos/buildinfo.json

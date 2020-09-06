@@ -8,74 +8,74 @@ enterprise: false
 ---
 <!-- This source repo for this topic is https://github.com/dcos/dcos-docs -->
 
-The purpose of the feature maturity phases is to educate customers, partners, and Mesosphere field and support organizations about the maturity and quality of features.
+功能成熟的目的是教育客户，合作伙伴和Mesosphere以及支持机构关于功能的成熟度和质量。
 
-# <a name="criteria"></a>Criteria
+# <a name="criteria"></a>标准
 
-## Completeness
+## 完成度
 
-**Functionality:** Completeness of the feature implementation.
+**功能:** 功能完成
 
-**Interfaces:** Feature has an API with deprecation cycle, CLI, and UI.
+**界面:** 功能具有在生命周期的API，命令行界面，用户界面
 
-**Documentation:** Feature has appropriate documentation. e.g., Admin Guide, Developer Guide, Release Notes.
+**文档:** 功能具有相应文档. 例如, 管理指南, 开必指南, 发布说明.
 
-## Quality
+## 质量
 
-**Functional Test:** Feature is validated for correctness.
+**功能测试:** 功能验证正确。
 
-**System Test:** Feature is validated to meet scalability, reliability, and performance requirements through a combination of load, soak, stress, spike, fault, and configuration tests.
+**系统测试:** 通过负载，浸泡，压力，峰值，故障和配置测试等来组合验证，以满足扩展性，可靠性和性能要求。
 
-**Mesosphere Dogfooding:** Feature in-use in Mesosphere production environment.
+**Mesosphere内部测试:** 功能在Mesosphere内部生产环境中使用.
 
-# <a name="phases"></a>Phases
+# <a name="phases"></a>阶段
 
-## <a name="experimental"></a>Experimental
+## <a name="experimental"></a>实验
 
-Use these features at your own risk. We might add, change, or delete any functionality.
+使用此功能需要自担风险。此功能可能被增加，修改，或删除.
 
-### Completeness
+### 完整性
 
-* Feature may be incomplete
-* API may be incomplete and is subject to change without warning or deprecation cycle
-* User interfaces may be missing or incomplete
-* Documentation may be missing or incomplete
+* 功能还未完成
+* API还未完成，如有更改，恕不另行通知
+* 用户界面可能没有或不完整
+* 文档可能没有或不完整
 
-### Quality
+### 质量
 
-* Limited or no functional test
-* Limited or no system test
-* Limited or no Mesosphere dogfooding
+* 有限的或没有做功能测试
+* 有限的或没有做系统测试
+* 有限的或没有做Mesosphere内部测试
 
-## <a name="preview"></a>Preview
+## <a name="preview"></a>预览
 
-We might add, change, or delete any functionality.
+功能有可能增加，修改，或是删除
 
-### Completeness
+### 完整性
 
-* Feature is complete
-* API may be incomplete and changes may not be subject to deprecation cycle
-* User interfaces may be missing or incomplete
-* Documentation may be incomplete
+* 功能已完成
+* API还未完成，如有更改，恕不另行通知
+* 用户界面可能没有或不完整
+* 文档可能不完整
 
-### Quality
+### 质量
 
-* Robust functional test
-* Limited or no system test
-* Limited or no Mesosphere dogfooding
+* 健壮的功能测试
+* 有限的或没有做系统测试
+* 有限的或没有做Mesosphere内部测试
 
-## <a name="stable"></a>Stable
+## <a name="stable"></a>稳定
 
-### Completeness
+### 完整性
 
-* Feature is complete
-* API is complete and changes are subject to deprecation cycle
-* User Interfaces are complete
-* Documentation is complete
+* 功能已完成
+* API已完成，修改会受到生命周期的影响
+* 用户界面已完成
+* 文档已完成
 
-### Quality
+### 质量
 
-* Robust functional test
-* Robust performance testing
-* Robust fault testing
-* Robust Mesosphere dogfooding
+* 健壮的功能测试
+* 健壮的性能测试
+* 健壮的故障测试
+* 健壮的Mesosphere内部测试
